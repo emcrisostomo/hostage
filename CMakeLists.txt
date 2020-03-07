@@ -23,10 +23,16 @@ add_executable(hostage
     src/antlr4/gen/hostsParser.h src/antlr4/gen/hostsParser.cpp
     src/hosts_parser/hosts_listener.cpp src/hosts_parser/hosts_listener.h)
 
+target_include_directories(hostage PRIVATE "${PROJECT_BINARY_DIR}")
+
 # add runtime include directories on this project.
 target_include_directories(hostage PRIVATE ${ANTLR4_INCLUDE_DIR})
 add_dependencies(hostage antlr4_shared)
 target_link_libraries(hostage PRIVATE antlr4_shared)
+
+# Add a configuration file processed by cmake
+configure_file(${PROJECT_SOURCE_DIR}/cmake_config.h.in ${PROJECT_BINARY_DIR}/cmake_config.h)
+add_definitions(-DHAVE_CMAKE_CONFIG_H)
 
 # install targets
 install(TARGETS hostage DESTINATION bin)
