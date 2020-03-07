@@ -27,3 +27,29 @@ add_executable(hostage
 target_include_directories(hostage PRIVATE ${ANTLR4_INCLUDE_DIR})
 add_dependencies(hostage antlr4_shared)
 target_link_libraries(hostage PRIVATE antlr4_shared)
+
+# install targets
+install(TARGETS hostage DESTINATION bin)
+
+# tests
+include(CTest)
+
+add_test(hostageRuns hostage)
+set_tests_properties(hostageRuns PROPERTIES WILL_FAIL true)
+
+add_test(hostageHelp hostage --help)
+set_tests_properties(hostageHelp PROPERTIES PASS_REGULAR_EXPRESSION "${PACKAGE} ${PACKAGE_VERSION}")
+
+# installer
+include(InstallRequiredSystemLibraries)
+#@formatter:off
+# Remove and default to project description when migrated to CMake 3.9
+set(CPACK_PACKAGE_DESCRIPTION_SUMMARY "Utility to programmatically edit hosts files.")
+set(CPACK_PACKAGE_VERSION_MAJOR       "${PROJECT_VERSION_MAJOR}")
+set(CPACK_PACKAGE_VERSION_MINOR       "${PROJECT_VERSION_MINOR}")
+set(CPACK_PACKAGE_VERSION_PATCH       "${PROJECT_VERSION_PATCH}")
+set(CPACK_PACKAGE_VENDOR              "${PACKAGE_AUTHOR}")
+set(CPACK_RESOURCE_FILE_LICENSE       "${CMAKE_CURRENT_SOURCE_DIR}/LICENSE")
+set(CPACK_GENERATOR                   "STGZ;TGZ")
+#@formatter:on
+include(CPack)
