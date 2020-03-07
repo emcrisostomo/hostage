@@ -1,7 +1,7 @@
 #include <iostream>
 #include "antlr4-runtime.h"
-#include "../gen/hostsLexer.h"
-#include "../gen/hostsParser.h"
+#include "antlr4/gen/hostsLexer.h"
+#include "antlr4/gen/hostsParser.h"
 #include "hosts_parser/hosts_listener.h"
 
 int main()

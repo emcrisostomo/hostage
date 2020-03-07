@@ -19,8 +19,8 @@ find_package(antlr4-runtime REQUIRED)
 
 add_executable(hostage
     src/main.cpp
-    gen/hostsLexer.h gen/hostsLexer.cpp
-    gen/hostsParser.h gen/hostsParser.cpp
+    src/antlr4/gen/hostsLexer.h src/antlr4/gen/hostsLexer.cpp
+    src/antlr4/gen/hostsParser.h src/antlr4/gen/hostsParser.cpp
     src/hosts_parser/hosts_listener.cpp src/hosts_parser/hosts_listener.h)
 
 # add runtime include directories on this project.
