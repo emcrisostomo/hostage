@@ -62,3 +62,8 @@ hosts_listener::exitAlias(hostsParser::AliasContext *context)
   te->aliases.push_back(context->getText());
 }
 
+void hosts_listener::visitErrorNode(antlr4::tree::ErrorNode *node)
+{
+  std::cerr << node->getText() << "\n";
+}
+

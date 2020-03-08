@@ -37,6 +37,7 @@ public:
   void exitAddress(hostsParser::AddressContext *ctx) override;
   void exitHost_name(hostsParser::Host_nameContext *context) override;
   void exitAlias(hostsParser::AliasContext *context) override;
+  void visitErrorNode(antlr4::tree::ErrorNode *node) override;
   std::vector<std::shared_ptr<line>> get_entries() const;
 
 private:
