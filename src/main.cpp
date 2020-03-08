@@ -1,4 +1,5 @@
 #include <iostream>
+#include <fstream>
 #include <getopt.h>
 #include "antlr4-runtime.h"
 #include "antlr4/gen/hostsLexer.h"
@@ -15,6 +16,7 @@ static const int HOSTAGE_EXIT_OK = 0;
 void parse_opts(int argc, char **argv);
 void print_version();
 void usage(std::ostream& stream);
+int parse_command(int argc, char **argv);
 
 // Usage:
 //
@@ -24,9 +26,26 @@ int
 main(int argc, char **argv)
 {
   parse_opts(argc, argv);
+  int c = parse_command(argc, argv);
 
-  antlr4::ANTLRInputStream input(
-    "   # un commento    a     b    \n127.0.0.1 mongo postgres keycloak shimmer c6ma.d.vrlpnc.com c7rd.d.vrlpnc.com\n");
+  switch (c)
+  {
+  case 0:
+    break;
+
+  case -1:
+    std::cerr << _("Missing command.\n");
+    return 1;
+
+  default:
+    std::cerr << _("Unexpected command: ") << c << '\n';
+    std::cerr << _("This is probably a bug.\n");
+    return 2;
+  }
+
+  std::ifstream hosts("/etc/hosts", std::ifstream::in);
+
+  antlr4::ANTLRInputStream input(hosts);
   hostsLexer lexer(&input);
   antlr4::CommonTokenStream tokens(&lexer);
   tokens.fill();
@@ -48,13 +67,13 @@ void
 parse_opts(int argc, char **argv)
 {
   int ch;
-  std::string short_options = "hv";
+  std::string short_options = "h";
 
   int option_index = 0;
   static struct option long_options[] = {
-    {"help",     no_argument,       nullptr, 'h'},
-    {"version",  no_argument,       nullptr, OPT_VERSION},
-    {nullptr,    0,                 nullptr, 0}
+    {"help",    no_argument, nullptr, 'h'},
+    {"version", no_argument, nullptr, OPT_VERSION},
+    {nullptr, 0,             nullptr, 0}
   };
 
   while ((ch = getopt_long(argc,
@@ -81,6 +100,19 @@ parse_opts(int argc, char **argv)
       exit(2);
     }
   }
+}
+
+int parse_command(int argc, char **argv)
+{
+  if (optind == argc)
+  {
+    return -1;
+  }
+
+  std::string command(argv[optind]);
+  std::cout << command << '\n';
+
+  return 0;
 }
 
 void print_version()
