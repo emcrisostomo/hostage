@@ -95,6 +95,18 @@ public:
     return visitChildren(ctx);
   }
 
+  virtual antlrcpp::Any visitCommand_line(hosts::Command_lineContext *ctx) override {
+    return visitChildren(ctx);
+  }
+
+  virtual antlrcpp::Any visitSet_command(hosts::Set_commandContext *ctx) override {
+    return visitChildren(ctx);
+  }
+
+  virtual antlrcpp::Any visitRm_command(hosts::Rm_commandContext *ctx) override {
+    return visitChildren(ctx);
+  }
+
 
 };
 

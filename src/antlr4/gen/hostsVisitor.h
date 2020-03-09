@@ -59,6 +59,12 @@ public:
 
     virtual antlrcpp::Any visitComment(hosts::CommentContext *context) = 0;
 
+    virtual antlrcpp::Any visitCommand_line(hosts::Command_lineContext *context) = 0;
+
+    virtual antlrcpp::Any visitSet_command(hosts::Set_commandContext *context) = 0;
+
+    virtual antlrcpp::Any visitRm_command(hosts::Rm_commandContext *context) = 0;
+
 
 };
 

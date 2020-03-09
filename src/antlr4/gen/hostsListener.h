@@ -74,6 +74,15 @@ public:
   virtual void enterComment(hosts::CommentContext *ctx) = 0;
   virtual void exitComment(hosts::CommentContext *ctx) = 0;
 
+  virtual void enterCommand_line(hosts::Command_lineContext *ctx) = 0;
+  virtual void exitCommand_line(hosts::Command_lineContext *ctx) = 0;
+
+  virtual void enterSet_command(hosts::Set_commandContext *ctx) = 0;
+  virtual void exitSet_command(hosts::Set_commandContext *ctx) = 0;
+
+  virtual void enterRm_command(hosts::Rm_commandContext *ctx) = 0;
+  virtual void exitRm_command(hosts::Rm_commandContext *ctx) = 0;
+
 
 };
 

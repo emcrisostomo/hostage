@@ -141,3 +141,19 @@ alpha
 comment
   :  (Space)* '#' ~(NewLine)*
   ;
+
+// Command line grammars
+command_line
+  : set_command
+  | rm_command
+  ;
+
+set_command
+  : Set (address) (host_name)
+  ;
+
+
+rm_command
+  : Rm Host (host_name)+
+  | Rm Address (address)+
+  ;

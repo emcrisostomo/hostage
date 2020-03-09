@@ -76,6 +76,15 @@ public:
   virtual void enterComment(hosts::CommentContext * /*ctx*/) override { }
   virtual void exitComment(hosts::CommentContext * /*ctx*/) override { }
 
+  virtual void enterCommand_line(hosts::Command_lineContext * /*ctx*/) override { }
+  virtual void exitCommand_line(hosts::Command_lineContext * /*ctx*/) override { }
+
+  virtual void enterSet_command(hosts::Set_commandContext * /*ctx*/) override { }
+  virtual void exitSet_command(hosts::Set_commandContext * /*ctx*/) override { }
+
+  virtual void enterRm_command(hosts::Rm_commandContext * /*ctx*/) override { }
+  virtual void exitRm_command(hosts::Rm_commandContext * /*ctx*/) override { }
+
 
   virtual void enterEveryRule(antlr4::ParserRuleContext * /*ctx*/) override { }
   virtual void exitEveryRule(antlr4::ParserRuleContext * /*ctx*/) override { }
