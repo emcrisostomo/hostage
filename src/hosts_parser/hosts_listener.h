@@ -21,8 +21,7 @@ class table_entry : public line
 {
 public:
   std::string address;
-  std::string host_name;
-  std::vector<std::string> aliases;
+  std::vector<std::string> host_names;
   ~table_entry() override = default;
 };
 
@@ -36,7 +35,6 @@ public:
   void exitTable_entry(hosts::Table_entryContext *context) override;
   void exitAddress(hosts::AddressContext *ctx) override;
   void exitHost_name(hosts::Host_nameContext *context) override;
-  void exitAlias(hosts::AliasContext *context) override;
   void visitErrorNode(antlr4::tree::ErrorNode *node) override;
   std::vector<std::shared_ptr<line>> get_entries() const;
 

@@ -5,6 +5,7 @@
 #include "../gen/hosts_lexer.h"
 #include "../gen/hosts.h"
 #include "hosts_parser/hosts_listener.h"
+#include "hosts_parser/command_listener.h"
 #ifdef HAVE_CMAKE_CONFIG_H
 #  include "cmake_config.h"
 #endif
@@ -110,8 +111,27 @@ int parse_command(int argc, char **argv)
     return -1;
   }
 
-  std::string command(argv[optind]);
-  std::cout << command << '\n';
+  std::string command_args;
+  command_args.reserve(16 * (argc - optind));
+
+  for (size_t i=optind; i < argc; ++i)
+  {
+    command_args += argv[i];
+    command_args += " ";
+  }
+
+  antlr4::ANTLRInputStream is(command_args);
+  hosts_lexer lexer(&is);
+  antlr4::CommonTokenStream tokens(&lexer);
+  tokens.fill();
+
+  command_listener listener;
+  hosts parser(&tokens);
+//  antlr4::tree::ParseTree *tree = parser.command_line();
+//  antlr4::tree::ParseTreeWalker::DEFAULT.walk(&listener, tree);
+
+//  std::string command(argv[optind]);
+//  std::cout << command << '\n';
 
   return 0;
 }

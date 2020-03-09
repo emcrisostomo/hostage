@@ -58,12 +58,6 @@ public:
   virtual void enterHost_name(hosts::Host_nameContext * /*ctx*/) override { }
   virtual void exitHost_name(hosts::Host_nameContext * /*ctx*/) override { }
 
-  virtual void enterAliases(hosts::AliasesContext * /*ctx*/) override { }
-  virtual void exitAliases(hosts::AliasesContext * /*ctx*/) override { }
-
-  virtual void enterAlias(hosts::AliasContext * /*ctx*/) override { }
-  virtual void exitAlias(hosts::AliasContext * /*ctx*/) override { }
-
   virtual void enterIreg_name(hosts::Ireg_nameContext * /*ctx*/) override { }
   virtual void exitIreg_name(hosts::Ireg_nameContext * /*ctx*/) override { }
 
@@ -75,15 +69,6 @@ public:
 
   virtual void enterComment(hosts::CommentContext * /*ctx*/) override { }
   virtual void exitComment(hosts::CommentContext * /*ctx*/) override { }
-
-  virtual void enterCommand_line(hosts::Command_lineContext * /*ctx*/) override { }
-  virtual void exitCommand_line(hosts::Command_lineContext * /*ctx*/) override { }
-
-  virtual void enterSet_command(hosts::Set_commandContext * /*ctx*/) override { }
-  virtual void exitSet_command(hosts::Set_commandContext * /*ctx*/) override { }
-
-  virtual void enterRm_command(hosts::Rm_commandContext * /*ctx*/) override { }
-  virtual void exitRm_command(hosts::Rm_commandContext * /*ctx*/) override { }
 
 
   virtual void enterEveryRule(antlr4::ParserRuleContext * /*ctx*/) override { }

@@ -17,7 +17,7 @@ empty_line
   ;
 
 table_entry
-  : address (Space)+ host_name ((Space)+ aliases)?
+  : address (Space)+ host_name ((Space)+ host_name)*
   ;
 
 address
@@ -91,14 +91,6 @@ host_name
   : ireg_name
   ;
 
-aliases
-  : alias ((Space)+ alias)*
-  ;
-
-alias
-  : ireg_name
-  ;
-
 ireg_name
   : (iunreserved)(iunreserved)*
   ;
@@ -140,20 +132,4 @@ alpha
 
 comment
   :  (Space)* '#' ~(NewLine)*
-  ;
-
-// Command line grammars
-command_line
-  : set_command
-  | rm_command
-  ;
-
-set_command
-  : Set (address) (host_name)
-  ;
-
-
-rm_command
-  : Rm Host (host_name)+
-  | Rm Address (address)+
   ;

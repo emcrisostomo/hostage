@@ -47,10 +47,6 @@ public:
 
     virtual antlrcpp::Any visitHost_name(hosts::Host_nameContext *context) = 0;
 
-    virtual antlrcpp::Any visitAliases(hosts::AliasesContext *context) = 0;
-
-    virtual antlrcpp::Any visitAlias(hosts::AliasContext *context) = 0;
-
     virtual antlrcpp::Any visitIreg_name(hosts::Ireg_nameContext *context) = 0;
 
     virtual antlrcpp::Any visitIunreserved(hosts::IunreservedContext *context) = 0;
@@ -58,12 +54,6 @@ public:
     virtual antlrcpp::Any visitAlpha(hosts::AlphaContext *context) = 0;
 
     virtual antlrcpp::Any visitComment(hosts::CommentContext *context) = 0;
-
-    virtual antlrcpp::Any visitCommand_line(hosts::Command_lineContext *context) = 0;
-
-    virtual antlrcpp::Any visitSet_command(hosts::Set_commandContext *context) = 0;
-
-    virtual antlrcpp::Any visitRm_command(hosts::Rm_commandContext *context) = 0;
 
 
 };

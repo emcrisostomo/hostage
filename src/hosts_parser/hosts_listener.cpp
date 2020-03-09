@@ -52,14 +52,7 @@ void
 hosts_listener::exitHost_name(hosts::Host_nameContext *context)
 {
   auto te = dynamic_cast<table_entry *>(current_line.get());
-  te->host_name = context->getText();
-}
-
-void
-hosts_listener::exitAlias(hosts::AliasContext *context)
-{
-  auto te = dynamic_cast<table_entry *>(current_line.get());
-  te->aliases.push_back(context->getText());
+  te->host_names.push_back(context->getText());
 }
 
 void hosts_listener::visitErrorNode(antlr4::tree::ErrorNode *node)
