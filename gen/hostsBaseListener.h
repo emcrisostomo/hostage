@@ -1,5 +1,5 @@
 
-// Generated from /Users/enrico.m.crisostomo/repos/hostage/src/antlr4/hosts.g4 by ANTLR 4.8
+// Generated from /Users/enrico/repos/github/hostage/src/antlr4/hosts.g4 by ANTLR 4.8
 
 #pragma once
 
@@ -69,6 +69,30 @@ public:
 
   virtual void enterComment(hosts::CommentContext * /*ctx*/) override { }
   virtual void exitComment(hosts::CommentContext * /*ctx*/) override { }
+
+  virtual void enterCommand_line(hosts::Command_lineContext * /*ctx*/) override { }
+  virtual void exitCommand_line(hosts::Command_lineContext * /*ctx*/) override { }
+
+  virtual void enterSet_command(hosts::Set_commandContext * /*ctx*/) override { }
+  virtual void exitSet_command(hosts::Set_commandContext * /*ctx*/) override { }
+
+  virtual void enterRm_host_command(hosts::Rm_host_commandContext * /*ctx*/) override { }
+  virtual void exitRm_host_command(hosts::Rm_host_commandContext * /*ctx*/) override { }
+
+  virtual void enterRm_address_command(hosts::Rm_address_commandContext * /*ctx*/) override { }
+  virtual void exitRm_address_command(hosts::Rm_address_commandContext * /*ctx*/) override { }
+
+  virtual void enterCmd_rm(hosts::Cmd_rmContext * /*ctx*/) override { }
+  virtual void exitCmd_rm(hosts::Cmd_rmContext * /*ctx*/) override { }
+
+  virtual void enterCmd_host(hosts::Cmd_hostContext * /*ctx*/) override { }
+  virtual void exitCmd_host(hosts::Cmd_hostContext * /*ctx*/) override { }
+
+  virtual void enterCmd_set(hosts::Cmd_setContext * /*ctx*/) override { }
+  virtual void exitCmd_set(hosts::Cmd_setContext * /*ctx*/) override { }
+
+  virtual void enterCmd_address(hosts::Cmd_addressContext * /*ctx*/) override { }
+  virtual void exitCmd_address(hosts::Cmd_addressContext * /*ctx*/) override { }
 
 
   virtual void enterEveryRule(antlr4::ParserRuleContext * /*ctx*/) override { }

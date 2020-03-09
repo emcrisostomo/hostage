@@ -1,5 +1,5 @@
 
-// Generated from /Users/enrico.m.crisostomo/repos/hostage/src/antlr4/hosts.g4 by ANTLR 4.8
+// Generated from /Users/enrico/repos/github/hostage/src/antlr4/hosts.g4 by ANTLR 4.8
 
 #pragma once
 
@@ -25,7 +25,9 @@ public:
     RuleAddress = 4, RuleIp_v4_address = 5, RuleIp_v6_address = 6, RuleH16 = 7, 
     RuleLs32 = 8, RuleHexdig = 9, RuleDec_octet = 10, RuleDigit = 11, RuleNon_zero_digit = 12, 
     RuleHost_name = 13, RuleIreg_name = 14, RuleIunreserved = 15, RuleAlpha = 16, 
-    RuleComment = 17
+    RuleComment = 17, RuleCommand_line = 18, RuleSet_command = 19, RuleRm_host_command = 20, 
+    RuleRm_address_command = 21, RuleCmd_rm = 22, RuleCmd_host = 23, RuleCmd_set = 24, 
+    RuleCmd_address = 25
   };
 
   hosts(antlr4::TokenStream *input);
@@ -55,7 +57,15 @@ public:
   class Ireg_nameContext;
   class IunreservedContext;
   class AlphaContext;
-  class CommentContext; 
+  class CommentContext;
+  class Command_lineContext;
+  class Set_commandContext;
+  class Rm_host_commandContext;
+  class Rm_address_commandContext;
+  class Cmd_rmContext;
+  class Cmd_hostContext;
+  class Cmd_setContext;
+  class Cmd_addressContext; 
 
   class  Hosts_fileContext : public antlr4::ParserRuleContext {
   public:
@@ -410,6 +420,154 @@ public:
   };
 
   CommentContext* comment();
+
+  class  Command_lineContext : public antlr4::ParserRuleContext {
+  public:
+    Command_lineContext(antlr4::ParserRuleContext *parent, size_t invokingState);
+    virtual size_t getRuleIndex() const override;
+    Set_commandContext *set_command();
+    Rm_host_commandContext *rm_host_command();
+    Rm_address_commandContext *rm_address_command();
+
+    virtual void enterRule(antlr4::tree::ParseTreeListener *listener) override;
+    virtual void exitRule(antlr4::tree::ParseTreeListener *listener) override;
+
+    virtual antlrcpp::Any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
+   
+  };
+
+  Command_lineContext* command_line();
+
+  class  Set_commandContext : public antlr4::ParserRuleContext {
+  public:
+    Set_commandContext(antlr4::ParserRuleContext *parent, size_t invokingState);
+    virtual size_t getRuleIndex() const override;
+    Cmd_setContext *cmd_set();
+    AddressContext *address();
+    Host_nameContext *host_name();
+    std::vector<antlr4::tree::TerminalNode *> Space();
+    antlr4::tree::TerminalNode* Space(size_t i);
+
+    virtual void enterRule(antlr4::tree::ParseTreeListener *listener) override;
+    virtual void exitRule(antlr4::tree::ParseTreeListener *listener) override;
+
+    virtual antlrcpp::Any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
+   
+  };
+
+  Set_commandContext* set_command();
+
+  class  Rm_host_commandContext : public antlr4::ParserRuleContext {
+  public:
+    Rm_host_commandContext(antlr4::ParserRuleContext *parent, size_t invokingState);
+    virtual size_t getRuleIndex() const override;
+    Cmd_rmContext *cmd_rm();
+    Cmd_hostContext *cmd_host();
+    std::vector<antlr4::tree::TerminalNode *> Space();
+    antlr4::tree::TerminalNode* Space(size_t i);
+    std::vector<Host_nameContext *> host_name();
+    Host_nameContext* host_name(size_t i);
+
+    virtual void enterRule(antlr4::tree::ParseTreeListener *listener) override;
+    virtual void exitRule(antlr4::tree::ParseTreeListener *listener) override;
+
+    virtual antlrcpp::Any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
+   
+  };
+
+  Rm_host_commandContext* rm_host_command();
+
+  class  Rm_address_commandContext : public antlr4::ParserRuleContext {
+  public:
+    Rm_address_commandContext(antlr4::ParserRuleContext *parent, size_t invokingState);
+    virtual size_t getRuleIndex() const override;
+    Cmd_rmContext *cmd_rm();
+    Cmd_addressContext *cmd_address();
+    std::vector<antlr4::tree::TerminalNode *> Space();
+    antlr4::tree::TerminalNode* Space(size_t i);
+    std::vector<AddressContext *> address();
+    AddressContext* address(size_t i);
+
+    virtual void enterRule(antlr4::tree::ParseTreeListener *listener) override;
+    virtual void exitRule(antlr4::tree::ParseTreeListener *listener) override;
+
+    virtual antlrcpp::Any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
+   
+  };
+
+  Rm_address_commandContext* rm_address_command();
+
+  class  Cmd_rmContext : public antlr4::ParserRuleContext {
+  public:
+    Cmd_rmContext(antlr4::ParserRuleContext *parent, size_t invokingState);
+    virtual size_t getRuleIndex() const override;
+    antlr4::tree::TerminalNode *R();
+    antlr4::tree::TerminalNode *M();
+
+    virtual void enterRule(antlr4::tree::ParseTreeListener *listener) override;
+    virtual void exitRule(antlr4::tree::ParseTreeListener *listener) override;
+
+    virtual antlrcpp::Any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
+   
+  };
+
+  Cmd_rmContext* cmd_rm();
+
+  class  Cmd_hostContext : public antlr4::ParserRuleContext {
+  public:
+    Cmd_hostContext(antlr4::ParserRuleContext *parent, size_t invokingState);
+    virtual size_t getRuleIndex() const override;
+    antlr4::tree::TerminalNode *H();
+    antlr4::tree::TerminalNode *O();
+    antlr4::tree::TerminalNode *S();
+    antlr4::tree::TerminalNode *T();
+
+    virtual void enterRule(antlr4::tree::ParseTreeListener *listener) override;
+    virtual void exitRule(antlr4::tree::ParseTreeListener *listener) override;
+
+    virtual antlrcpp::Any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
+   
+  };
+
+  Cmd_hostContext* cmd_host();
+
+  class  Cmd_setContext : public antlr4::ParserRuleContext {
+  public:
+    Cmd_setContext(antlr4::ParserRuleContext *parent, size_t invokingState);
+    virtual size_t getRuleIndex() const override;
+    antlr4::tree::TerminalNode *S();
+    antlr4::tree::TerminalNode *E();
+    antlr4::tree::TerminalNode *T();
+
+    virtual void enterRule(antlr4::tree::ParseTreeListener *listener) override;
+    virtual void exitRule(antlr4::tree::ParseTreeListener *listener) override;
+
+    virtual antlrcpp::Any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
+   
+  };
+
+  Cmd_setContext* cmd_set();
+
+  class  Cmd_addressContext : public antlr4::ParserRuleContext {
+  public:
+    Cmd_addressContext(antlr4::ParserRuleContext *parent, size_t invokingState);
+    virtual size_t getRuleIndex() const override;
+    antlr4::tree::TerminalNode *A();
+    std::vector<antlr4::tree::TerminalNode *> D();
+    antlr4::tree::TerminalNode* D(size_t i);
+    antlr4::tree::TerminalNode *R();
+    antlr4::tree::TerminalNode *E();
+    std::vector<antlr4::tree::TerminalNode *> S();
+    antlr4::tree::TerminalNode* S(size_t i);
+
+    virtual void enterRule(antlr4::tree::ParseTreeListener *listener) override;
+    virtual void exitRule(antlr4::tree::ParseTreeListener *listener) override;
+
+    virtual antlrcpp::Any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
+   
+  };
+
+  Cmd_addressContext* cmd_address();
 
 
 private:
