@@ -9,15 +9,15 @@
 
 
 
-class  hostsParser : public antlr4::Parser {
+class  hosts : public antlr4::Parser {
 public:
   enum {
-    T__0 = 1, T__1 = 2, T__2 = 3, T__3 = 4, T__4 = 5, T__5 = 6, T__6 = 7, 
-    NewLine = 8, Space = 9, UCSCHAR = 10, D0 = 11, D1 = 12, D2 = 13, D3 = 14, 
-    D4 = 15, D5 = 16, D6 = 17, D7 = 18, D8 = 19, D9 = 20, A = 21, B = 22, 
-    C = 23, D = 24, E = 25, F = 26, G = 27, H = 28, I = 29, J = 30, K = 31, 
-    L = 32, M = 33, N = 34, O = 35, P = 36, Q = 37, R = 38, S = 39, T = 40, 
-    U = 41, V = 42, W = 43, X = 44, Y = 45, Z = 46
+    NewLine = 1, Space = 2, UCSCHAR = 3, D0 = 4, D1 = 5, D2 = 6, D3 = 7, 
+    D4 = 8, D5 = 9, D6 = 10, D7 = 11, D8 = 12, D9 = 13, A = 14, B = 15, 
+    C = 16, D = 17, E = 18, F = 19, G = 20, H = 21, I = 22, J = 23, K = 24, 
+    L = 25, M = 26, N = 27, O = 28, P = 29, Q = 30, R = 31, S = 32, T = 33, 
+    U = 34, V = 35, W = 36, X = 37, Y = 38, Z = 39, COLON = 40, DCOLON = 41, 
+    DASH = 42, DOT = 43, UNDERSCORE = 44, TILDE = 45, SHARP = 46
   };
 
   enum {
@@ -28,8 +28,8 @@ public:
     RuleIunreserved = 17, RuleAlpha = 18, RuleComment = 19
   };
 
-  hostsParser(antlr4::TokenStream *input);
-  ~hostsParser();
+  hosts(antlr4::TokenStream *input);
+  ~hosts();
 
   virtual std::string getGrammarFileName() const override;
   virtual const antlr4::atn::ATN& getATN() const override { return _atn; };
@@ -151,6 +151,8 @@ public:
     virtual size_t getRuleIndex() const override;
     std::vector<Dec_octetContext *> dec_octet();
     Dec_octetContext* dec_octet(size_t i);
+    std::vector<antlr4::tree::TerminalNode *> DOT();
+    antlr4::tree::TerminalNode* DOT(size_t i);
 
     virtual void enterRule(antlr4::tree::ParseTreeListener *listener) override;
     virtual void exitRule(antlr4::tree::ParseTreeListener *listener) override;
@@ -167,7 +169,10 @@ public:
     virtual size_t getRuleIndex() const override;
     std::vector<H16Context *> h16();
     H16Context* h16(size_t i);
+    std::vector<antlr4::tree::TerminalNode *> COLON();
+    antlr4::tree::TerminalNode* COLON(size_t i);
     Ls32Context *ls32();
+    antlr4::tree::TerminalNode *DCOLON();
 
     virtual void enterRule(antlr4::tree::ParseTreeListener *listener) override;
     virtual void exitRule(antlr4::tree::ParseTreeListener *listener) override;
@@ -200,6 +205,7 @@ public:
     virtual size_t getRuleIndex() const override;
     std::vector<H16Context *> h16();
     H16Context* h16(size_t i);
+    antlr4::tree::TerminalNode *COLON();
     Ip_v4_addressContext *ip_v4_address();
 
     virtual void enterRule(antlr4::tree::ParseTreeListener *listener) override;
@@ -366,6 +372,10 @@ public:
     virtual size_t getRuleIndex() const override;
     AlphaContext *alpha();
     DigitContext *digit();
+    antlr4::tree::TerminalNode *DASH();
+    antlr4::tree::TerminalNode *DOT();
+    antlr4::tree::TerminalNode *UNDERSCORE();
+    antlr4::tree::TerminalNode *TILDE();
     antlr4::tree::TerminalNode *UCSCHAR();
 
     virtual void enterRule(antlr4::tree::ParseTreeListener *listener) override;
@@ -421,6 +431,7 @@ public:
   public:
     CommentContext(antlr4::ParserRuleContext *parent, size_t invokingState);
     virtual size_t getRuleIndex() const override;
+    antlr4::tree::TerminalNode *SHARP();
     std::vector<antlr4::tree::TerminalNode *> Space();
     antlr4::tree::TerminalNode* Space(size_t i);
     std::vector<antlr4::tree::TerminalNode *> NewLine();

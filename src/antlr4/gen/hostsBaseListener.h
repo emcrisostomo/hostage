@@ -16,65 +16,65 @@
 class  hostsBaseListener : public hostsListener {
 public:
 
-  virtual void enterHosts_file(hostsParser::Hosts_fileContext * /*ctx*/) override { }
-  virtual void exitHosts_file(hostsParser::Hosts_fileContext * /*ctx*/) override { }
+  virtual void enterHosts_file(hosts::Hosts_fileContext * /*ctx*/) override { }
+  virtual void exitHosts_file(hosts::Hosts_fileContext * /*ctx*/) override { }
 
-  virtual void enterLine(hostsParser::LineContext * /*ctx*/) override { }
-  virtual void exitLine(hostsParser::LineContext * /*ctx*/) override { }
+  virtual void enterLine(hosts::LineContext * /*ctx*/) override { }
+  virtual void exitLine(hosts::LineContext * /*ctx*/) override { }
 
-  virtual void enterEmpty_line(hostsParser::Empty_lineContext * /*ctx*/) override { }
-  virtual void exitEmpty_line(hostsParser::Empty_lineContext * /*ctx*/) override { }
+  virtual void enterEmpty_line(hosts::Empty_lineContext * /*ctx*/) override { }
+  virtual void exitEmpty_line(hosts::Empty_lineContext * /*ctx*/) override { }
 
-  virtual void enterTable_entry(hostsParser::Table_entryContext * /*ctx*/) override { }
-  virtual void exitTable_entry(hostsParser::Table_entryContext * /*ctx*/) override { }
+  virtual void enterTable_entry(hosts::Table_entryContext * /*ctx*/) override { }
+  virtual void exitTable_entry(hosts::Table_entryContext * /*ctx*/) override { }
 
-  virtual void enterAddress(hostsParser::AddressContext * /*ctx*/) override { }
-  virtual void exitAddress(hostsParser::AddressContext * /*ctx*/) override { }
+  virtual void enterAddress(hosts::AddressContext * /*ctx*/) override { }
+  virtual void exitAddress(hosts::AddressContext * /*ctx*/) override { }
 
-  virtual void enterIp_v4_address(hostsParser::Ip_v4_addressContext * /*ctx*/) override { }
-  virtual void exitIp_v4_address(hostsParser::Ip_v4_addressContext * /*ctx*/) override { }
+  virtual void enterIp_v4_address(hosts::Ip_v4_addressContext * /*ctx*/) override { }
+  virtual void exitIp_v4_address(hosts::Ip_v4_addressContext * /*ctx*/) override { }
 
-  virtual void enterIp_v6_address(hostsParser::Ip_v6_addressContext * /*ctx*/) override { }
-  virtual void exitIp_v6_address(hostsParser::Ip_v6_addressContext * /*ctx*/) override { }
+  virtual void enterIp_v6_address(hosts::Ip_v6_addressContext * /*ctx*/) override { }
+  virtual void exitIp_v6_address(hosts::Ip_v6_addressContext * /*ctx*/) override { }
 
-  virtual void enterH16(hostsParser::H16Context * /*ctx*/) override { }
-  virtual void exitH16(hostsParser::H16Context * /*ctx*/) override { }
+  virtual void enterH16(hosts::H16Context * /*ctx*/) override { }
+  virtual void exitH16(hosts::H16Context * /*ctx*/) override { }
 
-  virtual void enterLs32(hostsParser::Ls32Context * /*ctx*/) override { }
-  virtual void exitLs32(hostsParser::Ls32Context * /*ctx*/) override { }
+  virtual void enterLs32(hosts::Ls32Context * /*ctx*/) override { }
+  virtual void exitLs32(hosts::Ls32Context * /*ctx*/) override { }
 
-  virtual void enterHexdig(hostsParser::HexdigContext * /*ctx*/) override { }
-  virtual void exitHexdig(hostsParser::HexdigContext * /*ctx*/) override { }
+  virtual void enterHexdig(hosts::HexdigContext * /*ctx*/) override { }
+  virtual void exitHexdig(hosts::HexdigContext * /*ctx*/) override { }
 
-  virtual void enterDec_octet(hostsParser::Dec_octetContext * /*ctx*/) override { }
-  virtual void exitDec_octet(hostsParser::Dec_octetContext * /*ctx*/) override { }
+  virtual void enterDec_octet(hosts::Dec_octetContext * /*ctx*/) override { }
+  virtual void exitDec_octet(hosts::Dec_octetContext * /*ctx*/) override { }
 
-  virtual void enterDigit(hostsParser::DigitContext * /*ctx*/) override { }
-  virtual void exitDigit(hostsParser::DigitContext * /*ctx*/) override { }
+  virtual void enterDigit(hosts::DigitContext * /*ctx*/) override { }
+  virtual void exitDigit(hosts::DigitContext * /*ctx*/) override { }
 
-  virtual void enterNon_zero_digit(hostsParser::Non_zero_digitContext * /*ctx*/) override { }
-  virtual void exitNon_zero_digit(hostsParser::Non_zero_digitContext * /*ctx*/) override { }
+  virtual void enterNon_zero_digit(hosts::Non_zero_digitContext * /*ctx*/) override { }
+  virtual void exitNon_zero_digit(hosts::Non_zero_digitContext * /*ctx*/) override { }
 
-  virtual void enterHost_name(hostsParser::Host_nameContext * /*ctx*/) override { }
-  virtual void exitHost_name(hostsParser::Host_nameContext * /*ctx*/) override { }
+  virtual void enterHost_name(hosts::Host_nameContext * /*ctx*/) override { }
+  virtual void exitHost_name(hosts::Host_nameContext * /*ctx*/) override { }
 
-  virtual void enterAliases(hostsParser::AliasesContext * /*ctx*/) override { }
-  virtual void exitAliases(hostsParser::AliasesContext * /*ctx*/) override { }
+  virtual void enterAliases(hosts::AliasesContext * /*ctx*/) override { }
+  virtual void exitAliases(hosts::AliasesContext * /*ctx*/) override { }
 
-  virtual void enterAlias(hostsParser::AliasContext * /*ctx*/) override { }
-  virtual void exitAlias(hostsParser::AliasContext * /*ctx*/) override { }
+  virtual void enterAlias(hosts::AliasContext * /*ctx*/) override { }
+  virtual void exitAlias(hosts::AliasContext * /*ctx*/) override { }
 
-  virtual void enterIreg_name(hostsParser::Ireg_nameContext * /*ctx*/) override { }
-  virtual void exitIreg_name(hostsParser::Ireg_nameContext * /*ctx*/) override { }
+  virtual void enterIreg_name(hosts::Ireg_nameContext * /*ctx*/) override { }
+  virtual void exitIreg_name(hosts::Ireg_nameContext * /*ctx*/) override { }
 
-  virtual void enterIunreserved(hostsParser::IunreservedContext * /*ctx*/) override { }
-  virtual void exitIunreserved(hostsParser::IunreservedContext * /*ctx*/) override { }
+  virtual void enterIunreserved(hosts::IunreservedContext * /*ctx*/) override { }
+  virtual void exitIunreserved(hosts::IunreservedContext * /*ctx*/) override { }
 
-  virtual void enterAlpha(hostsParser::AlphaContext * /*ctx*/) override { }
-  virtual void exitAlpha(hostsParser::AlphaContext * /*ctx*/) override { }
+  virtual void enterAlpha(hosts::AlphaContext * /*ctx*/) override { }
+  virtual void exitAlpha(hosts::AlphaContext * /*ctx*/) override { }
 
-  virtual void enterComment(hostsParser::CommentContext * /*ctx*/) override { }
-  virtual void exitComment(hostsParser::CommentContext * /*ctx*/) override { }
+  virtual void enterComment(hosts::CommentContext * /*ctx*/) override { }
+  virtual void exitComment(hosts::CommentContext * /*ctx*/) override { }
 
 
   virtual void enterEveryRule(antlr4::ParserRuleContext * /*ctx*/) override { }

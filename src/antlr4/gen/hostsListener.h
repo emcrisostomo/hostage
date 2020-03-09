@@ -5,74 +5,74 @@
 
 
 #include "antlr4-runtime.h"
-#include "hostsParser.h"
+#include "hosts.h"
 
 
 /**
- * This interface defines an abstract listener for a parse tree produced by hostsParser.
+ * This interface defines an abstract listener for a parse tree produced by hosts.
  */
 class  hostsListener : public antlr4::tree::ParseTreeListener {
 public:
 
-  virtual void enterHosts_file(hostsParser::Hosts_fileContext *ctx) = 0;
-  virtual void exitHosts_file(hostsParser::Hosts_fileContext *ctx) = 0;
+  virtual void enterHosts_file(hosts::Hosts_fileContext *ctx) = 0;
+  virtual void exitHosts_file(hosts::Hosts_fileContext *ctx) = 0;
 
-  virtual void enterLine(hostsParser::LineContext *ctx) = 0;
-  virtual void exitLine(hostsParser::LineContext *ctx) = 0;
+  virtual void enterLine(hosts::LineContext *ctx) = 0;
+  virtual void exitLine(hosts::LineContext *ctx) = 0;
 
-  virtual void enterEmpty_line(hostsParser::Empty_lineContext *ctx) = 0;
-  virtual void exitEmpty_line(hostsParser::Empty_lineContext *ctx) = 0;
+  virtual void enterEmpty_line(hosts::Empty_lineContext *ctx) = 0;
+  virtual void exitEmpty_line(hosts::Empty_lineContext *ctx) = 0;
 
-  virtual void enterTable_entry(hostsParser::Table_entryContext *ctx) = 0;
-  virtual void exitTable_entry(hostsParser::Table_entryContext *ctx) = 0;
+  virtual void enterTable_entry(hosts::Table_entryContext *ctx) = 0;
+  virtual void exitTable_entry(hosts::Table_entryContext *ctx) = 0;
 
-  virtual void enterAddress(hostsParser::AddressContext *ctx) = 0;
-  virtual void exitAddress(hostsParser::AddressContext *ctx) = 0;
+  virtual void enterAddress(hosts::AddressContext *ctx) = 0;
+  virtual void exitAddress(hosts::AddressContext *ctx) = 0;
 
-  virtual void enterIp_v4_address(hostsParser::Ip_v4_addressContext *ctx) = 0;
-  virtual void exitIp_v4_address(hostsParser::Ip_v4_addressContext *ctx) = 0;
+  virtual void enterIp_v4_address(hosts::Ip_v4_addressContext *ctx) = 0;
+  virtual void exitIp_v4_address(hosts::Ip_v4_addressContext *ctx) = 0;
 
-  virtual void enterIp_v6_address(hostsParser::Ip_v6_addressContext *ctx) = 0;
-  virtual void exitIp_v6_address(hostsParser::Ip_v6_addressContext *ctx) = 0;
+  virtual void enterIp_v6_address(hosts::Ip_v6_addressContext *ctx) = 0;
+  virtual void exitIp_v6_address(hosts::Ip_v6_addressContext *ctx) = 0;
 
-  virtual void enterH16(hostsParser::H16Context *ctx) = 0;
-  virtual void exitH16(hostsParser::H16Context *ctx) = 0;
+  virtual void enterH16(hosts::H16Context *ctx) = 0;
+  virtual void exitH16(hosts::H16Context *ctx) = 0;
 
-  virtual void enterLs32(hostsParser::Ls32Context *ctx) = 0;
-  virtual void exitLs32(hostsParser::Ls32Context *ctx) = 0;
+  virtual void enterLs32(hosts::Ls32Context *ctx) = 0;
+  virtual void exitLs32(hosts::Ls32Context *ctx) = 0;
 
-  virtual void enterHexdig(hostsParser::HexdigContext *ctx) = 0;
-  virtual void exitHexdig(hostsParser::HexdigContext *ctx) = 0;
+  virtual void enterHexdig(hosts::HexdigContext *ctx) = 0;
+  virtual void exitHexdig(hosts::HexdigContext *ctx) = 0;
 
-  virtual void enterDec_octet(hostsParser::Dec_octetContext *ctx) = 0;
-  virtual void exitDec_octet(hostsParser::Dec_octetContext *ctx) = 0;
+  virtual void enterDec_octet(hosts::Dec_octetContext *ctx) = 0;
+  virtual void exitDec_octet(hosts::Dec_octetContext *ctx) = 0;
 
-  virtual void enterDigit(hostsParser::DigitContext *ctx) = 0;
-  virtual void exitDigit(hostsParser::DigitContext *ctx) = 0;
+  virtual void enterDigit(hosts::DigitContext *ctx) = 0;
+  virtual void exitDigit(hosts::DigitContext *ctx) = 0;
 
-  virtual void enterNon_zero_digit(hostsParser::Non_zero_digitContext *ctx) = 0;
-  virtual void exitNon_zero_digit(hostsParser::Non_zero_digitContext *ctx) = 0;
+  virtual void enterNon_zero_digit(hosts::Non_zero_digitContext *ctx) = 0;
+  virtual void exitNon_zero_digit(hosts::Non_zero_digitContext *ctx) = 0;
 
-  virtual void enterHost_name(hostsParser::Host_nameContext *ctx) = 0;
-  virtual void exitHost_name(hostsParser::Host_nameContext *ctx) = 0;
+  virtual void enterHost_name(hosts::Host_nameContext *ctx) = 0;
+  virtual void exitHost_name(hosts::Host_nameContext *ctx) = 0;
 
-  virtual void enterAliases(hostsParser::AliasesContext *ctx) = 0;
-  virtual void exitAliases(hostsParser::AliasesContext *ctx) = 0;
+  virtual void enterAliases(hosts::AliasesContext *ctx) = 0;
+  virtual void exitAliases(hosts::AliasesContext *ctx) = 0;
 
-  virtual void enterAlias(hostsParser::AliasContext *ctx) = 0;
-  virtual void exitAlias(hostsParser::AliasContext *ctx) = 0;
+  virtual void enterAlias(hosts::AliasContext *ctx) = 0;
+  virtual void exitAlias(hosts::AliasContext *ctx) = 0;
 
-  virtual void enterIreg_name(hostsParser::Ireg_nameContext *ctx) = 0;
-  virtual void exitIreg_name(hostsParser::Ireg_nameContext *ctx) = 0;
+  virtual void enterIreg_name(hosts::Ireg_nameContext *ctx) = 0;
+  virtual void exitIreg_name(hosts::Ireg_nameContext *ctx) = 0;
 
-  virtual void enterIunreserved(hostsParser::IunreservedContext *ctx) = 0;
-  virtual void exitIunreserved(hostsParser::IunreservedContext *ctx) = 0;
+  virtual void enterIunreserved(hosts::IunreservedContext *ctx) = 0;
+  virtual void exitIunreserved(hosts::IunreservedContext *ctx) = 0;
 
-  virtual void enterAlpha(hostsParser::AlphaContext *ctx) = 0;
-  virtual void exitAlpha(hostsParser::AlphaContext *ctx) = 0;
+  virtual void enterAlpha(hosts::AlphaContext *ctx) = 0;
+  virtual void exitAlpha(hosts::AlphaContext *ctx) = 0;
 
-  virtual void enterComment(hostsParser::CommentContext *ctx) = 0;
-  virtual void exitComment(hostsParser::CommentContext *ctx) = 0;
+  virtual void enterComment(hosts::CommentContext *ctx) = 0;
+  virtual void exitComment(hosts::CommentContext *ctx) = 0;
 
 
 };
