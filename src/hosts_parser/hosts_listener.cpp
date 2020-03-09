@@ -6,32 +6,32 @@
 #include <memory>
 
 void
-hosts_listener::exitAddress(hostsParser::AddressContext *context)
+hosts_listener::exitAddress(hosts::AddressContext *context)
 {
   auto te = dynamic_cast<table_entry *>(current_line.get());
   te->address = context->getText();
 }
 
 void
-hosts_listener::enterLine(hostsParser::LineContext *context)
+hosts_listener::enterLine(hosts::LineContext *context)
 {
   current_line = std::make_unique<line>();
 }
 
 void
-hosts_listener::enterTable_entry(hostsParser::Table_entryContext *context)
+hosts_listener::enterTable_entry(hosts::Table_entryContext *context)
 {
   current_line = std::make_unique<table_entry>();
 }
 
 void
-hosts_listener::exitLine(hostsParser::LineContext *context)
+hosts_listener::exitLine(hosts::LineContext *context)
 {
   lines.push_back(current_line);
 }
 
 void
-hosts_listener::exitComment(hostsParser::CommentContext *context)
+hosts_listener::exitComment(hosts::CommentContext *context)
 {
   current_line->text = context->getText();
 }
@@ -43,20 +43,20 @@ hosts_listener::get_entries() const
 }
 
 void
-hosts_listener::exitTable_entry(hostsParser::Table_entryContext *context)
+hosts_listener::exitTable_entry(hosts::Table_entryContext *context)
 {
   current_line->text = context->getText();
 }
 
 void
-hosts_listener::exitHost_name(hostsParser::Host_nameContext *context)
+hosts_listener::exitHost_name(hosts::Host_nameContext *context)
 {
   auto te = dynamic_cast<table_entry *>(current_line.get());
   te->host_name = context->getText();
 }
 
 void
-hosts_listener::exitAlias(hostsParser::AliasContext *context)
+hosts_listener::exitAlias(hosts::AliasContext *context)
 {
   auto te = dynamic_cast<table_entry *>(current_line.get());
   te->aliases.push_back(context->getText());

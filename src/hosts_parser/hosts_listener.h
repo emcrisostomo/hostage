@@ -29,14 +29,14 @@ public:
 class hosts_listener : public hostsBaseListener
 {
 public:
-  void enterLine(hostsParser::LineContext *context) override;
-  void exitLine(hostsParser::LineContext *context) override;
-  void exitComment(hostsParser::CommentContext *context) override;
-  void enterTable_entry(hostsParser::Table_entryContext *context) override;
-  void exitTable_entry(hostsParser::Table_entryContext *context) override;
-  void exitAddress(hostsParser::AddressContext *ctx) override;
-  void exitHost_name(hostsParser::Host_nameContext *context) override;
-  void exitAlias(hostsParser::AliasContext *context) override;
+  void enterLine(hosts::LineContext *context) override;
+  void exitLine(hosts::LineContext *context) override;
+  void exitComment(hosts::CommentContext *context) override;
+  void enterTable_entry(hosts::Table_entryContext *context) override;
+  void exitTable_entry(hosts::Table_entryContext *context) override;
+  void exitAddress(hosts::AddressContext *ctx) override;
+  void exitHost_name(hosts::Host_nameContext *context) override;
+  void exitAlias(hosts::AliasContext *context) override;
   void visitErrorNode(antlr4::tree::ErrorNode *node) override;
   std::vector<std::shared_ptr<line>> get_entries() const;
 
