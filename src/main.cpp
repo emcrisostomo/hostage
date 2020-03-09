@@ -1,3 +1,19 @@
+/*
+ * Copyright (c) 2020 Enrico M. Crisostomo
+ *
+ * This program is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software
+ * Foundation; either version 3, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
+ * details.
+ *
+ * You should have received a copy of the GNU General Public License along with
+ * this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 #include <iostream>
 #include <fstream>
 #include <getopt.h>
@@ -17,7 +33,7 @@ static const int HOSTAGE_EXIT_OK = 0;
 void parse_opts(int argc, char **argv);
 void print_version();
 void usage(std::ostream& stream);
-int parse_command(int argc, char **argv);
+command parse_command(int argc, char **argv);
 
 // Usage:
 //
@@ -28,21 +44,27 @@ int
 main(int argc, char **argv)
 {
   parse_opts(argc, argv);
-  int c = parse_command(argc, argv);
+  const auto& cmd = parse_command(argc, argv);
 
-  switch (c)
+  switch (cmd.command)
   {
-  case 0:
-    break;
-
-  case -1:
-    std::cerr << _("Missing command.\n");
+  case hostage_command::UNSET:
+    std::cerr << _("Missing or unknown command.\n");
     return 1;
 
+  case hostage_command::SET:
+    break;
+
   default:
-    std::cerr << _("Unexpected command: ") << c << '\n';
+    std::cerr << _("Unexpected command.\n");
     std::cerr << _("This is probably a bug.\n");
     return 2;
+  }
+
+  if (cmd.error)
+  {
+    std::cerr << _("Invalid command arguments.\n");
+    return 4;
   }
 
   std::ifstream hosts_file("/etc/hosts", std::ifstream::in);
@@ -56,11 +78,6 @@ main(int argc, char **argv)
   hosts parser(&tokens);
   antlr4::tree::ParseTree *tree = parser.hosts_file();
   antlr4::tree::ParseTreeWalker::DEFAULT.walk(&listener, tree);
-
-  const auto entries = listener.get_entries();
-
-  for (const auto& entry : entries)
-    std::cout << entry->text << '\n';
 
   return 0;
 }
@@ -104,17 +121,19 @@ parse_opts(int argc, char **argv)
   }
 }
 
-int parse_command(int argc, char **argv)
+command parse_command(int argc, char **argv)
 {
+  command cmd{};
+
   if (optind == argc)
   {
-    return -1;
+    return cmd;
   }
 
   std::string command_args;
   command_args.reserve(16 * (argc - optind));
 
-  for (size_t i=optind; i < argc; ++i)
+  for (size_t i = optind; i < argc; ++i)
   {
     command_args += argv[i];
     command_args += " ";
@@ -125,15 +144,12 @@ int parse_command(int argc, char **argv)
   antlr4::CommonTokenStream tokens(&lexer);
   tokens.fill();
 
-  command_listener listener;
   hosts parser(&tokens);
-//  antlr4::tree::ParseTree *tree = parser.command_line();
-//  antlr4::tree::ParseTreeWalker::DEFAULT.walk(&listener, tree);
+  antlr4::tree::ParseTree *tree = parser.command_line();
+  command_listener listener;
+  antlr4::tree::ParseTreeWalker::DEFAULT.walk(&listener, tree);
 
-//  std::string command(argv[optind]);
-//  std::cout << command << '\n';
-
-  return 0;
+  return listener.get_command();
 }
 
 void print_version()
