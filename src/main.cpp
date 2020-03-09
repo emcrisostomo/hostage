@@ -20,8 +20,9 @@ int parse_command(int argc, char **argv);
 
 // Usage:
 //
-// hostage set address host_name
-// hostage rm_h  host_name
+// hostage set   (address) (host_name)
+// hostage rm    host    (host_name)+
+// hostage rm    address (address)+
 int
 main(int argc, char **argv)
 {
@@ -58,7 +59,7 @@ main(int argc, char **argv)
   const auto entries = listener.get_entries();
 
   for (const auto& entry : entries)
-    std::cout << entry->text;
+    std::cout << entry->text << '\n';
 
   return 0;
 }
