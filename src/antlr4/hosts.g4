@@ -133,3 +133,31 @@ alpha
 comment
   :  (Space)* '#' ~(NewLine)*
   ;
+
+// commands
+// hostage set   (address) (host_name)
+// hostage rm    host    (host_name)+
+// hostage rm    address (address)+
+command_line
+  : set_command
+  | rm_host_command
+  | rm_address_command
+  ;
+
+set_command
+  : cmd_set (address) (host_name)
+  ;
+
+
+rm_host_command
+  : cmd_rm cmd_host (host_name)+
+  ;
+
+rm_address_command
+  : cmd_rm cmd_address (address)+
+  ;
+
+cmd_rm: R M;
+cmd_host: H O S T;
+cmd_set : S E T;
+cmd_address: A D D R E S S;
