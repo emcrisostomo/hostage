@@ -145,16 +145,16 @@ command_line
   ;
 
 set_command
-  : cmd_set (address) (host_name)
+  : cmd_set Space+ (address) Space+ (host_name)
   ;
 
 
 rm_host_command
-  : cmd_rm cmd_host (host_name)+
+  : cmd_rm Space+ cmd_host (Space+ host_name)+
   ;
 
 rm_address_command
-  : cmd_rm cmd_address (address)+
+  : cmd_rm Space+ cmd_address (Space+ address)+
   ;
 
 cmd_rm: R M;
