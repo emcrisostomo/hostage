@@ -5,15 +5,15 @@ hosts_file
   ;
 
 line
-  :  (comment | table_entry | empty_line)
+  :  (comment | table_entry | empty_line) NewLine
   ;
 
 empty_line
-  : (Space)* NewLine
+  : (Space)*
   ;
 
 table_entry
-  : address (Space)+ host_name aliases? NewLine
+  : address (Space)+ host_name ((Space)+ aliases)?
   ;
 
 address
@@ -88,7 +88,7 @@ host_name
   ;
 
 aliases
-  : (Space)+ alias ((Space)+ alias)*
+  : alias ((Space)+ alias)*
   ;
 
 alias
@@ -139,11 +139,11 @@ NewLine
   ;
 
 comment
-  :  (Space)* '#' ~(NewLine)* NewLine*
+  :  (Space)* '#' ~(NewLine)*
   ;
 
 Space
-  :  (' ' | '\t')
+  :  [ \t\r]
   ;
 
 UCSCHAR
