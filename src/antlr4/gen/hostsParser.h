@@ -1,5 +1,5 @@
 
-// Generated from /Users/enrico/CLionProjects/hostage/hosts.g4 by ANTLR 4.8
+// Generated from /Users/enrico.m.crisostomo/repos/hostage/src/antlr4/hosts.g4 by ANTLR 4.8
 
 #pragma once
 
@@ -80,6 +80,7 @@ public:
   public:
     LineContext(antlr4::ParserRuleContext *parent, size_t invokingState);
     virtual size_t getRuleIndex() const override;
+    antlr4::tree::TerminalNode *NewLine();
     CommentContext *comment();
     Table_entryContext *table_entry();
     Empty_lineContext *empty_line();
@@ -97,7 +98,6 @@ public:
   public:
     Empty_lineContext(antlr4::ParserRuleContext *parent, size_t invokingState);
     virtual size_t getRuleIndex() const override;
-    antlr4::tree::TerminalNode *NewLine();
     std::vector<antlr4::tree::TerminalNode *> Space();
     antlr4::tree::TerminalNode* Space(size_t i);
 
@@ -116,7 +116,6 @@ public:
     virtual size_t getRuleIndex() const override;
     AddressContext *address();
     Host_nameContext *host_name();
-    antlr4::tree::TerminalNode *NewLine();
     std::vector<antlr4::tree::TerminalNode *> Space();
     antlr4::tree::TerminalNode* Space(size_t i);
     AliasesContext *aliases();
