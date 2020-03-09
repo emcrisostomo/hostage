@@ -5,7 +5,7 @@
 #ifndef HOSTAGE_HOSTS_LISTENER_H
 #define HOSTAGE_HOSTS_LISTENER_H
 
-#include "../antlr4/gen/hostsBaseListener.h"
+#include "../../gen/hostsBaseListener.h"
 #include <vector>
 #include <string>
 #include <memory>

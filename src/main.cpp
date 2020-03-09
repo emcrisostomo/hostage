@@ -2,8 +2,8 @@
 #include <fstream>
 #include <getopt.h>
 #include "antlr4-runtime.h"
-#include "antlr4/gen/hosts_lexer.h"
-#include "antlr4/gen/hosts.h"
+#include "../gen/hosts_lexer.h"
+#include "../gen/hosts.h"
 #include "hosts_parser/hosts_listener.h"
 #ifdef HAVE_CMAKE_CONFIG_H
 #  include "cmake_config.h"
