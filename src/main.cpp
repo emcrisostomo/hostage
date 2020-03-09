@@ -2,8 +2,8 @@
 #include <fstream>
 #include <getopt.h>
 #include "antlr4-runtime.h"
-#include "antlr4/gen/hostsLexer.h"
-#include "antlr4/gen/hostsParser.h"
+#include "antlr4/gen/hosts_lexer.h"
+#include "antlr4/gen/hosts.h"
 #include "hosts_parser/hosts_listener.h"
 #ifdef HAVE_CMAKE_CONFIG_H
 #  include "cmake_config.h"
@@ -44,15 +44,15 @@ main(int argc, char **argv)
     return 2;
   }
 
-  std::ifstream hosts("/etc/hosts", std::ifstream::in);
+  std::ifstream hosts_file("/etc/hosts", std::ifstream::in);
 
-  antlr4::ANTLRInputStream input(hosts);
-  hostsLexer lexer(&input);
+  antlr4::ANTLRInputStream input(hosts_file);
+  hosts_lexer lexer(&input);
   antlr4::CommonTokenStream tokens(&lexer);
   tokens.fill();
 
   hosts_listener listener;
-  hostsParser parser(&tokens);
+  hosts parser(&tokens);
   antlr4::tree::ParseTree *tree = parser.hosts_file();
   antlr4::tree::ParseTreeWalker::DEFAULT.walk(&listener, tree);
 
