@@ -24,7 +24,9 @@
 #include "hosts_parser/command_listener.h"
 #include <unistd.h>
 #include <sys/types.h>
+#include <sys/stat.h>
 #include <pwd.h>
+#include <ctime>
 #ifdef HAVE_CMAKE_CONFIG_H
 #  include "cmake_config.h"
 #endif
@@ -39,8 +41,10 @@ void usage(std::ostream& stream);
 command parse_command(int argc, char **argv);
 std::string string_from_args(int arg_start, int argc, char **argv);
 command_listener parse_command_antlr(const std::string& command_args);
-
 void backup_hosts_file();
+std::string get_username();
+std::string get_pwd();
+std::string get_backup_filename();
 
 // Usage:
 //
@@ -94,19 +98,7 @@ main(int argc, char **argv)
 void
 backup_hosts_file()
 {
-  std::string user("unknown");
-
-  static char username[256] = {0};
-  if (getlogin_r(username, sizeof(username)) == 0)
-    user = username;
-
-  struct passwd *pw = getpwuid(getuid());
-  const char *home_dir = pw->pw_dir;
-
-  if (home_dir == nullptr)
-    throw std::runtime_error(_("Cannot get home directory"));
-
-  std::string backup_file_name(std::string(home_dir) + "/hosts.backup." + user);
+  std::string backup_file_name = get_backup_filename();
 
   std::ifstream src("/etc/hosts", std::ios::binary);
   std::ofstream dst(backup_file_name, std::ios::binary);
@@ -115,6 +107,48 @@ backup_hosts_file()
 
   if (!dst)
     throw std::runtime_error("Cannot write: " + backup_file_name);
+}
+
+std::string
+get_backup_filename()
+{
+  const std::string user = get_username();
+  const std::string home_dir = get_pwd();
+  const std::string hostage_user_dir = home_dir + "/.hostage";
+
+  int ret_mkdir = mkdir(hostage_user_dir.c_str(), S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
+
+  if (ret_mkdir != 0 && errno != EEXIST)
+    throw std::runtime_error("Cannot create: " + hostage_user_dir);
+
+  const std::time_t result = std::time(nullptr);
+  const std::string str_time = std::to_string(result);
+
+  return (hostage_user_dir + "/hosts.backup." + user + "." + str_time);
+}
+
+std::string
+get_pwd()
+{
+  struct passwd *pw = getpwuid(getuid());
+  const char *home_dir = pw->pw_dir;
+
+  if (home_dir == nullptr)
+    throw std::runtime_error(_("Cannot get home directory"));
+
+  return home_dir;
+}
+
+std::string
+get_username()
+{
+  std::string user("unknown");
+
+  static char username[256] = {0};
+  if (getlogin_r(username, sizeof(username)) == 0)
+    user = username;
+
+  return user;
 }
 
 void
