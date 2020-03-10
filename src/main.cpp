@@ -34,6 +34,8 @@ void parse_opts(int argc, char **argv);
 void print_version();
 void usage(std::ostream& stream);
 command parse_command(int argc, char **argv);
+std::string string_from_args(int arg_start, int argc, char **pString);
+command_listener parse_command_antlr(const std::string& command_args);
 
 // Usage:
 //
@@ -63,7 +65,7 @@ main(int argc, char **argv)
 
   if (cmd.error)
   {
-    std::cerr << _("Invalid command arguments.\n");
+    std::cerr << cmd.command.ToString() << ": " << _("Invalid command arguments.\n");
     return 4;
   }
 
@@ -130,26 +132,41 @@ command parse_command(int argc, char **argv)
     return cmd;
   }
 
-  std::string command_args;
-  command_args.reserve(16 * (argc - optind));
+  std::string command_args = string_from_args(optind, argc, argv);
+  command_listener listener = parse_command_antlr(command_args);
 
-  for (size_t i = optind; i < argc; ++i)
-  {
-    command_args += argv[i];
-    command_args += " ";
-  }
+  return listener.get_command();
+}
 
+command_listener parse_command_antlr(const std::string& command_args)
+{
   antlr4::ANTLRInputStream is(command_args);
   hosts_lexer lexer(&is);
   antlr4::CommonTokenStream tokens(&lexer);
   tokens.fill();
 
   hosts parser(&tokens);
+  parser.removeErrorListener(&antlr4::ConsoleErrorListener::INSTANCE);
   antlr4::tree::ParseTree *tree = parser.command_line();
-  command_listener listener;
+
+  command_listener listener(parser.getNumberOfSyntaxErrors() > 0);
   antlr4::tree::ParseTreeWalker::DEFAULT.walk(&listener, tree);
 
-  return listener.get_command();
+  return listener;
+}
+
+std::string string_from_args(int arg_start, int argc, char **argv)
+{
+  std::string command_args;
+  command_args.reserve(16 * (argc - arg_start));
+
+  for (size_t i = arg_start; i < argc; ++i)
+  {
+    command_args += argv[i];
+    command_args += " ";
+  }
+
+  return command_args;
 }
 
 void print_version()

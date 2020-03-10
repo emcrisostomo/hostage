@@ -21,13 +21,52 @@
 #include <vector>
 #include <string>
 #include <memory>
+#include "../gettext/gettext_defs.h"
 
-enum class hostage_command
+class hostage_command
 {
-  UNSET,
-  SET,
-  RM_HOST,
-  RM_ADDRESS
+public:
+  enum command_value
+  {
+    UNSET,
+    SET,
+    RM_HOST,
+    RM_ADDRESS
+  };
+
+  hostage_command() = default;
+
+  constexpr hostage_command(command_value v) : value(v)
+  {}
+
+  operator command_value() const
+  { return value; }
+
+  explicit operator bool() = delete;
+
+  std::string ToString() const
+  {
+    switch (value)
+    {
+    case UNSET:
+      return "unset";
+
+    case SET:
+      return "set";
+
+    case RM_HOST:
+      return "rm host";
+
+    case RM_ADDRESS:
+      return "rm address";
+
+    default:
+      throw std::runtime_error(_("Unknown command id: ") + std::to_string(value));
+    }
+  }
+
+private:
+  command_value value;
 };
 
 struct command
@@ -41,6 +80,7 @@ struct command
 class command_listener : public hostsBaseListener
 {
 public:
+  command_listener(bool b);
   void exitRm_address_command(hosts::Rm_address_commandContext *context) override;
   void exitRm_host_command(hosts::Rm_host_commandContext *context) override;
   void exitSet_command(hosts::Set_commandContext *context) override;

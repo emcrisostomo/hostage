@@ -50,3 +50,8 @@ void command_listener::visitErrorNode(antlr4::tree::ErrorNode *node)
 {
   cmd.error = true;
 }
+
+command_listener::command_listener(bool error)
+{
+  cmd.error = error;
+}
