@@ -122,7 +122,9 @@ set_command(const command& command)
     if (entry->address != address)
       continue;
 
-    if (std::find(entry->host_names.begin(), entry->host_names.end(), host_name) == entry->host_names.end())
+    if (std::find(entry->host_names.begin(),
+                  entry->host_names.end(),
+                  host_name) == entry->host_names.end())
       continue;
 
     found = true;
