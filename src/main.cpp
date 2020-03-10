@@ -17,6 +17,7 @@
 #include <iostream>
 #include <fstream>
 #include <getopt.h>
+#include <algorithm>
 #include "antlr4-runtime.h"
 #include "../gen/hosts_lexer.h"
 #include "../gen/hosts.h"
@@ -45,6 +46,10 @@ void backup_hosts_file();
 std::string get_username();
 std::string get_pwd();
 std::string get_backup_filename();
+void set_command(const command& command);
+hosts_listener parse_hosts();
+
+void write_hosts(const std::vector<std::shared_ptr<line>>& entries);
 
 // Usage:
 //
@@ -57,19 +62,10 @@ main(int argc, char **argv)
   parse_opts(argc, argv);
   const auto& cmd = parse_command(argc, argv);
 
-  switch (cmd.command)
+  if (cmd.command == hostage_command::UNSET)
   {
-  case hostage_command::UNSET:
     std::cerr << _("Missing or unknown command.\n");
     return 1;
-
-  case hostage_command::SET:
-    break;
-
-  default:
-    std::cerr << _("Unexpected command.\n");
-    std::cerr << _("This is probably a bug.\n");
-    return 2;
   }
 
   if (cmd.error)
@@ -80,6 +76,83 @@ main(int argc, char **argv)
 
   backup_hosts_file();
 
+  switch (cmd.command)
+  {
+  case hostage_command::RM_ADDRESS:
+    throw std::runtime_error("Not implemented");
+
+  case hostage_command::RM_HOST:
+    throw std::runtime_error("Not implemented");
+
+  case hostage_command::SET:
+    set_command(cmd);
+    return 0;
+
+  case hostage_command::UNSET:
+  default:
+    std::cerr << _("Unexpected command.\n");
+    std::cerr << _("This is probably a bug.\n");
+    return 2;
+  }
+}
+
+void
+set_command(const command& command)
+{
+  const hosts_listener& listener = parse_hosts();
+  const std::vector<std::shared_ptr<line>>& entries = listener.get_entries();
+  const std::string& address = command.addresses.front();
+  const std::string& host_name = command.host_names.front();
+  std::vector<std::shared_ptr<line>> new_entries;
+  new_entries.reserve(entries.size() + 1);
+  bool found{false};
+
+  for (const auto& item : entries)
+  {
+    new_entries.push_back(item);
+
+    if (found)
+      continue;
+
+    const table_entry *entry = dynamic_cast<table_entry *>(item.get());
+
+    if (entry == nullptr)
+      continue;
+
+    if (entry->address != address)
+      continue;
+
+    if (std::find(entry->host_names.begin(), entry->host_names.end(), host_name) == entry->host_names.end())
+      continue;
+
+    found = true;
+  }
+
+  if (!found)
+  {
+    auto *entry = new table_entry();
+    entry->address = address;
+    entry->host_names.push_back(host_name);
+    entry->text = address + " " + host_name;
+
+    new_entries.push_back(std::shared_ptr<line>(entry));
+  }
+
+  write_hosts(new_entries);
+}
+
+void
+write_hosts(const std::vector<std::shared_ptr<line>>& entries)
+{
+  for (const auto& entry : entries)
+  {
+    std::cout << entry->text << '\n';
+  }
+}
+
+hosts_listener
+parse_hosts()
+{
   std::ifstream hosts_file("/etc/hosts", std::ifstream::in);
 
   antlr4::ANTLRInputStream input(hosts_file);
@@ -92,13 +165,16 @@ main(int argc, char **argv)
   antlr4::tree::ParseTree *tree = parser.hosts_file();
   antlr4::tree::ParseTreeWalker::DEFAULT.walk(&listener, tree);
 
-  return 0;
+  if (parser.getNumberOfSyntaxErrors() > 0)
+    throw std::runtime_error(_("Cannot parse file: aborting"));
+
+  return listener;
 }
 
 void
 backup_hosts_file()
 {
-  std::string backup_file_name = get_backup_filename();
+  const std::string& backup_file_name = get_backup_filename();
 
   std::ifstream src("/etc/hosts", std::ios::binary);
   std::ofstream dst(backup_file_name, std::ios::binary);
@@ -112,17 +188,17 @@ backup_hosts_file()
 std::string
 get_backup_filename()
 {
-  const std::string user = get_username();
-  const std::string home_dir = get_pwd();
-  const std::string hostage_user_dir = home_dir + "/.hostage";
+  const std::string& user = get_username();
+  const std::string& home_dir = get_pwd();
+  const std::string& hostage_user_dir = home_dir + "/.hostage";
 
   int ret_mkdir = mkdir(hostage_user_dir.c_str(), S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
 
   if (ret_mkdir != 0 && errno != EEXIST)
     throw std::runtime_error("Cannot create: " + hostage_user_dir);
 
-  const std::time_t result = std::time(nullptr);
-  const std::string str_time = std::to_string(result);
+  const std::time_t& result = std::time(nullptr);
+  const std::string& str_time = std::to_string(result);
 
   return (hostage_user_dir + "/hosts.backup." + user + "." + str_time);
 }
@@ -155,7 +231,7 @@ void
 parse_opts(int argc, char **argv)
 {
   int ch;
-  std::string short_options = "h";
+  const std::string short_options = "h";
 
   int option_index = 0;
   static struct option long_options[] = {
@@ -190,14 +266,13 @@ parse_opts(int argc, char **argv)
   }
 }
 
-command parse_command(int argc, char **argv)
+command
+parse_command(int argc, char **argv)
 {
   command cmd{};
 
   if (optind == argc)
-  {
     return cmd;
-  }
 
   std::string command_args = string_from_args(optind, argc, argv);
   command_listener listener = parse_command_antlr(command_args);
@@ -205,7 +280,8 @@ command parse_command(int argc, char **argv)
   return listener.get_command();
 }
 
-command_listener parse_command_antlr(const std::string& command_args)
+command_listener
+parse_command_antlr(const std::string& command_args)
 {
   antlr4::ANTLRInputStream is(command_args);
   hosts_lexer lexer(&is);
@@ -222,7 +298,8 @@ command_listener parse_command_antlr(const std::string& command_args)
   return listener;
 }
 
-std::string string_from_args(int arg_start, int argc, char **argv)
+std::string
+string_from_args(int arg_start, int argc, char **argv)
 {
   std::string command_args;
   command_args.reserve(16 * (argc - arg_start));
@@ -236,7 +313,8 @@ std::string string_from_args(int arg_start, int argc, char **argv)
   return command_args;
 }
 
-void print_version()
+void
+print_version()
 {
   std::cout << PACKAGE_STRING << "\n";
   std::cout << "Copyright (C) 2020 Enrico M. Crisostomo <enrico.m.crisostomo@gmail.com>.\n";
@@ -247,7 +325,8 @@ void print_version()
   std::cout << "Written by Enrico M. Crisostomo.\n";
 }
 
-void usage(std::ostream& stream)
+void
+usage(std::ostream& stream)
 {
   stream << PACKAGE_STRING << "\n\n";
   stream << _("Usage:\n");
