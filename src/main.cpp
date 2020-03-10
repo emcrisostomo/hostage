@@ -22,6 +22,9 @@
 #include "../gen/hosts.h"
 #include "hosts_parser/hosts_listener.h"
 #include "hosts_parser/command_listener.h"
+#include <unistd.h>
+#include <sys/types.h>
+#include <pwd.h>
 #ifdef HAVE_CMAKE_CONFIG_H
 #  include "cmake_config.h"
 #endif
@@ -34,8 +37,10 @@ void parse_opts(int argc, char **argv);
 void print_version();
 void usage(std::ostream& stream);
 command parse_command(int argc, char **argv);
-std::string string_from_args(int arg_start, int argc, char **pString);
+std::string string_from_args(int arg_start, int argc, char **argv);
 command_listener parse_command_antlr(const std::string& command_args);
+
+void backup_hosts_file();
 
 // Usage:
 //
@@ -69,6 +74,8 @@ main(int argc, char **argv)
     return 4;
   }
 
+  backup_hosts_file();
+
   std::ifstream hosts_file("/etc/hosts", std::ifstream::in);
 
   antlr4::ANTLRInputStream input(hosts_file);
@@ -82,6 +89,32 @@ main(int argc, char **argv)
   antlr4::tree::ParseTreeWalker::DEFAULT.walk(&listener, tree);
 
   return 0;
+}
+
+void
+backup_hosts_file()
+{
+  std::string user("unknown");
+
+  static char username[256] = {0};
+  if (getlogin_r(username, sizeof(username)) == 0)
+    user = username;
+
+  struct passwd *pw = getpwuid(getuid());
+  const char *home_dir = pw->pw_dir;
+
+  if (home_dir == nullptr)
+    throw std::runtime_error(_("Cannot get home directory"));
+
+  std::string backup_file_name(std::string(home_dir) + "/hosts.backup." + user);
+
+  std::ifstream src("/etc/hosts", std::ios::binary);
+  std::ofstream dst(backup_file_name, std::ios::binary);
+  dst << src.rdbuf();
+  dst.close();
+
+  if (!dst)
+    throw std::runtime_error("Cannot write: " + backup_file_name);
 }
 
 void
