@@ -1,9 +1,39 @@
-//
-// Created by Enrico Maria Crisostomo on 06/03/2020.
-//
+/*
+ * Copyright (c) 2020 Enrico M. Crisostomo
+ *
+ * This program is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software
+ * Foundation; either version 3, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
+ * details.
+ *
+ * You should have received a copy of the GNU General Public License along with
+ * this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 
 #include "hosts_listener.h"
+#include "../../gen/hosts_lexer.h"
+#include "../gettext/gettext_defs.h"
 #include <memory>
+
+void
+hosts_listener::parse(std::istream& istream)
+{
+  antlr4::ANTLRInputStream input(istream);
+  hosts_lexer lexer(&input);
+  antlr4::CommonTokenStream tokens(&lexer);
+  tokens.fill();
+
+  hosts parser(&tokens);
+  antlr4::tree::ParseTree *tree = parser.hosts_file();
+  antlr4::tree::ParseTreeWalker::DEFAULT.walk(this, tree);
+
+  if (parser.getNumberOfSyntaxErrors() > 0)
+    throw std::runtime_error(_("Cannot parse file: aborting"));
+}
 
 void
 hosts_listener::exitAddress(hosts::AddressContext *context)
