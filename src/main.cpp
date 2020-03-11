@@ -44,7 +44,7 @@ std::string get_username();
 std::string get_pwd();
 std::string get_backup_filename();
 void set_command(const command& command);
-hosts_listener parse_hosts();
+std::vector<std::shared_ptr<line>> parse_hosts_and_get_entries();
 void write_hosts(const std::vector<std::shared_ptr<line>>& entries);
 void rm_host_command(const command& command);
 std::string join_with_space(const std::vector<std::string>& vector);
@@ -113,8 +113,7 @@ main(int argc, char **argv)
 void
 rm_address_command(const command& command)
 {
-  const hosts_listener& listener = parse_hosts();
-  const std::vector<std::shared_ptr<line>>& entries = listener.get_entries();
+  const std::vector<std::shared_ptr<line>>& entries = parse_hosts_and_get_entries();
   const std::vector<std::string>& address_to_remove = command.addresses;
   std::vector<std::shared_ptr<line>> new_entries;
   new_entries.reserve(entries.size() + 1);
@@ -138,8 +137,7 @@ rm_address_command(const command& command)
 void
 rm_host_command(const command& command)
 {
-  const hosts_listener& listener = parse_hosts();
-  const std::vector<std::shared_ptr<line>>& entries = listener.get_entries();
+  const std::vector<std::shared_ptr<line>>& entries = parse_hosts_and_get_entries();
   const std::vector<std::string>& host_names_to_remove = command.host_names;
   std::vector<std::shared_ptr<line>> new_entries;
   new_entries.reserve(entries.size() + 1);
@@ -201,8 +199,7 @@ join_with_space(const std::vector<std::string>& vector)
 void
 set_command(const command& command)
 {
-  const hosts_listener& listener = parse_hosts();
-  const std::vector<std::shared_ptr<line>>& entries = listener.get_entries();
+  const std::vector<std::shared_ptr<line>>& entries = parse_hosts_and_get_entries();
   const std::string& address = command.addresses.front();
   const std::string& host_name = command.host_names.front();
   std::vector<std::shared_ptr<line>> new_entries;
@@ -258,15 +255,15 @@ write_hosts(const std::vector<std::shared_ptr<line>>& entries)
     throw std::runtime_error(_("Cannot write: /etc/hosts"));
 }
 
-hosts_listener
-parse_hosts()
+std::vector<std::shared_ptr<line>>
+parse_hosts_and_get_entries()
 {
   std::ifstream hosts_file("/etc/hosts", std::ifstream::in);
 
   hosts_listener listener;
   listener.parse(hosts_file);
 
-  return listener;
+  return listener.get_entries();
 }
 
 void
