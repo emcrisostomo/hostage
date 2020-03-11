@@ -76,27 +76,40 @@ main(int argc, char **argv)
     return 4;
   }
 
-  backup_hosts_file();
-
-  switch (cmd.command)
+  try
   {
-  case hostage_command::RM_ADDRESS:
-    rm_address_command(cmd);
-    return 0;
+    backup_hosts_file();
 
-  case hostage_command::RM_HOST:
-    rm_host_command(cmd);
-    return 0;
+    switch (cmd.command)
+    {
+    case hostage_command::RM_ADDRESS:
+      rm_address_command(cmd);
+      return 0;
 
-  case hostage_command::SET:
-    set_command(cmd);
-    return 0;
+    case hostage_command::RM_HOST:
+      rm_host_command(cmd);
+      return 0;
 
-  case hostage_command::UNSET:
-  default:
-    std::cerr << _("Unexpected command.\n");
-    std::cerr << _("This is probably a bug.\n");
-    return 2;
+    case hostage_command::SET:
+      set_command(cmd);
+      return 0;
+
+    case hostage_command::UNSET:
+    default:
+      std::cerr << _("Unexpected command.\n");
+      std::cerr << _("This is probably a bug.\n");
+      return 2;
+    }
+  }
+  catch (const std::runtime_error& err)
+  {
+    std::cerr << err.what() << '\n';
+    return 4;
+  }
+  catch (...)
+  {
+    std::cerr << _("An unknown error occurred, aborting.");
+    return 8;
   }
 }
 
