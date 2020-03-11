@@ -18,9 +18,6 @@
 #include <fstream>
 #include <getopt.h>
 #include <algorithm>
-#include "antlr4-runtime.h"
-#include "../gen/hosts_lexer.h"
-#include "../gen/hosts.h"
 #include "hosts_parser/hosts_listener.h"
 #include "hosts_parser/command_listener.h"
 #include <unistd.h>
@@ -266,18 +263,8 @@ parse_hosts()
 {
   std::ifstream hosts_file("/etc/hosts", std::ifstream::in);
 
-  antlr4::ANTLRInputStream input(hosts_file);
-  hosts_lexer lexer(&input);
-  antlr4::CommonTokenStream tokens(&lexer);
-  tokens.fill();
-
   hosts_listener listener;
-  hosts parser(&tokens);
-  antlr4::tree::ParseTree *tree = parser.hosts_file();
-  antlr4::tree::ParseTreeWalker::DEFAULT.walk(&listener, tree);
-
-  if (parser.getNumberOfSyntaxErrors() > 0)
-    throw std::runtime_error(_("Cannot parse file: aborting"));
+  listener.parse(hosts_file);
 
   return listener;
 }
@@ -395,17 +382,8 @@ parse_command(int argc, char **argv)
 command_listener
 parse_command_antlr(const std::string& command_args)
 {
-  antlr4::ANTLRInputStream is(command_args);
-  hosts_lexer lexer(&is);
-  antlr4::CommonTokenStream tokens(&lexer);
-  tokens.fill();
-
-  hosts parser(&tokens);
-  parser.removeErrorListener(&antlr4::ConsoleErrorListener::INSTANCE);
-  antlr4::tree::ParseTree *tree = parser.command_line();
-
-  command_listener listener(parser.getNumberOfSyntaxErrors() > 0);
-  antlr4::tree::ParseTreeWalker::DEFAULT.walk(&listener, tree);
+  command_listener listener;
+  listener.parse(command_args);
 
   return listener;
 }
