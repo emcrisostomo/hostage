@@ -50,7 +50,9 @@ void set_command(const command& command);
 hosts_listener parse_hosts();
 void write_hosts(const std::vector<std::shared_ptr<line>>& entries);
 void rm_host_command(const command& command);
-std::string concatenate(const std::vector<std::string>& vector);
+std::string join_with_space(const std::vector<std::string>& vector);
+
+void rm_address_command(const command& command);
 
 // Usage:
 //
@@ -80,7 +82,8 @@ main(int argc, char **argv)
   switch (cmd.command)
   {
   case hostage_command::RM_ADDRESS:
-    throw std::runtime_error("Not implemented");
+    rm_address_command(cmd);
+    return 0;
 
   case hostage_command::RM_HOST:
     rm_host_command(cmd);
@@ -99,11 +102,36 @@ main(int argc, char **argv)
 }
 
 void
+rm_address_command(const command& command)
+{
+  const hosts_listener& listener = parse_hosts();
+  const std::vector<std::shared_ptr<line>>& entries = listener.get_entries();
+  const std::vector<std::string>& address_to_remove = command.addresses;
+  std::vector<std::shared_ptr<line>> new_entries;
+  new_entries.reserve(entries.size() + 1);
+
+  for (const auto& item : entries)
+  {
+    const table_entry *entry = dynamic_cast<table_entry *>(item.get());
+
+    if (entry != nullptr
+        && std::find(address_to_remove.begin(),
+                     address_to_remove.end(),
+                     entry->address) != address_to_remove.end())
+      continue;
+
+    new_entries.push_back(item);
+  }
+
+  write_hosts(new_entries);
+}
+
+void
 rm_host_command(const command& command)
 {
   const hosts_listener& listener = parse_hosts();
   const std::vector<std::shared_ptr<line>>& entries = listener.get_entries();
-  const std::vector<std::string> host_names_to_remove = command.host_names;
+  const std::vector<std::string>& host_names_to_remove = command.host_names;
   std::vector<std::shared_ptr<line>> new_entries;
   new_entries.reserve(entries.size() + 1);
 
@@ -138,7 +166,7 @@ rm_host_command(const command& command)
 
     auto *new_entry = new table_entry();
     new_entry->address = entry->address;
-    new_entry->text = entry->address + concatenate(filtered_host_names);
+    new_entry->text = entry->address + join_with_space(filtered_host_names);
     new_entry->host_names = std::move(filtered_host_names);
 
     new_entries.push_back(std::shared_ptr<line>(new_entry));
@@ -148,7 +176,7 @@ rm_host_command(const command& command)
 }
 
 std::string
-concatenate(const std::vector<std::string>& vector)
+join_with_space(const std::vector<std::string>& vector)
 {
   std::string cat;
 
