@@ -33,6 +33,8 @@
 static const int OPT_VERSION = 128;
 static const int HOSTAGE_EXIT_OK = 0;
 
+static bool iflag = false;
+
 void parse_opts(int argc, char **argv);
 void print_version();
 void usage(std::ostream& stream);
@@ -49,6 +51,7 @@ void write_hosts(const std::vector<std::shared_ptr<line>>& entries);
 void rm_host_command(const command& command);
 std::string join_with_space(const std::vector<std::string>& vector);
 void rm_address_command(const command& command);
+void write_hosts_to_stream(const std::vector<std::shared_ptr<line>>& vector, std::ostream& ostream);
 
 // Usage:
 //
@@ -245,13 +248,24 @@ set_command(const command& command)
 void
 write_hosts(const std::vector<std::shared_ptr<line>>& entries)
 {
-  std::ofstream hosts_file("/etc/hosts.new",
-                           std::ofstream::out | std::ofstream::trunc);
+  if (iflag)
+  {
+    std::ofstream hosts_file("/etc/hosts.new",
+                             std::ofstream::out | std::ofstream::trunc);
+    write_hosts_to_stream(entries, hosts_file);
+  }
+  else
+    write_hosts_to_stream(entries, std::cout);
+}
 
+void
+write_hosts_to_stream(const std::vector<std::shared_ptr<line>>& entries,
+                      std::ostream& os)
+{
   for (const auto& entry : entries)
-    hosts_file << entry->text << '\n';
+    os << entry->text << '\n';
 
-  if (!hosts_file)
+  if (!os)
     throw std::runtime_error(_("Cannot write: /etc/hosts"));
 }
 
@@ -327,10 +341,11 @@ void
 parse_opts(int argc, char **argv)
 {
   int ch;
-  const std::string short_options = "h";
+  const std::string short_options = "hi";
 
   int option_index = 0;
   static struct option long_options[] = {
+    {"inplace", no_argument, nullptr, 'i'},
     {"help",    no_argument, nullptr, 'h'},
     {"version", no_argument, nullptr, OPT_VERSION},
     {nullptr, 0,             nullptr, 0}
@@ -347,6 +362,9 @@ parse_opts(int argc, char **argv)
     case 'h':
       usage(std::cout);
       exit(0);
+    case 'i':
+      iflag = true;
+      break;
 
     case OPT_VERSION:
       print_version();
@@ -423,6 +441,7 @@ usage(std::ostream& stream)
   stream << "\n";
   stream << _("Options:\n");
   stream << " -h, --help            " << _("Show this message.\n");
+  stream << " -i, --inplace         " << _("Modify the hosts file in place.\n");
   stream << "     --version         " << _("Show the version.\n");
   stream << "\n";
   stream << _("See the man page for more information.\n\n");
