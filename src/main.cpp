@@ -212,9 +212,7 @@ void
 write_hosts(const std::vector<std::shared_ptr<line>>& entries)
 {
   for (const auto& entry : entries)
-  {
     std::cout << entry->text << '\n';
-  }
 }
 
 hosts_listener
@@ -259,7 +257,8 @@ get_backup_filename()
   const std::string& home_dir = get_pwd();
   const std::string& hostage_user_dir = home_dir + "/.hostage";
 
-  int ret_mkdir = mkdir(hostage_user_dir.c_str(), S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
+  int ret_mkdir = mkdir(hostage_user_dir.c_str(),
+                        S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH); // NOLINT(hicpp-signed-bitwise)
 
   if (ret_mkdir != 0 && errno != EEXIST)
     throw std::runtime_error("Cannot create: " + hostage_user_dir);
