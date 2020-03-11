@@ -463,6 +463,7 @@ usage(std::ostream& stream)
   stream << _("Options:\n");
   stream << " -h, --help            " << _("Show this message.\n");
   stream << " -i, --inplace         " << _("Modify the hosts file in place.\n");
+  stream << " -o, --output-file     " << _("Specify an output file path (implies -i).\n");
   stream << "     --version         " << _("Show the version.\n");
   stream << "\n";
   stream << _("See the man page for more information.\n\n");
