@@ -32,8 +32,11 @@
 
 static const int OPT_VERSION = 128;
 static const int HOSTAGE_EXIT_OK = 0;
+static const std::string HOSTS_FILE = "/etc/hosts";
 
 static bool iflag = false;
+static bool oflag = false;
+std::string output_file;
 
 void parse_opts(int argc, char **argv);
 void print_version();
@@ -51,8 +54,8 @@ void write_hosts(const std::vector<std::shared_ptr<line>>& entries);
 void rm_host_command(const command& command);
 std::string join_with_space(const std::vector<std::string>& vector);
 void rm_address_command(const command& command);
-void write_hosts_to_stream(const std::vector<std::shared_ptr<line>>& vector, std::ostream& ostream);
-
+void write_hosts_to_stream(const std::vector<std::shared_ptr<line>>& entries, std::ostream& ostream);
+std::string get_output_file_path();
 // Usage:
 //
 // hostage set   (address) (host_name)
@@ -245,14 +248,28 @@ set_command(const command& command)
   write_hosts(new_entries);
 }
 
+std::string
+get_output_file_path()
+{
+  if (oflag)
+    return output_file;
+  else
+    return HOSTS_FILE;
+}
+
 void
 write_hosts(const std::vector<std::shared_ptr<line>>& entries)
 {
-  if (iflag)
+  if (iflag || oflag)
   {
-    std::ofstream hosts_file("/etc/hosts.new",
+    const std::string& file_path = get_output_file_path();
+
+    std::ofstream hosts_file(file_path,
                              std::ofstream::out | std::ofstream::trunc);
     write_hosts_to_stream(entries, hosts_file);
+    
+    if (!hosts_file)
+      throw std::runtime_error(_("Cannot write: ") + file_path);
   }
   else
     write_hosts_to_stream(entries, std::cout);
@@ -264,9 +281,6 @@ write_hosts_to_stream(const std::vector<std::shared_ptr<line>>& entries,
 {
   for (const auto& entry : entries)
     os << entry->text << '\n';
-
-  if (!os)
-    throw std::runtime_error(_("Cannot write: /etc/hosts"));
 }
 
 std::vector<std::shared_ptr<line>>
@@ -341,14 +355,15 @@ void
 parse_opts(int argc, char **argv)
 {
   int ch;
-  const std::string short_options = "hi";
+  const std::string short_options = "hio:";
 
   int option_index = 0;
   static struct option long_options[] = {
-    {"inplace", no_argument, nullptr, 'i'},
-    {"help",    no_argument, nullptr, 'h'},
-    {"version", no_argument, nullptr, OPT_VERSION},
-    {nullptr, 0,             nullptr, 0}
+    {"inplace",     no_argument, nullptr, 'i'},
+    {"help",        no_argument, nullptr, 'h'},
+    {"output-file", no_argument, nullptr, 'o'},
+    {"version",     no_argument, nullptr, OPT_VERSION},
+    {nullptr,       0,           nullptr, 0}
   };
 
   while ((ch = getopt_long(argc,
@@ -362,8 +377,14 @@ parse_opts(int argc, char **argv)
     case 'h':
       usage(std::cout);
       exit(0);
+
     case 'i':
       iflag = true;
+      break;
+
+    case 'o':
+      oflag = true;
+      output_file = optarg;
       break;
 
     case OPT_VERSION:
