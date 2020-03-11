@@ -22,6 +22,9 @@
 void
 hosts_listener::parse(std::istream& istream)
 {
+  lines = {};
+  current_line = {};
+
   antlr4::ANTLRInputStream input(istream);
   hosts_lexer lexer(&input);
   antlr4::CommonTokenStream tokens(&lexer);
