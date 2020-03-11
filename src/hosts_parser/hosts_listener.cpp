@@ -59,4 +59,3 @@ void hosts_listener::visitErrorNode(antlr4::tree::ErrorNode *node)
 {
   std::cerr << node->getText() << "\n";
 }
-
