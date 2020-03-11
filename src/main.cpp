@@ -48,8 +48,9 @@ std::string get_pwd();
 std::string get_backup_filename();
 void set_command(const command& command);
 hosts_listener parse_hosts();
-
 void write_hosts(const std::vector<std::shared_ptr<line>>& entries);
+void rm_host_command(const command& command);
+std::string concatenate(const std::vector<std::string>& vector);
 
 // Usage:
 //
@@ -82,7 +83,8 @@ main(int argc, char **argv)
     throw std::runtime_error("Not implemented");
 
   case hostage_command::RM_HOST:
-    throw std::runtime_error("Not implemented");
+    rm_host_command(cmd);
+    return 0;
 
   case hostage_command::SET:
     set_command(cmd);
@@ -94,6 +96,69 @@ main(int argc, char **argv)
     std::cerr << _("This is probably a bug.\n");
     return 2;
   }
+}
+
+void
+rm_host_command(const command& command)
+{
+  const hosts_listener& listener = parse_hosts();
+  const std::vector<std::shared_ptr<line>>& entries = listener.get_entries();
+  const std::vector<std::string> host_names_to_remove = command.host_names;
+  std::vector<std::shared_ptr<line>> new_entries;
+  new_entries.reserve(entries.size() + 1);
+
+  for (const auto& item : entries)
+  {
+    const table_entry *entry = dynamic_cast<table_entry *>(item.get());
+
+    if (entry == nullptr)
+    {
+      new_entries.push_back(item);
+      continue;
+    }
+
+    std::vector<std::string> filtered_host_names;
+    // the host name search and removal process could be optimized using sets
+    // but we want to generate minimal changes to the hosts file
+    for (const auto& name : entry->host_names)
+    {
+      if (std::find(host_names_to_remove.begin(),
+                    host_names_to_remove.end(), name) == host_names_to_remove.end())
+        filtered_host_names.push_back(name);
+    }
+
+    if (filtered_host_names.empty())
+      continue;
+
+    if (filtered_host_names.size() == entry->host_names.size())
+    {
+      new_entries.push_back(item);
+      continue;
+    }
+
+    auto *new_entry = new table_entry();
+    new_entry->address = entry->address;
+    new_entry->text = entry->address + concatenate(filtered_host_names);
+    new_entry->host_names = std::move(filtered_host_names);
+
+    new_entries.push_back(std::shared_ptr<line>(new_entry));
+  }
+
+  write_hosts(new_entries);
+}
+
+std::string
+concatenate(const std::vector<std::string>& vector)
+{
+  std::string cat;
+
+  for (const auto& i : vector)
+  {
+    cat += " ";
+    cat += i;
+  }
+
+  return cat;
 }
 
 void
@@ -306,10 +371,12 @@ string_from_args(int arg_start, int argc, char **argv)
   std::string command_args;
   command_args.reserve(16 * (argc - arg_start));
 
-  for (size_t i = arg_start; i < argc; ++i)
+  command_args += argv[arg_start];
+
+  for (size_t i = arg_start + 1; i < argc; ++i)
   {
-    command_args += argv[i];
     command_args += " ";
+    command_args += argv[i];
   }
 
   return command_args;
