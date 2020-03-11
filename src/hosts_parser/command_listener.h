@@ -80,7 +80,8 @@ struct command
 class command_listener : public hostsBaseListener
 {
 public:
-  command_listener(bool b);
+  void parse(const std::string& command_args);
+
   void exitRm_address_command(hosts::Rm_address_commandContext *context) override;
   void exitRm_host_command(hosts::Rm_host_commandContext *context) override;
   void exitSet_command(hosts::Set_commandContext *context) override;

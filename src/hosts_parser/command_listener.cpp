@@ -15,43 +15,64 @@
  */
 
 #include "command_listener.h"
+#include "../../gen/hosts_lexer.h"
 
-void command_listener::exitAddress(hosts::AddressContext *context)
+void
+command_listener::parse(const std::string& command_args)
+{
+  cmd = {};
+
+  antlr4::ANTLRInputStream is(command_args);
+  hosts_lexer lexer(&is);
+  antlr4::CommonTokenStream tokens(&lexer);
+  tokens.fill();
+
+  hosts parser(&tokens);
+  parser.removeErrorListener(&antlr4::ConsoleErrorListener::INSTANCE);
+  antlr4::tree::ParseTree *tree = parser.command_line();
+
+  cmd.error = (parser.getNumberOfSyntaxErrors() > 0);
+  antlr4::tree::ParseTreeWalker::DEFAULT.walk(this, tree);
+}
+
+void
+command_listener::exitAddress(hosts::AddressContext *context)
 {
   cmd.addresses.push_back(context->getText());
 }
 
-void command_listener::exitHost_name(hosts::Host_nameContext *context)
+void
+command_listener::exitHost_name(hosts::Host_nameContext *context)
 {
   cmd.host_names.push_back(context->getText());
 }
 
-void command_listener::exitRm_host_command(hosts::Rm_host_commandContext *context)
+void
+command_listener::exitRm_host_command(hosts::Rm_host_commandContext *context)
 {
   cmd.command = hostage_command::RM_HOST;
 }
 
-void command_listener::exitRm_address_command(hosts::Rm_address_commandContext *context)
+void
+command_listener::exitRm_address_command(hosts::Rm_address_commandContext *context)
 {
   cmd.command = hostage_command::RM_ADDRESS;
 }
 
-void command_listener::exitSet_command(hosts::Set_commandContext *context)
+void
+command_listener::exitSet_command(hosts::Set_commandContext *context)
 {
   cmd.command = hostage_command::SET;
 }
 
-command command_listener::get_command() const
+command
+command_listener::get_command() const
 {
   return cmd;
 }
 
-void command_listener::visitErrorNode(antlr4::tree::ErrorNode *node)
+void
+command_listener::visitErrorNode(antlr4::tree::ErrorNode *node)
 {
   cmd.error = true;
-}
-
-command_listener::command_listener(bool error)
-{
-  cmd.error = error;
 }
