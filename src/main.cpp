@@ -51,7 +51,6 @@ hosts_listener parse_hosts();
 void write_hosts(const std::vector<std::shared_ptr<line>>& entries);
 void rm_host_command(const command& command);
 std::string join_with_space(const std::vector<std::string>& vector);
-
 void rm_address_command(const command& command);
 
 // Usage:
@@ -239,8 +238,14 @@ set_command(const command& command)
 void
 write_hosts(const std::vector<std::shared_ptr<line>>& entries)
 {
+  std::ofstream hosts_file("/etc/hosts.new",
+                           std::ofstream::out | std::ofstream::trunc);
+
   for (const auto& entry : entries)
-    std::cout << entry->text << '\n';
+    hosts_file << entry->text << '\n';
+
+  if (!hosts_file)
+    throw std::runtime_error(_("Cannot write: /etc/hosts"));
 }
 
 hosts_listener
@@ -281,7 +286,6 @@ backup_hosts_file()
 std::string
 get_backup_filename()
 {
-  const std::string& user = get_username();
   const std::string& home_dir = get_pwd();
   const std::string& hostage_user_dir = home_dir + "/.hostage";
 
@@ -293,6 +297,7 @@ get_backup_filename()
 
   const std::time_t& result = std::time(nullptr);
   const std::string& str_time = std::to_string(result);
+  const std::string& user = get_username();
 
   return (hostage_user_dir + "/hosts.backup." + user + "." + str_time);
 }
