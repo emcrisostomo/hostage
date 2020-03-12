@@ -450,12 +450,6 @@ print_version()
   std::cout << "Written by Enrico M. Crisostomo.\n";
 }
 
-// Usage:
-//
-// hostage set   (address) (host_name)
-// hostage rm    host    (host_name)+
-// hostage rm    address (address)+
-
 void
 usage(std::ostream& stream)
 {
