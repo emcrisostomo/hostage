@@ -18,7 +18,7 @@
 #include <fstream>
 #include <getopt.h>
 #include <algorithm>
-#include "hosts_parser/hosts_listener.h"
+#include "hosts_parser/hosts_file_parser.h"
 #include "hosts_parser/command_parser.h"
 #include <unistd.h>
 #include <sys/types.h>
@@ -288,10 +288,10 @@ parse_hosts_and_get_entries()
 {
   std::ifstream hosts_file("/etc/hosts", std::ifstream::in);
 
-  hosts_listener listener;
-  listener.parse(hosts_file);
+  hosts_file_parser parser;
+  parser.parse(hosts_file);
 
-  return listener.get_entries();
+  return parser.get_entries();
 }
 
 void

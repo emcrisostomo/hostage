@@ -14,8 +14,8 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef HOSTAGE_HOSTS_LISTENER_H
-#define HOSTAGE_HOSTS_LISTENER_H
+#ifndef HOSTAGE_HOSTS_FILE_PARSER_H
+#define HOSTAGE_HOSTS_FILE_PARSER_H
 
 #include "../../gen/hostsBaseListener.h"
 #include <vector>
@@ -38,7 +38,7 @@ public:
   ~table_entry() override = default;
 };
 
-class hosts_listener : public hostsBaseListener
+class hosts_file_parser : public hostsBaseListener
 {
 public:
   void parse(std::istream& istream);
@@ -59,4 +59,4 @@ private:
 };
 
 
-#endif //HOSTAGE_HOSTS_LISTENER_H
+#endif //HOSTAGE_HOSTS_FILE_PARSER_H
