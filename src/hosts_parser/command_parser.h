@@ -14,8 +14,8 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef HOSTAGE_COMMAND_LISTENER_H
-#define HOSTAGE_COMMAND_LISTENER_H
+#ifndef HOSTAGE_COMMAND_PARSER_H
+#define HOSTAGE_COMMAND_PARSER_H
 
 #include "../../gen/hostsBaseListener.h"
 #include <vector>
@@ -77,7 +77,7 @@ struct command
   std::vector<std::string> host_names;
 };
 
-class command_listener : public hostsBaseListener
+class command_parser : public hostsBaseListener
 {
 public:
   void parse(const std::string& command_args);
@@ -94,4 +94,4 @@ private:
 };
 
 
-#endif //HOSTAGE_COMMAND_LISTENER_H
+#endif //HOSTAGE_COMMAND_PARSER_H

@@ -19,7 +19,7 @@
 #include <getopt.h>
 #include <algorithm>
 #include "hosts_parser/hosts_listener.h"
-#include "hosts_parser/command_listener.h"
+#include "hosts_parser/command_parser.h"
 #include <unistd.h>
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -43,7 +43,7 @@ void print_version();
 void usage(std::ostream& stream);
 command parse_command(int argc, char **argv);
 std::string string_from_args(int arg_start, int argc, char **argv);
-command_listener parse_command_antlr(const std::string& command_args);
+command_parser parse_command_antlr(const std::string& command_args);
 void backup_hosts_file();
 std::string get_username();
 std::string get_pwd();
@@ -410,18 +410,18 @@ parse_command(int argc, char **argv)
     return cmd;
 
   std::string command_args = string_from_args(optind, argc, argv);
-  command_listener listener = parse_command_antlr(command_args);
+  command_parser parser = parse_command_antlr(command_args);
 
-  return listener.get_command();
+  return parser.get_command();
 }
 
-command_listener
+command_parser
 parse_command_antlr(const std::string& command_args)
 {
-  command_listener listener;
-  listener.parse(command_args);
+  command_parser parser;
+  parser.parse(command_args);
 
-  return listener;
+  return parser;
 }
 
 std::string

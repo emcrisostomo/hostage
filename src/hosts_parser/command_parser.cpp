@@ -14,11 +14,11 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "command_listener.h"
+#include "command_parser.h"
 #include "../../gen/hosts_lexer.h"
 
 void
-command_listener::parse(const std::string& command_args)
+command_parser::parse(const std::string& command_args)
 {
   cmd = {};
 
@@ -36,43 +36,43 @@ command_listener::parse(const std::string& command_args)
 }
 
 void
-command_listener::exitAddress(hosts::AddressContext *context)
+command_parser::exitAddress(hosts::AddressContext *context)
 {
   cmd.addresses.push_back(context->getText());
 }
 
 void
-command_listener::exitHost_name(hosts::Host_nameContext *context)
+command_parser::exitHost_name(hosts::Host_nameContext *context)
 {
   cmd.host_names.push_back(context->getText());
 }
 
 void
-command_listener::exitRm_host_command(hosts::Rm_host_commandContext *context)
+command_parser::exitRm_host_command(hosts::Rm_host_commandContext *context)
 {
   cmd.command = hostage_command::RM_HOST;
 }
 
 void
-command_listener::exitRm_address_command(hosts::Rm_address_commandContext *context)
+command_parser::exitRm_address_command(hosts::Rm_address_commandContext *context)
 {
   cmd.command = hostage_command::RM_ADDRESS;
 }
 
 void
-command_listener::exitSet_command(hosts::Set_commandContext *context)
+command_parser::exitSet_command(hosts::Set_commandContext *context)
 {
   cmd.command = hostage_command::SET;
 }
 
 command
-command_listener::get_command() const
+command_parser::get_command() const
 {
   return cmd;
 }
 
 void
-command_listener::visitErrorNode(antlr4::tree::ErrorNode *node)
+command_parser::visitErrorNode(antlr4::tree::ErrorNode *node)
 {
   cmd.error = true;
 }
