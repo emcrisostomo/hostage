@@ -358,7 +358,7 @@ parse_opts(int argc, char **argv)
   static struct option long_options[] = {
     {"inplace",     no_argument, nullptr, 'i'},
     {"help",        no_argument, nullptr, 'h'},
-    {"output-file", no_argument, nullptr, 'o'},
+    {"output-file", required_argument, nullptr, 'o'},
     {"version",     no_argument, nullptr, OPT_VERSION},
     {nullptr, 0,                 nullptr, 0}
   };
