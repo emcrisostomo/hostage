@@ -57,11 +57,6 @@ void rm_address_command(const command& command);
 void write_hosts_to_stream(const std::vector<std::shared_ptr<line>>& entries, std::ostream& ostream);
 std::string get_output_file_path();
 
-// Usage:
-//
-// hostage set   (address) (host_name)
-// hostage rm    host    (host_name)+
-// hostage rm    address (address)+
 int
 main(int argc, char **argv)
 {
@@ -455,18 +450,29 @@ print_version()
   std::cout << "Written by Enrico M. Crisostomo.\n";
 }
 
+// Usage:
+//
+// hostage set   (address) (host_name)
+// hostage rm    host    (host_name)+
+// hostage rm    address (address)+
+
 void
 usage(std::ostream& stream)
 {
   stream << PACKAGE_STRING << "\n\n";
   stream << _("Usage:\n");
-  stream << "hostage" << _(" (option)+ (version)+ \n");
+  stream << "hostage" << _(" (option)* (command) (command_options)* \n");
   stream << "\n";
   stream << _("Options:\n");
   stream << " -h, --help            " << _("Show this message.\n");
   stream << " -i, --inplace         " << _("Modify the hosts file in place.\n");
   stream << " -o, --output-file     " << _("Specify an output file path (implies -i).\n");
   stream << "     --version         " << _("Show the version.\n");
+  stream << "\n";
+  stream << _("Commands:\n");
+  stream << " set (address) (host_name)  " << _("Set a host file entry with the specified contents.\n");
+  stream << " rm host (host_name)+       " << _("Remove the specified host name.\n");
+  stream << " rm address (address)+      " << _("Remove the specified address.\n");
   stream << "\n";
   stream << _("See the man page for more information.\n\n");
   stream << _("Report bugs to <") << PACKAGE_BUGREPORT << ">.\n";
