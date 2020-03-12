@@ -56,6 +56,7 @@ std::string join_with_space(const std::vector<std::string>& vector);
 void rm_address_command(const command& command);
 void write_hosts_to_stream(const std::vector<std::shared_ptr<line>>& entries, std::ostream& ostream);
 std::string get_output_file_path();
+
 // Usage:
 //
 // hostage set   (address) (host_name)
@@ -260,19 +261,20 @@ get_output_file_path()
 void
 write_hosts(const std::vector<std::shared_ptr<line>>& entries)
 {
-  if (iflag || oflag)
+  if (!iflag && !oflag)
   {
-    const std::string& file_path = get_output_file_path();
-
-    std::ofstream hosts_file(file_path,
-                             std::ofstream::out | std::ofstream::trunc);
-    write_hosts_to_stream(entries, hosts_file);
-    
-    if (!hosts_file)
-      throw std::runtime_error(_("Cannot write: ") + file_path);
-  }
-  else
     write_hosts_to_stream(entries, std::cout);
+    return;
+  }
+
+  const std::string& file_path = get_output_file_path();
+
+  std::ofstream hosts_file(file_path,
+                           std::ofstream::out | std::ofstream::trunc);
+  write_hosts_to_stream(entries, hosts_file);
+
+  if (!hosts_file)
+    throw std::runtime_error(_("Cannot write: ") + file_path);
 }
 
 void
@@ -363,7 +365,7 @@ parse_opts(int argc, char **argv)
     {"help",        no_argument, nullptr, 'h'},
     {"output-file", no_argument, nullptr, 'o'},
     {"version",     no_argument, nullptr, OPT_VERSION},
-    {nullptr,       0,           nullptr, 0}
+    {nullptr, 0,                 nullptr, 0}
   };
 
   while ((ch = getopt_long(argc,
