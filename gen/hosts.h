@@ -129,6 +129,7 @@ public:
     Host_nameContext* host_name(size_t i);
     std::vector<antlr4::tree::TerminalNode *> Space();
     antlr4::tree::TerminalNode* Space(size_t i);
+    CommentContext *comment();
 
     virtual void enterRule(antlr4::tree::ParseTreeListener *listener) override;
     virtual void exitRule(antlr4::tree::ParseTreeListener *listener) override;
