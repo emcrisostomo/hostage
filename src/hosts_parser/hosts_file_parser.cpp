@@ -30,6 +30,9 @@ hosts_file_parser::parse(std::istream& istream)
   antlr4::CommonTokenStream tokens(&lexer);
   tokens.fill();
 
+  if (lexer.getNumberOfSyntaxErrors() > 0)
+    throw std::runtime_error(_("Error lexing file: aborting"));
+
   hosts parser(&tokens);
   antlr4::tree::ParseTree *tree = parser.hosts_file();
   antlr4::tree::ParseTreeWalker::DEFAULT.walk(this, tree);
@@ -90,5 +93,4 @@ hosts_file_parser::exitHost_name(hosts::Host_nameContext *context)
 
 void hosts_file_parser::visitErrorNode(antlr4::tree::ErrorNode *node)
 {
-  std::cerr << node->getText() << "\n";
 }
