@@ -25,9 +25,9 @@ public:
     RuleAddress = 4, RuleIp_v4_address = 5, RuleIp_v6_address = 6, RuleH16 = 7, 
     RuleLs32 = 8, RuleHexdig = 9, RuleDec_octet = 10, RuleDigit = 11, RuleNon_zero_digit = 12, 
     RuleHost_name = 13, RuleIreg_name = 14, RuleIunreserved = 15, RuleAlpha = 16, 
-    RuleComment = 17, RuleCommand_line = 18, RuleSet_command = 19, RuleRm_host_command = 20, 
-    RuleRm_address_command = 21, RuleCmd_rm = 22, RuleCmd_host = 23, RuleCmd_set = 24, 
-    RuleCmd_address = 25
+    RuleComment = 17, RuleCommand_line = 18, RuleList_command = 19, RuleSet_command = 20, 
+    RuleRm_host_command = 21, RuleRm_address_command = 22, RuleCmd_list = 23, 
+    RuleCmd_rm = 24, RuleCmd_host = 25, RuleCmd_set = 26, RuleCmd_address = 27
   };
 
   hosts(antlr4::TokenStream *input);
@@ -59,9 +59,11 @@ public:
   class AlphaContext;
   class CommentContext;
   class Command_lineContext;
+  class List_commandContext;
   class Set_commandContext;
   class Rm_host_commandContext;
   class Rm_address_commandContext;
+  class Cmd_listContext;
   class Cmd_rmContext;
   class Cmd_hostContext;
   class Cmd_setContext;
@@ -425,6 +427,7 @@ public:
   public:
     Command_lineContext(antlr4::ParserRuleContext *parent, size_t invokingState);
     virtual size_t getRuleIndex() const override;
+    List_commandContext *list_command();
     Set_commandContext *set_command();
     Rm_host_commandContext *rm_host_command();
     Rm_address_commandContext *rm_address_command();
@@ -437,6 +440,21 @@ public:
   };
 
   Command_lineContext* command_line();
+
+  class  List_commandContext : public antlr4::ParserRuleContext {
+  public:
+    List_commandContext(antlr4::ParserRuleContext *parent, size_t invokingState);
+    virtual size_t getRuleIndex() const override;
+    Cmd_listContext *cmd_list();
+
+    virtual void enterRule(antlr4::tree::ParseTreeListener *listener) override;
+    virtual void exitRule(antlr4::tree::ParseTreeListener *listener) override;
+
+    virtual antlrcpp::Any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
+   
+  };
+
+  List_commandContext* list_command();
 
   class  Set_commandContext : public antlr4::ParserRuleContext {
   public:
@@ -496,6 +514,24 @@ public:
   };
 
   Rm_address_commandContext* rm_address_command();
+
+  class  Cmd_listContext : public antlr4::ParserRuleContext {
+  public:
+    Cmd_listContext(antlr4::ParserRuleContext *parent, size_t invokingState);
+    virtual size_t getRuleIndex() const override;
+    antlr4::tree::TerminalNode *L();
+    antlr4::tree::TerminalNode *I();
+    antlr4::tree::TerminalNode *S();
+    antlr4::tree::TerminalNode *T();
+
+    virtual void enterRule(antlr4::tree::ParseTreeListener *listener) override;
+    virtual void exitRule(antlr4::tree::ParseTreeListener *listener) override;
+
+    virtual antlrcpp::Any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
+   
+  };
+
+  Cmd_listContext* cmd_list();
 
   class  Cmd_rmContext : public antlr4::ParserRuleContext {
   public:

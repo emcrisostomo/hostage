@@ -71,6 +71,9 @@ public:
   virtual void enterCommand_line(hosts::Command_lineContext *ctx) = 0;
   virtual void exitCommand_line(hosts::Command_lineContext *ctx) = 0;
 
+  virtual void enterList_command(hosts::List_commandContext *ctx) = 0;
+  virtual void exitList_command(hosts::List_commandContext *ctx) = 0;
+
   virtual void enterSet_command(hosts::Set_commandContext *ctx) = 0;
   virtual void exitSet_command(hosts::Set_commandContext *ctx) = 0;
 
@@ -79,6 +82,9 @@ public:
 
   virtual void enterRm_address_command(hosts::Rm_address_commandContext *ctx) = 0;
   virtual void exitRm_address_command(hosts::Rm_address_commandContext *ctx) = 0;
+
+  virtual void enterCmd_list(hosts::Cmd_listContext *ctx) = 0;
+  virtual void exitCmd_list(hosts::Cmd_listContext *ctx) = 0;
 
   virtual void enterCmd_rm(hosts::Cmd_rmContext *ctx) = 0;
   virtual void exitCmd_rm(hosts::Cmd_rmContext *ctx) = 0;

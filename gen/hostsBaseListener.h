@@ -73,6 +73,9 @@ public:
   virtual void enterCommand_line(hosts::Command_lineContext * /*ctx*/) override { }
   virtual void exitCommand_line(hosts::Command_lineContext * /*ctx*/) override { }
 
+  virtual void enterList_command(hosts::List_commandContext * /*ctx*/) override { }
+  virtual void exitList_command(hosts::List_commandContext * /*ctx*/) override { }
+
   virtual void enterSet_command(hosts::Set_commandContext * /*ctx*/) override { }
   virtual void exitSet_command(hosts::Set_commandContext * /*ctx*/) override { }
 
@@ -81,6 +84,9 @@ public:
 
   virtual void enterRm_address_command(hosts::Rm_address_commandContext * /*ctx*/) override { }
   virtual void exitRm_address_command(hosts::Rm_address_commandContext * /*ctx*/) override { }
+
+  virtual void enterCmd_list(hosts::Cmd_listContext * /*ctx*/) override { }
+  virtual void exitCmd_list(hosts::Cmd_listContext * /*ctx*/) override { }
 
   virtual void enterCmd_rm(hosts::Cmd_rmContext * /*ctx*/) override { }
   virtual void exitCmd_rm(hosts::Cmd_rmContext * /*ctx*/) override { }

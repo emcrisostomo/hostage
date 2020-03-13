@@ -57,11 +57,15 @@ public:
 
     virtual antlrcpp::Any visitCommand_line(hosts::Command_lineContext *context) = 0;
 
+    virtual antlrcpp::Any visitList_command(hosts::List_commandContext *context) = 0;
+
     virtual antlrcpp::Any visitSet_command(hosts::Set_commandContext *context) = 0;
 
     virtual antlrcpp::Any visitRm_host_command(hosts::Rm_host_commandContext *context) = 0;
 
     virtual antlrcpp::Any visitRm_address_command(hosts::Rm_address_commandContext *context) = 0;
+
+    virtual antlrcpp::Any visitCmd_list(hosts::Cmd_listContext *context) = 0;
 
     virtual antlrcpp::Any visitCmd_rm(hosts::Cmd_rmContext *context) = 0;
 

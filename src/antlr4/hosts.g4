@@ -139,9 +139,14 @@ comment
 // hostage rm    host    (host_name)+
 // hostage rm    address (address)+
 command_line
-  : set_command
+  : list_command
+  | set_command
   | rm_host_command
   | rm_address_command
+  ;
+
+list_command
+  : cmd_list
   ;
 
 set_command
@@ -157,6 +162,7 @@ rm_address_command
   : cmd_rm Space+ cmd_address (Space+ address)+
   ;
 
+cmd_list: L I S T;
 cmd_rm: R M;
 cmd_host: H O S T;
 cmd_set : S E T;
