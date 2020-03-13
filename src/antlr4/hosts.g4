@@ -139,10 +139,10 @@ comment
 // hostage rm    host    (host_name)+
 // hostage rm    address (address)+
 command_line
-  : list_command
+  : (list_command
   | set_command
   | rm_host_command
-  | rm_address_command
+  | rm_address_command) EOF
   ;
 
 list_command

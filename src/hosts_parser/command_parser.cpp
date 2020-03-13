@@ -48,6 +48,12 @@ command_parser::exitHost_name(hosts::Host_nameContext *context)
 }
 
 void
+command_parser::exitList_command(hosts::List_commandContext *context)
+{
+  cmd.command = hostage_command::LIST;
+}
+
+void
 command_parser::exitRm_host_command(hosts::Rm_host_commandContext *context)
 {
   cmd.command = hostage_command::RM_HOST;

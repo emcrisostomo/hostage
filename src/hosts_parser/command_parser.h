@@ -29,6 +29,7 @@ public:
   enum command_value
   {
     UNSET,
+    LIST,
     SET,
     RM_HOST,
     RM_ADDRESS
@@ -50,6 +51,9 @@ public:
     {
     case UNSET:
       return "unset";
+
+    case LIST:
+      return "list";
 
     case SET:
       return "set";
@@ -82,6 +86,7 @@ class command_parser : public hostsBaseListener
 public:
   void parse(const std::string& command_args);
 
+  void exitList_command(hosts::List_commandContext *context) override;
   void exitRm_address_command(hosts::Rm_address_commandContext *context) override;
   void exitRm_host_command(hosts::Rm_host_commandContext *context) override;
   void exitSet_command(hosts::Set_commandContext *context) override;

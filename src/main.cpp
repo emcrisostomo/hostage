@@ -56,6 +56,7 @@ std::string join_with_space(const std::vector<std::string>& vector);
 void rm_address_command(const command& command);
 void write_hosts_to_stream(const std::vector<std::shared_ptr<line>>& entries, std::ostream& ostream);
 std::string get_output_file_path();
+void list_command(const command& command);
 
 int
 main(int argc, char **argv)
@@ -81,6 +82,10 @@ main(int argc, char **argv)
 
     switch (cmd.command)
     {
+    case hostage_command::LIST:
+      list_command(cmd);
+      return 0;
+
     case hostage_command::RM_ADDRESS:
       rm_address_command(cmd);
       return 0;
@@ -110,6 +115,13 @@ main(int argc, char **argv)
     std::cerr << _("An unknown error occurred, aborting.");
     return 8;
   }
+}
+
+void
+list_command(const command& command)
+{
+  const std::vector<std::shared_ptr<line>>& entries = parse_hosts_and_get_entries();
+  write_hosts(entries);
 }
 
 void
@@ -464,6 +476,7 @@ usage(std::ostream& stream)
   stream << "     --version         " << _("Show the version.\n");
   stream << "\n";
   stream << _("Commands:\n");
+  stream << " list                       " << _("Dumps (and validates) the hosts file.\n");
   stream << " set (address) (host_name)  " << _("Set a host file entry with the specified contents.\n");
   stream << " rm host (host_name)+       " << _("Remove the specified host name.\n");
   stream << " rm address (address)+      " << _("Remove the specified address.\n");
