@@ -14,7 +14,7 @@ set(LOCALEDIR         "${CMAKE_INSTALL_PREFIX}/share/locale" CACHE FILEPATH "loc
 #@formatter:on
 
 set(CMAKE_CXX_STANDARD 14)
-set(CMAKE_PREFIX_PATH /opt/local/lib/cmake/antlr4)
+
 find_package(antlr4-runtime REQUIRED)
 
 add_executable(hostage
