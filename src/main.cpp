@@ -34,8 +34,10 @@ static const int OPT_VERSION = 128;
 static const int HOSTAGE_EXIT_OK = 0;
 static const std::string HOSTS_FILE = "/etc/hosts";
 
+static bool fflag = false;
 static bool iflag = false;
 static bool oflag = false;
+std::string input_file;
 std::string output_file;
 
 void parse_opts(int argc, char **argv);
@@ -55,6 +57,7 @@ void rm_host_command(const command& command);
 std::string join_with_space(const std::vector<std::string>& vector);
 void rm_address_command(const command& command);
 void write_hosts_to_stream(const std::vector<std::shared_ptr<line>>& entries, std::ostream& ostream);
+std::string get_input_file_path();
 std::string get_output_file_path();
 void list_command(const command& command);
 
@@ -257,6 +260,15 @@ set_command(const command& command)
 }
 
 std::string
+get_input_file_path()
+{
+  if (fflag)
+    return input_file;
+  else
+    return HOSTS_FILE;
+}
+
+std::string
 get_output_file_path()
 {
   if (oflag)
@@ -295,7 +307,8 @@ write_hosts_to_stream(const std::vector<std::shared_ptr<line>>& entries,
 std::vector<std::shared_ptr<line>>
 parse_hosts_and_get_entries()
 {
-  std::ifstream hosts_file("/etc/hosts", std::ifstream::in);
+  const std::string& input_file_path = get_input_file_path();
+  std::ifstream hosts_file(input_file_path, std::ifstream::in);
 
   hosts_file_parser parser;
   parser.parse(hosts_file);
@@ -307,8 +320,9 @@ void
 backup_hosts_file()
 {
   const std::string& backup_file_name = get_backup_filename();
-
-  std::ifstream src("/etc/hosts", std::ios::binary);
+  const std::string& input_file_path = get_input_file_path();
+  
+  std::ifstream src(input_file_path, std::ios::binary);
   std::ofstream dst(backup_file_name, std::ios::binary);
   dst << src.rdbuf();
   dst.close();
@@ -364,15 +378,16 @@ void
 parse_opts(int argc, char **argv)
 {
   int ch;
-  const std::string short_options = "hio:";
+  const std::string short_options = "f:hio:";
 
   int option_index = 0;
   static struct option long_options[] = {
-    {"inplace",     no_argument, nullptr, 'i'},
-    {"help",        no_argument, nullptr, 'h'},
+    {"file",        required_argument, nullptr, 'f'},
+    {"inplace",     no_argument,       nullptr, 'i'},
+    {"help",        no_argument,       nullptr, 'h'},
     {"output-file", required_argument, nullptr, 'o'},
-    {"version",     no_argument, nullptr, OPT_VERSION},
-    {nullptr, 0,                 nullptr, 0}
+    {"version",     no_argument,       nullptr, OPT_VERSION},
+    {nullptr,       0,                 nullptr, 0}
   };
 
   while ((ch = getopt_long(argc,
@@ -383,6 +398,11 @@ parse_opts(int argc, char **argv)
   {
     switch (ch)
     {
+    case 'f':
+      fflag = true;
+      input_file = optarg;
+      break;
+
     case 'h':
       usage(std::cout);
       exit(0);
@@ -470,6 +490,7 @@ usage(std::ostream& stream)
   stream << "hostage" << _(" (option)* (command) (command_options)* \n");
   stream << "\n";
   stream << _("Options:\n");
+  stream << " -f, --file            " << _("Specify the input file path.\n");
   stream << " -h, --help            " << _("Show this message.\n");
   stream << " -i, --inplace         " << _("Modify the hosts file in place.\n");
   stream << " -o, --output-file     " << _("Specify an output file path (implies -i).\n");
