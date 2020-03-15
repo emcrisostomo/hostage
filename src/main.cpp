@@ -499,7 +499,7 @@ usage(std::ostream& stream)
   stream << "\n";
   stream << _("Commands:\n");
   stream << " list                       " << _("Dumps (and validates) the hosts file.\n");
-  stream << " set (address) (host_name)  " << _("Set a host file entry with the specified contents.\n");
+  stream << " set (address) (host_name)+ " << _("Set a host file entry with the specified contents.\n");
   stream << " rm (address|host_name)+    " << _("Remove the specified address or host name.\n");
   stream << "\n";
   stream << _("See the man page for more information.\n\n");
