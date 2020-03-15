@@ -32,14 +32,16 @@
 #include "gettext/gettext_defs.h"
 
 static const int OPT_VERSION = 128;
+static const int OPT_NO_COMMENTS = 129;
 static const int HOSTAGE_EXIT_OK = 0;
 static const std::string HOSTS_FILE = "/etc/hosts";
 
 static bool fflag = false;
 static bool iflag = false;
+static bool ncflag = false;
 static bool oflag = false;
-std::string input_file;
-std::string output_file;
+static std::string input_file;
+static std::string output_file;
 
 void parse_opts(int argc, char **argv);
 void print_version();
@@ -57,13 +59,14 @@ std::string join_with_space(const std::vector<std::string>& vector);
 std::vector<std::shared_ptr<line>> rm_host_command(const std::vector<std::shared_ptr<line>>& entries,
                                                    const std::vector<std::string>& host_names_to_remove);
 std::vector<std::shared_ptr<line>> rm_address_command(const std::vector<std::shared_ptr<line>>& entries,
-                                                      const std::vector<std::string>& host_names_to_remove);
+                                                      const std::vector<std::string>& address_to_remove);
 void write_hosts_to_stream(const std::vector<std::shared_ptr<line>>& entries, std::ostream& ostream);
 std::string get_input_file_path();
 std::string get_output_file_path();
 void list_command(const command& command);
 void set_command(const command& command);
 void rm_command(const command& command);
+bool is_comment(const std::shared_ptr<line>& entry);
 
 int
 main(int argc, char **argv)
@@ -302,7 +305,18 @@ write_hosts_to_stream(const std::vector<std::shared_ptr<line>>& entries,
                       std::ostream& os)
 {
   for (const auto& entry : entries)
+  {
+    if (ncflag && is_comment(entry))
+      continue;
+
     os << entry->text << '\n';
+  }
+}
+
+bool
+is_comment(const std::shared_ptr<line>& entry)
+{
+  return (dynamic_cast<comment_line *>(entry.get()) != nullptr);
 }
 
 std::vector<std::shared_ptr<line>>
@@ -387,6 +401,7 @@ parse_opts(int argc, char **argv)
     {"help",        no_argument,       nullptr, 'h'},
     {"inplace",     no_argument,       nullptr, 'i'},
     {"output-file", required_argument, nullptr, 'o'},
+    {"no-comments", no_argument,       nullptr, OPT_NO_COMMENTS},
     {"version",     no_argument,       nullptr, OPT_VERSION},
     {nullptr, 0,                       nullptr, 0}
   };
@@ -415,6 +430,10 @@ parse_opts(int argc, char **argv)
     case 'o':
       oflag = true;
       output_file = optarg;
+      break;
+
+    case OPT_NO_COMMENTS:
+      ncflag = true;
       break;
 
     case OPT_VERSION:
@@ -494,6 +513,7 @@ usage(std::ostream& stream)
   stream << " -f, --file            " << _("Specify the input file path.\n");
   stream << " -h, --help            " << _("Show this message.\n");
   stream << " -i, --inplace         " << _("Modify the hosts file in place.\n");
+  stream << "     --no-comments     " << _("Suppress comment lines from the output.\n");
   stream << " -o, --output-file     " << _("Specify an output file path (implies -i).\n");
   stream << "     --version         " << _("Show the version.\n");
   stream << "\n";

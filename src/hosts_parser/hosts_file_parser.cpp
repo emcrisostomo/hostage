@@ -67,6 +67,12 @@ hosts_file_parser::exitLine(hosts::LineContext *context)
 }
 
 void
+hosts_file_parser::enterComment(hosts::CommentContext *context)
+{
+  current_line = std::make_unique<comment_line>();
+}
+
+void
 hosts_file_parser::exitComment(hosts::CommentContext *context)
 {
   current_line->text = context->getText();

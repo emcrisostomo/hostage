@@ -30,6 +30,8 @@ public:
   virtual ~line() = default;
 };
 
+class comment_line : public line {};
+
 class table_entry : public line
 {
 public:
@@ -45,6 +47,7 @@ public:
 
   void enterLine(hosts::LineContext *context) override;
   void exitLine(hosts::LineContext *context) override;
+  void enterComment(hosts::CommentContext *context) override;
   void exitComment(hosts::CommentContext *context) override;
   void enterTable_entry(hosts::Table_entryContext *context) override;
   void exitTable_entry(hosts::Table_entryContext *context) override;
