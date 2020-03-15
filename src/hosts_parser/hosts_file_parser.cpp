@@ -55,15 +55,21 @@ hosts_file_parser::enterLine(hosts::LineContext *context)
 }
 
 void
+hosts_file_parser::exitLine(hosts::LineContext *context)
+{
+  lines.push_back(current_line);
+}
+
+void
 hosts_file_parser::enterTable_entry(hosts::Table_entryContext *context)
 {
   current_line = std::make_unique<table_entry>();
 }
 
 void
-hosts_file_parser::exitLine(hosts::LineContext *context)
+hosts_file_parser::exitTable_entry(hosts::Table_entryContext *context)
 {
-  lines.push_back(current_line);
+  current_line->text = context->getText();
 }
 
 void
@@ -78,16 +84,16 @@ hosts_file_parser::exitComment(hosts::CommentContext *context)
   current_line->text = context->getText();
 }
 
+void
+hosts_file_parser::enterEmpty_line(hosts::Empty_lineContext *context)
+{
+  current_line = std::make_unique<empty_line>();
+}
+
 std::vector<std::shared_ptr<line>>
 hosts_file_parser::get_entries() const
 {
   return lines;
-}
-
-void
-hosts_file_parser::exitTable_entry(hosts::Table_entryContext *context)
-{
-  current_line->text = context->getText();
 }
 
 void

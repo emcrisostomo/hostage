@@ -32,6 +32,8 @@ public:
 
 class comment_line : public line {};
 
+class empty_line : public line {};
+
 class table_entry : public line
 {
 public:
@@ -47,6 +49,7 @@ public:
 
   void enterLine(hosts::LineContext *context) override;
   void exitLine(hosts::LineContext *context) override;
+  void enterEmpty_line(hosts::Empty_lineContext *context) override;
   void enterComment(hosts::CommentContext *context) override;
   void exitComment(hosts::CommentContext *context) override;
   void enterTable_entry(hosts::Table_entryContext *context) override;

@@ -33,12 +33,14 @@
 
 static const int OPT_VERSION = 128;
 static const int OPT_NO_COMMENTS = 129;
+static const int OPT_NO_EMPTY_LINES = 130;
 static const int HOSTAGE_EXIT_OK = 0;
 static const std::string HOSTS_FILE = "/etc/hosts";
 
 static bool fflag = false;
 static bool iflag = false;
 static bool ncflag = false;
+static bool nelflag = false;
 static bool oflag = false;
 static std::string input_file;
 static std::string output_file;
@@ -67,6 +69,7 @@ void list_command(const command& command);
 void set_command(const command& command);
 void rm_command(const command& command);
 bool is_comment(const std::shared_ptr<line>& entry);
+bool is_empty_line(const std::shared_ptr<line>& entry);
 
 int
 main(int argc, char **argv)
@@ -309,6 +312,9 @@ write_hosts_to_stream(const std::vector<std::shared_ptr<line>>& entries,
     if (ncflag && is_comment(entry))
       continue;
 
+    if (nelflag && is_empty_line(entry))
+      continue;
+
     os << entry->text << '\n';
   }
 }
@@ -317,6 +323,12 @@ bool
 is_comment(const std::shared_ptr<line>& entry)
 {
   return (dynamic_cast<comment_line *>(entry.get()) != nullptr);
+}
+
+bool
+is_empty_line(const std::shared_ptr<line>& entry)
+{
+  return (dynamic_cast<empty_line *>(entry.get()) != nullptr);
 }
 
 std::vector<std::shared_ptr<line>>
@@ -397,13 +409,14 @@ parse_opts(int argc, char **argv)
 
   int option_index = 0;
   static struct option long_options[] = {
-    {"file",        required_argument, nullptr, 'f'},
-    {"help",        no_argument,       nullptr, 'h'},
-    {"inplace",     no_argument,       nullptr, 'i'},
-    {"output-file", required_argument, nullptr, 'o'},
-    {"no-comments", no_argument,       nullptr, OPT_NO_COMMENTS},
-    {"version",     no_argument,       nullptr, OPT_VERSION},
-    {nullptr, 0,                       nullptr, 0}
+    {"file",           required_argument, nullptr, 'f'},
+    {"help",           no_argument,       nullptr, 'h'},
+    {"inplace",        no_argument,       nullptr, 'i'},
+    {"output-file",    required_argument, nullptr, 'o'},
+    {"no-comments",    no_argument,       nullptr, OPT_NO_COMMENTS},
+    {"no-empty-lines", no_argument,       nullptr, OPT_NO_EMPTY_LINES},
+    {"version",        no_argument,       nullptr, OPT_VERSION},
+    {nullptr,          0,                 nullptr, 0}
   };
 
   while ((ch = getopt_long(argc,
@@ -439,6 +452,10 @@ parse_opts(int argc, char **argv)
     case OPT_VERSION:
       print_version();
       exit(HOSTAGE_EXIT_OK);
+
+    case OPT_NO_EMPTY_LINES:
+      nelflag = true;
+      break;
 
     case '?':
       exit(1);
@@ -514,6 +531,7 @@ usage(std::ostream& stream)
   stream << " -h, --help            " << _("Show this message.\n");
   stream << " -i, --inplace         " << _("Modify the hosts file in place.\n");
   stream << "     --no-comments     " << _("Suppress comment lines from the output.\n");
+  stream << "     --no-empty-lines  " << _("Suppress empty lines from the output.\n");
   stream << " -o, --output-file     " << _("Specify an output file path (implies -i).\n");
   stream << "     --version         " << _("Show the version.\n");
   stream << "\n";
