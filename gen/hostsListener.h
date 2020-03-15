@@ -1,5 +1,5 @@
 
-// Generated from /Users/enrico/repos/github/hostage/src/antlr4/hosts.g4 by ANTLR 4.8
+// Generated from /Users/enrico.m.crisostomo/repos/hostage/src/antlr4/hosts.g4 by ANTLR 4.8
 
 #pragma once
 
@@ -77,11 +77,8 @@ public:
   virtual void enterSet_command(hosts::Set_commandContext *ctx) = 0;
   virtual void exitSet_command(hosts::Set_commandContext *ctx) = 0;
 
-  virtual void enterRm_host_command(hosts::Rm_host_commandContext *ctx) = 0;
-  virtual void exitRm_host_command(hosts::Rm_host_commandContext *ctx) = 0;
-
-  virtual void enterRm_address_command(hosts::Rm_address_commandContext *ctx) = 0;
-  virtual void exitRm_address_command(hosts::Rm_address_commandContext *ctx) = 0;
+  virtual void enterRm_command(hosts::Rm_commandContext *ctx) = 0;
+  virtual void exitRm_command(hosts::Rm_commandContext *ctx) = 0;
 
   virtual void enterCmd_list(hosts::Cmd_listContext *ctx) = 0;
   virtual void exitCmd_list(hosts::Cmd_listContext *ctx) = 0;
@@ -89,14 +86,8 @@ public:
   virtual void enterCmd_rm(hosts::Cmd_rmContext *ctx) = 0;
   virtual void exitCmd_rm(hosts::Cmd_rmContext *ctx) = 0;
 
-  virtual void enterCmd_host(hosts::Cmd_hostContext *ctx) = 0;
-  virtual void exitCmd_host(hosts::Cmd_hostContext *ctx) = 0;
-
   virtual void enterCmd_set(hosts::Cmd_setContext *ctx) = 0;
   virtual void exitCmd_set(hosts::Cmd_setContext *ctx) = 0;
-
-  virtual void enterCmd_address(hosts::Cmd_addressContext *ctx) = 0;
-  virtual void exitCmd_address(hosts::Cmd_addressContext *ctx) = 0;
 
 
 };

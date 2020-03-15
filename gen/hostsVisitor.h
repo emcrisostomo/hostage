@@ -1,5 +1,5 @@
 
-// Generated from /Users/enrico/repos/github/hostage/src/antlr4/hosts.g4 by ANTLR 4.8
+// Generated from /Users/enrico.m.crisostomo/repos/hostage/src/antlr4/hosts.g4 by ANTLR 4.8
 
 #pragma once
 
@@ -61,19 +61,13 @@ public:
 
     virtual antlrcpp::Any visitSet_command(hosts::Set_commandContext *context) = 0;
 
-    virtual antlrcpp::Any visitRm_host_command(hosts::Rm_host_commandContext *context) = 0;
-
-    virtual antlrcpp::Any visitRm_address_command(hosts::Rm_address_commandContext *context) = 0;
+    virtual antlrcpp::Any visitRm_command(hosts::Rm_commandContext *context) = 0;
 
     virtual antlrcpp::Any visitCmd_list(hosts::Cmd_listContext *context) = 0;
 
     virtual antlrcpp::Any visitCmd_rm(hosts::Cmd_rmContext *context) = 0;
 
-    virtual antlrcpp::Any visitCmd_host(hosts::Cmd_hostContext *context) = 0;
-
     virtual antlrcpp::Any visitCmd_set(hosts::Cmd_setContext *context) = 0;
-
-    virtual antlrcpp::Any visitCmd_address(hosts::Cmd_addressContext *context) = 0;
 
 
 };

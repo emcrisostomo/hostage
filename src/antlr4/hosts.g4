@@ -141,29 +141,22 @@ comment
 command_line
   : (list_command
   | set_command
-  | rm_host_command
-  | rm_address_command) EOF
+  | rm_command) EOF
   ;
 
 list_command
   : cmd_list
   ;
 
+// TODO: support adding multiple (host_name)+
 set_command
   : cmd_set Space+ (address) Space+ (host_name)
   ;
 
-
-rm_host_command
-  : cmd_rm Space+ cmd_host (Space+ host_name)+
-  ;
-
-rm_address_command
-  : cmd_rm Space+ cmd_address (Space+ address)+
+rm_command
+  : cmd_rm (Space+ (address|host_name))+
   ;
 
 cmd_list: L I S T;
 cmd_rm: R M;
-cmd_host: H O S T;
 cmd_set : S E T;
-cmd_address: A D D R E S S;
