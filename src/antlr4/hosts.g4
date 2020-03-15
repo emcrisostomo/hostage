@@ -134,10 +134,6 @@ comment
   :  (Space)* '#' ~(NewLine)*
   ;
 
-// commands
-// hostage set   (address) (host_name)
-// hostage rm    host    (host_name)+
-// hostage rm    address (address)+
 command_line
   : (list_command
   | set_command
@@ -148,9 +144,8 @@ list_command
   : cmd_list
   ;
 
-// TODO: support adding multiple (host_name)+
 set_command
-  : cmd_set Space+ (address) Space+ (host_name)
+  : cmd_set Space+ (address) (Space+ (host_name))+
   ;
 
 rm_command

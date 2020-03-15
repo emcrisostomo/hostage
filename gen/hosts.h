@@ -459,9 +459,10 @@ public:
     virtual size_t getRuleIndex() const override;
     Cmd_setContext *cmd_set();
     AddressContext *address();
-    Host_nameContext *host_name();
     std::vector<antlr4::tree::TerminalNode *> Space();
     antlr4::tree::TerminalNode* Space(size_t i);
+    std::vector<Host_nameContext *> host_name();
+    Host_nameContext* host_name(size_t i);
 
     virtual void enterRule(antlr4::tree::ParseTreeListener *listener) override;
     virtual void exitRule(antlr4::tree::ParseTreeListener *listener) override;
