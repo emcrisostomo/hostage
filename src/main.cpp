@@ -25,6 +25,7 @@
 #include <sys/stat.h>
 #include <pwd.h>
 #include <ctime>
+#include <set>
 #ifdef HAVE_CMAKE_CONFIG_H
 #  include "cmake_config.h"
 #endif
@@ -53,8 +54,10 @@ std::string get_backup_filename();
 std::vector<std::shared_ptr<line>> parse_hosts_and_get_entries();
 void write_hosts(const std::vector<std::shared_ptr<line>>& entries);
 std::string join_with_space(const std::vector<std::string>& vector);
-std::vector<std::shared_ptr<line>> rm_host_command(const std::vector<std::shared_ptr<line>>& entries, const std::vector<std::string>& host_names_to_remove);
-std::vector<std::shared_ptr<line>> rm_address_command(const std::vector<std::shared_ptr<line>>& entries, const std::vector<std::string>& host_names_to_remove);
+std::vector<std::shared_ptr<line>> rm_host_command(const std::vector<std::shared_ptr<line>>& entries,
+                                                   const std::vector<std::string>& host_names_to_remove);
+std::vector<std::shared_ptr<line>> rm_address_command(const std::vector<std::shared_ptr<line>>& entries,
+                                                      const std::vector<std::string>& host_names_to_remove);
 void write_hosts_to_stream(const std::vector<std::shared_ptr<line>>& entries, std::ostream& ostream);
 std::string get_input_file_path();
 std::string get_output_file_path();
@@ -220,19 +223,15 @@ join_with_space(const std::vector<std::string>& vector)
 void
 set_command(const command& command)
 {
-  const std::vector<std::shared_ptr<line>>& entries = parse_hosts_and_get_entries();
-  const std::string& address = command.addresses.front();
-  const std::string& host_name = command.host_names.front();
+  const auto& entries = parse_hosts_and_get_entries();
+  const auto& address = command.addresses.front();
+  std::set<std::string> host_names_to_set(command.host_names.begin(), command.host_names.end());
   std::vector<std::shared_ptr<line>> new_entries;
   new_entries.reserve(entries.size() + 1);
-  bool found{false};
 
   for (const auto& item : entries)
   {
     new_entries.push_back(item);
-
-    if (found)
-      continue;
 
     const table_entry *entry = dynamic_cast<table_entry *>(item.get());
 
@@ -242,20 +241,18 @@ set_command(const command& command)
     if (entry->address != address)
       continue;
 
-    if (std::find(entry->host_names.begin(),
-                  entry->host_names.end(),
-                  host_name) == entry->host_names.end())
-      continue;
-
-    found = true;
+    for (const auto& n : entry->host_names)
+      host_names_to_set.erase(n);
   }
 
-  if (!found)
+  if (!host_names_to_set.empty())
   {
     auto *entry = new table_entry();
     entry->address = address;
-    entry->host_names.push_back(host_name);
-    entry->text = address + " " + host_name;
+    std::copy(host_names_to_set.begin(),
+              host_names_to_set.end(),
+              std::back_inserter(entry->host_names));
+    entry->text = address + join_with_space(entry->host_names);
 
     new_entries.push_back(std::shared_ptr<line>(entry));
   }
@@ -391,7 +388,7 @@ parse_opts(int argc, char **argv)
     {"help",        no_argument,       nullptr, 'h'},
     {"output-file", required_argument, nullptr, 'o'},
     {"version",     no_argument,       nullptr, OPT_VERSION},
-    {nullptr,       0,                 nullptr, 0}
+    {nullptr, 0,                       nullptr, 0}
   };
 
   while ((ch = getopt_long(argc,
