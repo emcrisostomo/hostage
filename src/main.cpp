@@ -50,16 +50,17 @@ void backup_hosts_file();
 std::string get_username();
 std::string get_pwd();
 std::string get_backup_filename();
-void set_command(const command& command);
 std::vector<std::shared_ptr<line>> parse_hosts_and_get_entries();
 void write_hosts(const std::vector<std::shared_ptr<line>>& entries);
-void rm_host_command(const command& command);
 std::string join_with_space(const std::vector<std::string>& vector);
-void rm_address_command(const command& command);
+std::vector<std::shared_ptr<line>> rm_host_command(const std::vector<std::shared_ptr<line>>& entries, const std::vector<std::string>& host_names_to_remove);
+std::vector<std::shared_ptr<line>> rm_address_command(const std::vector<std::shared_ptr<line>>& entries, const std::vector<std::string>& host_names_to_remove);
 void write_hosts_to_stream(const std::vector<std::shared_ptr<line>>& entries, std::ostream& ostream);
 std::string get_input_file_path();
 std::string get_output_file_path();
 void list_command(const command& command);
+void set_command(const command& command);
+void rm_command(const command& command);
 
 int
 main(int argc, char **argv)
@@ -89,12 +90,8 @@ main(int argc, char **argv)
       list_command(cmd);
       return 0;
 
-    case hostage_command::RM_ADDRESS:
-      rm_address_command(cmd);
-      return 0;
-
-    case hostage_command::RM_HOST:
-      rm_host_command(cmd);
+    case hostage_command::RM:
+      rm_command(cmd);
       return 0;
 
     case hostage_command::SET:
@@ -128,10 +125,19 @@ list_command(const command& command)
 }
 
 void
-rm_address_command(const command& command)
+rm_command(const command& command)
 {
   const std::vector<std::shared_ptr<line>>& entries = parse_hosts_and_get_entries();
-  const std::vector<std::string>& address_to_remove = command.addresses;
+
+  const auto& address_filtered_entries = rm_address_command(entries, command.addresses);
+  const auto& all_filtered_entries = rm_host_command(address_filtered_entries, command.host_names);
+
+  write_hosts(all_filtered_entries);
+}
+
+std::vector<std::shared_ptr<line>>
+rm_address_command(const std::vector<std::shared_ptr<line>>& entries, const std::vector<std::string>& address_to_remove)
+{
   std::vector<std::shared_ptr<line>> new_entries;
   new_entries.reserve(entries.size() + 1);
 
@@ -148,14 +154,12 @@ rm_address_command(const command& command)
     new_entries.push_back(item);
   }
 
-  write_hosts(new_entries);
+  return new_entries;
 }
 
-void
-rm_host_command(const command& command)
+std::vector<std::shared_ptr<line>>
+rm_host_command(const std::vector<std::shared_ptr<line>>& entries, const std::vector<std::string>& host_names_to_remove)
 {
-  const std::vector<std::shared_ptr<line>>& entries = parse_hosts_and_get_entries();
-  const std::vector<std::string>& host_names_to_remove = command.host_names;
   std::vector<std::shared_ptr<line>> new_entries;
   new_entries.reserve(entries.size() + 1);
 
@@ -196,7 +200,7 @@ rm_host_command(const command& command)
     new_entries.push_back(std::shared_ptr<line>(new_entry));
   }
 
-  write_hosts(new_entries);
+  return new_entries;
 }
 
 std::string
@@ -321,7 +325,7 @@ backup_hosts_file()
 {
   const std::string& backup_file_name = get_backup_filename();
   const std::string& input_file_path = get_input_file_path();
-  
+
   std::ifstream src(input_file_path, std::ios::binary);
   std::ofstream dst(backup_file_name, std::ios::binary);
   dst << src.rdbuf();
@@ -499,8 +503,7 @@ usage(std::ostream& stream)
   stream << _("Commands:\n");
   stream << " list                       " << _("Dumps (and validates) the hosts file.\n");
   stream << " set (address) (host_name)  " << _("Set a host file entry with the specified contents.\n");
-  stream << " rm host (host_name)+       " << _("Remove the specified host name.\n");
-  stream << " rm address (address)+      " << _("Remove the specified address.\n");
+  stream << " rm (address|host_name)+    " << _("Remove the specified address or host name.\n");
   stream << "\n";
   stream << _("See the man page for more information.\n\n");
   stream << _("Report bugs to <") << PACKAGE_BUGREPORT << ">.\n";

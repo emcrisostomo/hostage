@@ -54,21 +54,14 @@ command_parser::exitList_command(hosts::List_commandContext *context)
 }
 
 void
-command_parser::exitRm_host_command(hosts::Rm_host_commandContext *context)
-{
-  cmd.command = hostage_command::RM_HOST;
-}
-
-void
-command_parser::exitRm_address_command(hosts::Rm_address_commandContext *context)
-{
-  cmd.command = hostage_command::RM_ADDRESS;
-}
-
-void
 command_parser::exitSet_command(hosts::Set_commandContext *context)
 {
   cmd.command = hostage_command::SET;
+}
+
+void command_parser::exitRm_command(hosts::Rm_commandContext *context)
+{
+  cmd.command = hostage_command::RM;
 }
 
 command

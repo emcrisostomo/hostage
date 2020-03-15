@@ -31,8 +31,7 @@ public:
     UNSET,
     LIST,
     SET,
-    RM_HOST,
-    RM_ADDRESS
+    RM
   };
 
   hostage_command() = default;
@@ -58,11 +57,8 @@ public:
     case SET:
       return "set";
 
-    case RM_HOST:
-      return "rm host";
-
-    case RM_ADDRESS:
-      return "rm address";
+    case RM:
+      return "rm";
 
     default:
       throw std::runtime_error(_("Unknown command id: ") + std::to_string(value));
@@ -87,8 +83,7 @@ public:
   void parse(const std::string& command_args);
 
   void exitList_command(hosts::List_commandContext *context) override;
-  void exitRm_address_command(hosts::Rm_address_commandContext *context) override;
-  void exitRm_host_command(hosts::Rm_host_commandContext *context) override;
+  void exitRm_command(hosts::Rm_commandContext *context) override;
   void exitSet_command(hosts::Set_commandContext *context) override;
   void exitAddress(hosts::AddressContext *context) override;
   void exitHost_name(hosts::Host_nameContext *context) override;
