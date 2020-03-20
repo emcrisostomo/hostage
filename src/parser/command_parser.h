@@ -31,7 +31,8 @@ public:
     UNSET,
     LIST,
     SET,
-    PURGE
+    PURGE,
+    RM
   };
 
   hostage_command() = default;
@@ -60,6 +61,9 @@ public:
     case PURGE:
       return "purge";
 
+    case RM:
+      return "rm";
+
     default:
       throw std::runtime_error(_("Unknown command id: ") + std::to_string(value));
     }
@@ -85,6 +89,7 @@ public:
   void exitList_command(hosts::List_commandContext *context) override;
   void exitPurge_command(hosts::Purge_commandContext *context) override;
   void exitSet_command(hosts::Set_commandContext *context) override;
+  void exitRm_command(hosts::Rm_commandContext *context) override;
   void exitAddress(hosts::AddressContext *context) override;
   void exitHost_name(hosts::Host_nameContext *context) override;
   void visitErrorNode(antlr4::tree::ErrorNode *node) override;

@@ -68,6 +68,7 @@ std::string get_output_file_path();
 void list_command(const command& command);
 void set_command(const command& command);
 void purge_command(const command& command);
+void rm_command(const command& command);
 bool is_comment(const std::shared_ptr<line>& entry);
 bool is_empty_line(const std::shared_ptr<line>& entry);
 
@@ -109,6 +110,10 @@ main(int argc, char **argv)
       set_command(cmd);
       return 0;
 
+    case hostage_command::RM:
+      rm_command(cmd);
+      return 0;
+
     case hostage_command::UNSET:
     default:
       std::cerr << _("Unexpected command.\n");
@@ -144,6 +149,47 @@ purge_command(const command& command)
   const auto& all_filtered_entries = rm_host_command(address_filtered_entries, command.host_names);
 
   write_hosts(all_filtered_entries);
+}
+
+void
+rm_command(const command& command)
+{
+  const std::string& address_to_match = command.addresses.front();
+  const std::vector<std::shared_ptr<line>>& entries = parse_hosts_and_get_entries();
+  std::vector<std::shared_ptr<line>> filtered_entries;
+  filtered_entries.reserve(entries.size());
+
+  for (const auto& item : entries)
+  {
+    const table_entry *entry = dynamic_cast<table_entry *>(item.get());
+
+    if (entry == nullptr
+        || entry->address != address_to_match)
+    {
+      filtered_entries.push_back(item);
+      continue;
+    }
+
+    std::set<std::string> host_names_to_add;
+    host_names_to_add.insert(entry->host_names.begin(), entry->host_names.end());
+
+    for (const auto& c : command.host_names)
+      host_names_to_add.erase(c);
+
+    if (!host_names_to_add.empty())
+    {
+      std::vector<std::string> host_names_list(host_names_to_add.begin(),
+                                               host_names_to_add.end());
+      auto *new_entry = new table_entry();
+      new_entry->address = address_to_match;
+      new_entry->host_names = std::move(host_names_list);
+      new_entry->text = address_to_match + join_with_space(new_entry->host_names);
+
+      filtered_entries.push_back(std::shared_ptr<line>(new_entry));
+    }
+  }
+
+  write_hosts(filtered_entries);
 }
 
 std::vector<std::shared_ptr<line>>
@@ -418,7 +464,7 @@ parse_opts(int argc, char **argv)
     {"no-comments",    no_argument,       nullptr, OPT_NO_COMMENTS},
     {"no-empty-lines", no_argument,       nullptr, OPT_NO_EMPTY_LINES},
     {"version",        no_argument,       nullptr, OPT_VERSION},
-    {nullptr,          0,                 nullptr, 0}
+    {nullptr, 0,                          nullptr, 0}
   };
 
   while ((ch = getopt_long(argc,
@@ -540,6 +586,7 @@ usage(std::ostream& stream)
   stream << _("Commands:\n");
   stream << " list                        " << _("Dumps (and validates) the hosts file.\n");
   stream << " set (address) (host_name)+  " << _("Set a host file entry with the specified contents.\n");
+  stream << " rm (address) (host_name)+   " << _("Remove the specified entries.\n");
   stream << " purge (address|host_name)+  " << _("Remove the specified address or host name.\n");
   stream << "\n";
   stream << _("See the man page for more information.\n\n");

@@ -119,8 +119,8 @@ it:
 $ hostage list
 ```
 
-Adding entries to the host name database file
----------------------------------------------
+Adding entries
+--------------
 
 The `set` command can be used to add entries to the host name database file:
 
@@ -135,6 +135,20 @@ host name files for the specified address:
 * If the address is already present, a new entry is created containing the
 provided list of host names, _except_ those that had already been specified for
 the same address.
+
+Removing entries
+----------------
+
+The `rm` command can be used to remove entries from the host name database file:
+
+```shell script
+$ hostage rm (address) (host_name)+
+```
+
+The `rm` command parses the host name database file and removes the specified
+host names from the entries of the specified address.  If no host names are
+left as a result of the removal, the corresponding entries are removed from
+the hosts file. 
 
 Purging addresses or host names
 -------------------------------
@@ -192,6 +206,7 @@ Options:
 Commands:
  list                        Dumps (and validates) the hosts file.
  set (address) (host_name)+  Set a host file entry with the specified contents.
+ rm (address) (host_name)+   Remove the specified entries.
  purge (address|host_name)+  Remove the specified address or host name.
 
 See the man page for more information.
