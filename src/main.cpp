@@ -25,7 +25,7 @@
 #include <sys/stat.h>
 #include <pwd.h>
 #include <ctime>
-#include <set>
+#include <unordered_set>
 #ifdef HAVE_CMAKE_CONFIG_H
 #  include "cmake_config.h"
 #endif
@@ -59,9 +59,9 @@ std::vector<std::shared_ptr<line>> parse_hosts_and_get_entries();
 void write_hosts(const std::vector<std::shared_ptr<line>>& entries);
 std::string join_with_space(const std::vector<std::string>& vector);
 std::vector<std::shared_ptr<line>> rm_host_command(const std::vector<std::shared_ptr<line>>& entries,
-                                                   const std::vector<std::string>& host_names_to_remove);
+                                                   const std::unordered_set<std::string>& host_names_to_remove);
 std::vector<std::shared_ptr<line>> rm_address_command(const std::vector<std::shared_ptr<line>>& entries,
-                                                      const std::vector<std::string>& address_to_remove);
+                                                      const std::unordered_set<std::string>& address_to_remove);
 void write_hosts_to_stream(const std::vector<std::shared_ptr<line>>& entries, std::ostream& ostream);
 std::string get_input_file_path();
 std::string get_output_file_path();
@@ -154,7 +154,7 @@ purge_command(const command& command)
 void
 rm_command(const command& command)
 {
-  const std::string& address_to_match = command.addresses.front();
+  const std::string& address_to_match = *command.addresses.begin();
   const std::vector<std::shared_ptr<line>>& entries = parse_hosts_and_get_entries();
   std::vector<std::shared_ptr<line>> filtered_entries;
   filtered_entries.reserve(entries.size());
@@ -170,7 +170,7 @@ rm_command(const command& command)
       continue;
     }
 
-    std::set<std::string> host_names_to_add;
+    std::unordered_set<std::string> host_names_to_add;
     host_names_to_add.insert(entry->host_names.begin(), entry->host_names.end());
 
     for (const auto& c : command.host_names)
@@ -193,7 +193,8 @@ rm_command(const command& command)
 }
 
 std::vector<std::shared_ptr<line>>
-rm_address_command(const std::vector<std::shared_ptr<line>>& entries, const std::vector<std::string>& address_to_remove)
+rm_address_command(const std::vector<std::shared_ptr<line>>& entries,
+                   const std::unordered_set<std::string>& address_to_remove)
 {
   std::vector<std::shared_ptr<line>> new_entries;
   new_entries.reserve(entries.size() + 1);
@@ -215,7 +216,8 @@ rm_address_command(const std::vector<std::shared_ptr<line>>& entries, const std:
 }
 
 std::vector<std::shared_ptr<line>>
-rm_host_command(const std::vector<std::shared_ptr<line>>& entries, const std::vector<std::string>& host_names_to_remove)
+rm_host_command(const std::vector<std::shared_ptr<line>>& entries,
+                const std::unordered_set<std::string>& host_names_to_remove)
 {
   std::vector<std::shared_ptr<line>> new_entries;
   new_entries.reserve(entries.size() + 1);
@@ -278,8 +280,8 @@ void
 set_command(const command& command)
 {
   const auto& entries = parse_hosts_and_get_entries();
-  const auto& address = command.addresses.front();
-  std::set<std::string> host_names_to_set(command.host_names.begin(), command.host_names.end());
+  const auto& address = *command.addresses.begin();
+  std::unordered_set<std::string> host_names_to_set = command.host_names;
   std::vector<std::shared_ptr<line>> new_entries;
   new_entries.reserve(entries.size() + 1);
 

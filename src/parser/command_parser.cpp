@@ -38,13 +38,13 @@ command_parser::parse(const std::string& command_args)
 void
 command_parser::exitAddress(hosts::AddressContext *context)
 {
-  cmd.addresses.push_back(context->getText());
+  cmd.addresses.insert(context->getText());
 }
 
 void
 command_parser::exitHost_name(hosts::Host_nameContext *context)
 {
-  cmd.host_names.push_back(context->getText());
+  cmd.host_names.insert(context->getText());
 }
 
 void
