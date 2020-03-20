@@ -136,17 +136,17 @@ host name files for the specified address:
 provided list of host names, _except_ those that had already been specified for
 the same address.
 
-Removing addresses or host names
---------------------------------
+Purging addresses or host names
+-------------------------------
 
-The `rm` command can be used to either remove entries for an address, or host
+The `purge` command can be used to either remove entries for an address, or host
 names for any address:
 
 ```shell script
-$ hostage rm (address|host_name)+
+$ hostage purge (address|host_name)+
 ```
 
-The `rm` command parses the host name database file and removes entries using
+The `purge` command parses the host name database file and removes entries using
 the following algorithm:
 
 * If the entry belongs to a specified address, then the entry is removed.
@@ -190,9 +190,9 @@ Options:
      --version         Show the version.
 
 Commands:
- list                       Dumps (and validates) the hosts file.
- set (address) (host_name)+ Set a host file entry with the specified contents.
- rm (address|host_name)+    Remove the specified address or host name.
+ list                        Dumps (and validates) the hosts file.
+ set (address) (host_name)+  Set a host file entry with the specified contents.
+ purge (address|host_name)+  Remove the specified address or host name.
 
 See the man page for more information.
 
