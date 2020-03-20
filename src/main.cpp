@@ -89,8 +89,10 @@ main(int argc, char **argv)
     return 4;
   }
 
+  // TODO: read the host name database from stdin, if piped
   try
   {
+    // TODO: backup the output file, not the input file
     backup_hosts_file();
 
     switch (cmd.command)
