@@ -31,7 +31,7 @@ public:
     UNSET,
     LIST,
     SET,
-    RM
+    PURGE
   };
 
   hostage_command() = default;
@@ -57,8 +57,8 @@ public:
     case SET:
       return "set";
 
-    case RM:
-      return "rm";
+    case PURGE:
+      return "purge";
 
     default:
       throw std::runtime_error(_("Unknown command id: ") + std::to_string(value));
@@ -83,7 +83,7 @@ public:
   void parse(const std::string& command_args);
 
   void exitList_command(hosts::List_commandContext *context) override;
-  void exitRm_command(hosts::Rm_commandContext *context) override;
+  void exitPurge_command(hosts::Purge_commandContext *context) override;
   void exitSet_command(hosts::Set_commandContext *context) override;
   void exitAddress(hosts::AddressContext *context) override;
   void exitHost_name(hosts::Host_nameContext *context) override;

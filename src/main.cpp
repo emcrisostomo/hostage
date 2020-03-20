@@ -67,7 +67,7 @@ std::string get_input_file_path();
 std::string get_output_file_path();
 void list_command(const command& command);
 void set_command(const command& command);
-void rm_command(const command& command);
+void purge_command(const command& command);
 bool is_comment(const std::shared_ptr<line>& entry);
 bool is_empty_line(const std::shared_ptr<line>& entry);
 
@@ -101,8 +101,8 @@ main(int argc, char **argv)
       list_command(cmd);
       return 0;
 
-    case hostage_command::RM:
-      rm_command(cmd);
+    case hostage_command::PURGE:
+      purge_command(cmd);
       return 0;
 
     case hostage_command::SET:
@@ -136,7 +136,7 @@ list_command(const command& command)
 }
 
 void
-rm_command(const command& command)
+purge_command(const command& command)
 {
   const std::vector<std::shared_ptr<line>>& entries = parse_hosts_and_get_entries();
 
