@@ -18,8 +18,8 @@
 #include <fstream>
 #include <getopt.h>
 #include <algorithm>
-#include "hosts_parser/hosts_file_parser.h"
-#include "hosts_parser/command_parser.h"
+#include "parser/hosts_file_parser.h"
+#include "parser/command_parser.h"
 #include <unistd.h>
 #include <sys/types.h>
 #include <sys/stat.h>
