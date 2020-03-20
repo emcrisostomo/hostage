@@ -136,6 +136,7 @@ comment
 
 command_line
   : (list_command
+  | purge_command
   | set_command
   | rm_command) EOF
   ;
@@ -148,10 +149,15 @@ set_command
   : cmd_set Space+ (address) (Space+ (host_name))+
   ;
 
+purge_command
+  : cmd_purge (Space+ (address|host_name))+
+  ;
+
 rm_command
-  : cmd_rm (Space+ (address|host_name))+
+  : cmd_rm Space+ address (Space+ (host_name))+
   ;
 
 cmd_list: L I S T;
+cmd_purge: P U R G E;
 cmd_rm: R M;
 cmd_set : S E T;
