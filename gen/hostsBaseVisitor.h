@@ -99,11 +99,19 @@ public:
     return visitChildren(ctx);
   }
 
+  virtual antlrcpp::Any visitPurge_command(hosts::Purge_commandContext *ctx) override {
+    return visitChildren(ctx);
+  }
+
   virtual antlrcpp::Any visitRm_command(hosts::Rm_commandContext *ctx) override {
     return visitChildren(ctx);
   }
 
   virtual antlrcpp::Any visitCmd_list(hosts::Cmd_listContext *ctx) override {
+    return visitChildren(ctx);
+  }
+
+  virtual antlrcpp::Any visitCmd_purge(hosts::Cmd_purgeContext *ctx) override {
     return visitChildren(ctx);
   }
 

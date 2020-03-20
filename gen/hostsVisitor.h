@@ -61,9 +61,13 @@ public:
 
     virtual antlrcpp::Any visitSet_command(hosts::Set_commandContext *context) = 0;
 
+    virtual antlrcpp::Any visitPurge_command(hosts::Purge_commandContext *context) = 0;
+
     virtual antlrcpp::Any visitRm_command(hosts::Rm_commandContext *context) = 0;
 
     virtual antlrcpp::Any visitCmd_list(hosts::Cmd_listContext *context) = 0;
+
+    virtual antlrcpp::Any visitCmd_purge(hosts::Cmd_purgeContext *context) = 0;
 
     virtual antlrcpp::Any visitCmd_rm(hosts::Cmd_rmContext *context) = 0;
 

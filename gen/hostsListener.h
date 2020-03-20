@@ -77,11 +77,17 @@ public:
   virtual void enterSet_command(hosts::Set_commandContext *ctx) = 0;
   virtual void exitSet_command(hosts::Set_commandContext *ctx) = 0;
 
+  virtual void enterPurge_command(hosts::Purge_commandContext *ctx) = 0;
+  virtual void exitPurge_command(hosts::Purge_commandContext *ctx) = 0;
+
   virtual void enterRm_command(hosts::Rm_commandContext *ctx) = 0;
   virtual void exitRm_command(hosts::Rm_commandContext *ctx) = 0;
 
   virtual void enterCmd_list(hosts::Cmd_listContext *ctx) = 0;
   virtual void exitCmd_list(hosts::Cmd_listContext *ctx) = 0;
+
+  virtual void enterCmd_purge(hosts::Cmd_purgeContext *ctx) = 0;
+  virtual void exitCmd_purge(hosts::Cmd_purgeContext *ctx) = 0;
 
   virtual void enterCmd_rm(hosts::Cmd_rmContext *ctx) = 0;
   virtual void exitCmd_rm(hosts::Cmd_rmContext *ctx) = 0;

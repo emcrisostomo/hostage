@@ -79,11 +79,17 @@ public:
   virtual void enterSet_command(hosts::Set_commandContext * /*ctx*/) override { }
   virtual void exitSet_command(hosts::Set_commandContext * /*ctx*/) override { }
 
+  virtual void enterPurge_command(hosts::Purge_commandContext * /*ctx*/) override { }
+  virtual void exitPurge_command(hosts::Purge_commandContext * /*ctx*/) override { }
+
   virtual void enterRm_command(hosts::Rm_commandContext * /*ctx*/) override { }
   virtual void exitRm_command(hosts::Rm_commandContext * /*ctx*/) override { }
 
   virtual void enterCmd_list(hosts::Cmd_listContext * /*ctx*/) override { }
   virtual void exitCmd_list(hosts::Cmd_listContext * /*ctx*/) override { }
+
+  virtual void enterCmd_purge(hosts::Cmd_purgeContext * /*ctx*/) override { }
+  virtual void exitCmd_purge(hosts::Cmd_purgeContext * /*ctx*/) override { }
 
   virtual void enterCmd_rm(hosts::Cmd_rmContext * /*ctx*/) override { }
   virtual void exitCmd_rm(hosts::Cmd_rmContext * /*ctx*/) override { }
