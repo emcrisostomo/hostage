@@ -35,7 +35,6 @@ static const int OPT_VERSION = 128;
 static const int OPT_NO_COMMENTS = 129;
 static const int OPT_NO_EMPTY_LINES = 130;
 static const int HOSTAGE_EXIT_OK = 0;
-static const std::string HOSTS_FILE = "/etc/hosts";
 
 static bool fflag = false;
 static bool iflag = false;
@@ -346,12 +345,18 @@ get_command(const command& command)
 }
 
 std::string
+get_default_hosts_file_path()
+{
+  return "/etc/hosts";
+}
+
+std::string
 get_input_file_path()
 {
   if (fflag)
     return input_file;
   else
-    return HOSTS_FILE;
+    return get_default_hosts_file_path();
 }
 
 std::string
@@ -360,7 +365,7 @@ get_output_file_path()
   if (oflag)
     return output_file;
   else
-    return HOSTS_FILE;
+    return get_default_hosts_file_path();
 }
 
 void
