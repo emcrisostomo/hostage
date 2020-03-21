@@ -209,9 +209,7 @@ rm_address_command(const std::vector<std::shared_ptr<line>>& entries,
     const table_entry *entry = dynamic_cast<table_entry *>(item.get());
 
     if (entry != nullptr
-        && std::find(address_to_remove.begin(),
-                     address_to_remove.end(),
-                     entry->address) != address_to_remove.end())
+        && address_to_remove.find(entry->address) != address_to_remove.end())
       continue;
 
     new_entries.push_back(item);
@@ -242,8 +240,7 @@ rm_host_command(const std::vector<std::shared_ptr<line>>& entries,
     // but we want to generate minimal changes to the hosts file
     for (const auto& name : entry->host_names)
     {
-      if (std::find(host_names_to_remove.begin(),
-                    host_names_to_remove.end(), name) == host_names_to_remove.end())
+      if (host_names_to_remove.find(name) == host_names_to_remove.end())
         filtered_host_names.push_back(name);
     }
 
