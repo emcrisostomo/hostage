@@ -99,6 +99,10 @@ public:
     return visitChildren(ctx);
   }
 
+  virtual antlrcpp::Any visitGet_command(hosts::Get_commandContext *ctx) override {
+    return visitChildren(ctx);
+  }
+
   virtual antlrcpp::Any visitPurge_command(hosts::Purge_commandContext *ctx) override {
     return visitChildren(ctx);
   }
@@ -120,6 +124,10 @@ public:
   }
 
   virtual antlrcpp::Any visitCmd_set(hosts::Cmd_setContext *ctx) override {
+    return visitChildren(ctx);
+  }
+
+  virtual antlrcpp::Any visitCmd_get(hosts::Cmd_getContext *ctx) override {
     return visitChildren(ctx);
   }
 

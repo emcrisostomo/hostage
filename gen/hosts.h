@@ -26,8 +26,8 @@ public:
     RuleLs32 = 8, RuleHexdig = 9, RuleDec_octet = 10, RuleDigit = 11, RuleNon_zero_digit = 12, 
     RuleHost_name = 13, RuleIreg_name = 14, RuleIunreserved = 15, RuleAlpha = 16, 
     RuleComment = 17, RuleCommand_line = 18, RuleList_command = 19, RuleSet_command = 20, 
-    RulePurge_command = 21, RuleRm_command = 22, RuleCmd_list = 23, RuleCmd_purge = 24, 
-    RuleCmd_rm = 25, RuleCmd_set = 26
+    RuleGet_command = 21, RulePurge_command = 22, RuleRm_command = 23, RuleCmd_list = 24, 
+    RuleCmd_purge = 25, RuleCmd_rm = 26, RuleCmd_set = 27, RuleCmd_get = 28
   };
 
   hosts(antlr4::TokenStream *input);
@@ -61,12 +61,14 @@ public:
   class Command_lineContext;
   class List_commandContext;
   class Set_commandContext;
+  class Get_commandContext;
   class Purge_commandContext;
   class Rm_commandContext;
   class Cmd_listContext;
   class Cmd_purgeContext;
   class Cmd_rmContext;
-  class Cmd_setContext; 
+  class Cmd_setContext;
+  class Cmd_getContext; 
 
   class  Hosts_fileContext : public antlr4::ParserRuleContext {
   public:
@@ -431,6 +433,7 @@ public:
     List_commandContext *list_command();
     Purge_commandContext *purge_command();
     Set_commandContext *set_command();
+    Get_commandContext *get_command();
     Rm_commandContext *rm_command();
 
     virtual void enterRule(antlr4::tree::ParseTreeListener *listener) override;
@@ -476,6 +479,24 @@ public:
   };
 
   Set_commandContext* set_command();
+
+  class  Get_commandContext : public antlr4::ParserRuleContext {
+  public:
+    Get_commandContext(antlr4::ParserRuleContext *parent, size_t invokingState);
+    virtual size_t getRuleIndex() const override;
+    Cmd_getContext *cmd_get();
+    AddressContext *address();
+    std::vector<antlr4::tree::TerminalNode *> Space();
+    antlr4::tree::TerminalNode* Space(size_t i);
+
+    virtual void enterRule(antlr4::tree::ParseTreeListener *listener) override;
+    virtual void exitRule(antlr4::tree::ParseTreeListener *listener) override;
+
+    virtual antlrcpp::Any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
+   
+  };
+
+  Get_commandContext* get_command();
 
   class  Purge_commandContext : public antlr4::ParserRuleContext {
   public:
@@ -587,6 +608,23 @@ public:
   };
 
   Cmd_setContext* cmd_set();
+
+  class  Cmd_getContext : public antlr4::ParserRuleContext {
+  public:
+    Cmd_getContext(antlr4::ParserRuleContext *parent, size_t invokingState);
+    virtual size_t getRuleIndex() const override;
+    antlr4::tree::TerminalNode *G();
+    antlr4::tree::TerminalNode *E();
+    antlr4::tree::TerminalNode *T();
+
+    virtual void enterRule(antlr4::tree::ParseTreeListener *listener) override;
+    virtual void exitRule(antlr4::tree::ParseTreeListener *listener) override;
+
+    virtual antlrcpp::Any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
+   
+  };
+
+  Cmd_getContext* cmd_get();
 
 
 private:

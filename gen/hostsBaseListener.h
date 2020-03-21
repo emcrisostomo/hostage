@@ -79,6 +79,9 @@ public:
   virtual void enterSet_command(hosts::Set_commandContext * /*ctx*/) override { }
   virtual void exitSet_command(hosts::Set_commandContext * /*ctx*/) override { }
 
+  virtual void enterGet_command(hosts::Get_commandContext * /*ctx*/) override { }
+  virtual void exitGet_command(hosts::Get_commandContext * /*ctx*/) override { }
+
   virtual void enterPurge_command(hosts::Purge_commandContext * /*ctx*/) override { }
   virtual void exitPurge_command(hosts::Purge_commandContext * /*ctx*/) override { }
 
@@ -96,6 +99,9 @@ public:
 
   virtual void enterCmd_set(hosts::Cmd_setContext * /*ctx*/) override { }
   virtual void exitCmd_set(hosts::Cmd_setContext * /*ctx*/) override { }
+
+  virtual void enterCmd_get(hosts::Cmd_getContext * /*ctx*/) override { }
+  virtual void exitCmd_get(hosts::Cmd_getContext * /*ctx*/) override { }
 
 
   virtual void enterEveryRule(antlr4::ParserRuleContext * /*ctx*/) override { }

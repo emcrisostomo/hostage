@@ -138,6 +138,7 @@ command_line
   : (list_command
   | purge_command
   | set_command
+  | get_command
   | rm_command) EOF
   ;
 
@@ -147,6 +148,10 @@ list_command
 
 set_command
   : cmd_set Space+ (address) (Space+ (host_name))+
+  ;
+
+get_command
+  : cmd_get Space+ (address)
   ;
 
 purge_command
@@ -161,3 +166,4 @@ cmd_list: L I S T;
 cmd_purge: P U R G E;
 cmd_rm: R M;
 cmd_set : S E T;
+cmd_get : G E T;

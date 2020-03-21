@@ -61,6 +61,8 @@ public:
 
     virtual antlrcpp::Any visitSet_command(hosts::Set_commandContext *context) = 0;
 
+    virtual antlrcpp::Any visitGet_command(hosts::Get_commandContext *context) = 0;
+
     virtual antlrcpp::Any visitPurge_command(hosts::Purge_commandContext *context) = 0;
 
     virtual antlrcpp::Any visitRm_command(hosts::Rm_commandContext *context) = 0;
@@ -72,6 +74,8 @@ public:
     virtual antlrcpp::Any visitCmd_rm(hosts::Cmd_rmContext *context) = 0;
 
     virtual antlrcpp::Any visitCmd_set(hosts::Cmd_setContext *context) = 0;
+
+    virtual antlrcpp::Any visitCmd_get(hosts::Cmd_getContext *context) = 0;
 
 
 };

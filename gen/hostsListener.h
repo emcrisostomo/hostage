@@ -77,6 +77,9 @@ public:
   virtual void enterSet_command(hosts::Set_commandContext *ctx) = 0;
   virtual void exitSet_command(hosts::Set_commandContext *ctx) = 0;
 
+  virtual void enterGet_command(hosts::Get_commandContext *ctx) = 0;
+  virtual void exitGet_command(hosts::Get_commandContext *ctx) = 0;
+
   virtual void enterPurge_command(hosts::Purge_commandContext *ctx) = 0;
   virtual void exitPurge_command(hosts::Purge_commandContext *ctx) = 0;
 
@@ -94,6 +97,9 @@ public:
 
   virtual void enterCmd_set(hosts::Cmd_setContext *ctx) = 0;
   virtual void exitCmd_set(hosts::Cmd_setContext *ctx) = 0;
+
+  virtual void enterCmd_get(hosts::Cmd_getContext *ctx) = 0;
+  virtual void exitCmd_get(hosts::Cmd_getContext *ctx) = 0;
 
 
 };
