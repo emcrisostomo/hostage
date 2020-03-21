@@ -57,6 +57,7 @@ std::string get_pwd();
 std::string get_backup_filename();
 std::vector<std::shared_ptr<line>> parse_hosts_and_get_entries();
 void write_hosts(const std::vector<std::shared_ptr<line>>& entries);
+void write_host_names(const std::unordered_set<std::string>& host_names);
 std::string join_with_space(const std::vector<std::string>& vector);
 std::vector<std::shared_ptr<line>> rm_host_command(const std::vector<std::shared_ptr<line>>& entries,
                                                    const std::unordered_set<std::string>& host_names_to_remove);
@@ -67,6 +68,7 @@ std::string get_input_file_path();
 std::string get_output_file_path();
 void list_command(const command& command);
 void set_command(const command& command);
+void get_command(const command& command);
 void purge_command(const command& command);
 void rm_command(const command& command);
 bool is_comment(const std::shared_ptr<line>& entry);
@@ -108,6 +110,10 @@ main(int argc, char **argv)
 
     case hostage_command::SET:
       set_command(cmd);
+      return 0;
+
+    case hostage_command::GET:
+      get_command(cmd);
       return 0;
 
     case hostage_command::RM:
@@ -316,6 +322,29 @@ set_command(const command& command)
   write_hosts(new_entries);
 }
 
+void
+get_command(const command& command)
+{
+  const auto& entries = parse_hosts_and_get_entries();
+  const auto& address = *command.addresses.begin();
+  std::unordered_set<std::string> host_names;
+
+  for (const auto& item : entries)
+  {
+    const table_entry *entry = dynamic_cast<table_entry *>(item.get());
+
+    if (entry == nullptr)
+      continue;
+
+    if (entry->address != address)
+      continue;
+
+    host_names.insert(entry->host_names.begin(), entry->host_names.end());
+  }
+
+  write_host_names(host_names);
+}
+
 std::string
 get_input_file_path()
 {
@@ -332,6 +361,13 @@ get_output_file_path()
     return output_file;
   else
     return HOSTS_FILE;
+}
+
+void
+write_host_names(const std::unordered_set<std::string>& host_names)
+{
+  for (const auto& host_name : host_names)
+    std::cout << host_name << '\n';
 }
 
 void
@@ -588,6 +624,7 @@ usage(std::ostream& stream)
   stream << _("Commands:\n");
   stream << " list                        " << _("Dumps (and validates) the hosts file.\n");
   stream << " set (address) (host_name)+  " << _("Set a host file entry with the specified contents.\n");
+  stream << " get (address)               " << _("Get the host names of the specified address.\n");
   stream << " rm (address) (host_name)+   " << _("Remove the specified entries.\n");
   stream << " purge (address|host_name)+  " << _("Remove the specified address or host name.\n");
   stream << "\n";

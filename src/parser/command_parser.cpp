@@ -60,6 +60,12 @@ command_parser::exitSet_command(hosts::Set_commandContext *context)
 }
 
 void
+command_parser::exitGet_command(hosts::Get_commandContext *context)
+{
+  cmd.command = hostage_command::GET;
+}
+
+void
 command_parser::exitPurge_command(hosts::Purge_commandContext *context)
 {
   cmd.command = hostage_command::PURGE;

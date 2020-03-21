@@ -136,6 +136,18 @@ host name files for the specified address:
 provided list of host names, _except_ those that had already been specified for
 the same address.
 
+Getting entries
+---------------
+
+The `get` command can be used to get the host names for the specified address:
+
+```shell script
+$ hostage get (address)
+```
+
+The `get` command parses the host name database file and prints to standard
+output the host names found for the specified address.
+
 Removing entries
 ----------------
 
