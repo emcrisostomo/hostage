@@ -21,7 +21,6 @@
 #include "parser/hosts_file_parser.h"
 #include "parser/command_parser.h"
 #include <unistd.h>
-#include <sys/types.h>
 #include <sys/stat.h>
 #include <pwd.h>
 #include <ctime>
