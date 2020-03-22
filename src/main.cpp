@@ -18,8 +18,7 @@
 #include <fstream>
 #include <getopt.h>
 #include <algorithm>
-#include "hosts_line.h"
-#include "parser/hosts_file_parser.h"
+#include "hosts.h"
 #include "parser/command_parser.h"
 #include <unistd.h>
 #include <sys/stat.h>
@@ -426,12 +425,9 @@ std::vector<std::shared_ptr<hostage::line>>
 parse_hosts_and_get_entries()
 {
   const std::string& input_file_path = get_input_file_path();
-  std::ifstream hosts_file(input_file_path, std::ifstream::in);
+  hostage::hosts hosts = hostage::hosts::from_file(input_file_path);
 
-  hosts_file_parser parser;
-  parser.parse(hosts_file);
-
-  return parser.get_entries();
+  return hosts.get_entries();
 }
 
 void
