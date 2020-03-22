@@ -162,8 +162,7 @@ get_hosts_db()
 void
 list_command(const command& command, hostage::hosts& hosts)
 {
-  const std::vector<std::shared_ptr<hostage::line>>& entries = hosts.get_entries();
-  write_hosts(entries);
+  write_hosts(hosts.get_entries());
 }
 
 void
