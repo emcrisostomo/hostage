@@ -21,53 +21,58 @@
 
 namespace hostage
 {
-  hosts hosts::from_stream(std::istream& stream)
+hosts
+hosts::from_stream(std::istream& stream)
+{
+  hosts_file_parser parser;
+  parser.parse(stream);
+
+  hosts h;
+  h.entries = parser.get_entries();
+
+  return h;
+}
+
+hosts
+hosts::from_file(const std::string& path)
+{
+  std::ifstream hosts_file(path, std::ifstream::in);
+
+  return hosts::from_stream(hosts_file);
+}
+
+hosts
+hosts::from_string(const std::string& contents)
+{
+  std::istringstream content_stream(contents);
+
+  return hosts::from_stream(content_stream);
+}
+
+std::vector<std::shared_ptr<line>>
+hosts::get_entries() const
+{
+  return entries;
+}
+
+std::unordered_set<std::string>
+hosts::get_host_names(const std::string& address) const
+{
+  std::unordered_set<std::string> host_names;
+
+  for (const auto& item : entries)
   {
-    hosts_file_parser parser;
-    parser.parse(stream);
+    const auto *entry = dynamic_cast<hostage::table_entry *>(item.get());
 
-    hosts h;
-    h.entries = parser.get_entries();
+    if (entry == nullptr)
+      continue;
 
-    return h;
+    if (entry->address != address)
+      continue;
+
+    host_names.insert(entry->host_names.begin(), entry->host_names.end());
   }
 
-  hosts hosts::from_file(const std::string& path)
-  {
-    std::ifstream hosts_file(path, std::ifstream::in);
-
-    return hosts::from_stream(hosts_file);
-  }
-
-  hosts hosts::from_string(const std::string& contents)
-  {
-    std::istringstream content_stream(contents);
-
-    return hosts::from_stream(content_stream);
-  }
-
-  std::vector<std::shared_ptr<line>> hosts::get_entries() const
-  {
-    return entries;
-  }
-
-  std::unordered_set<std::string> hosts::get_host_names(const std::string& address) const
-  {
-    std::unordered_set<std::string> host_names;
-
-    for (const auto& item : entries)
-    {
-      const auto *entry = dynamic_cast<hostage::table_entry *>(item.get());
-
-      if (entry == nullptr)
-        continue;
-
-      if (entry->address != address)
-        continue;
-
-      host_names.insert(entry->host_names.begin(), entry->host_names.end());
-    }
-
-    return host_names;
-  }
+  return host_names;
+}
 }

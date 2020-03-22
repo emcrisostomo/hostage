@@ -23,19 +23,19 @@
 
 namespace hostage
 {
-  class hosts
-  {
-  public:
-    static hosts from_file(const std::string& path);
-    static hosts from_stream(std::istream& stream);
-    static hosts from_string(const std::string& contents);
+class hosts
+{
+public:
+  static hosts from_file(const std::string& path);
+  static hosts from_stream(std::istream& stream);
+  static hosts from_string(const std::string& contents);
 
-    std::vector<std::shared_ptr<line>> get_entries() const;
-    std::unordered_set<std::string> get_host_names(const std::string& address) const;
+  std::vector<std::shared_ptr<line>> get_entries() const;
+  std::unordered_set<std::string> get_host_names(const std::string& address) const;
 
-  private:
-    std::vector<std::shared_ptr<line>> entries;
-  };
+private:
+  std::vector<std::shared_ptr<line>> entries;
+};
 }
 
 #endif //HOSTAGE_HOSTS_H
