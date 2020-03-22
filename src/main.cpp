@@ -342,24 +342,7 @@ set_command(const command& command, hostage::hosts& hosts)
 void
 get_command(const command& command, hostage::hosts& hosts)
 {
-  const auto& entries = hosts.get_entries();
-  const auto& address = *command.addresses.begin();
-  std::unordered_set<std::string> host_names;
-
-  for (const auto& item : entries)
-  {
-    const auto *entry = dynamic_cast<hostage::table_entry *>(item.get());
-
-    if (entry == nullptr)
-      continue;
-
-    if (entry->address != address)
-      continue;
-
-    host_names.insert(entry->host_names.begin(), entry->host_names.end());
-  }
-
-  write_host_names(host_names);
+  write_host_names(hosts.get_host_names(*command.addresses.begin()));
 }
 
 std::string

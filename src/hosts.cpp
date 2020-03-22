@@ -50,4 +50,24 @@ namespace hostage
   {
     return entries;
   }
+
+  std::unordered_set<std::string> hosts::get_host_names(const std::string& address)
+  {
+    std::unordered_set<std::string> host_names;
+
+    for (const auto& item : entries)
+    {
+      const auto *entry = dynamic_cast<hostage::table_entry *>(item.get());
+
+      if (entry == nullptr)
+        continue;
+
+      if (entry->address != address)
+        continue;
+
+      host_names.insert(entry->host_names.begin(), entry->host_names.end());
+    }
+
+    return host_names;
+  }
 }

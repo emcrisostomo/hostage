@@ -19,6 +19,7 @@
 
 #include "hosts_line.h"
 #include <string>
+#include <unordered_set>
 
 namespace hostage
 {
@@ -30,6 +31,7 @@ namespace hostage
     static hosts from_string(const std::string& contents);
 
     std::vector<std::shared_ptr<line>> get_entries() const;
+    std::unordered_set<std::string> get_host_names(const std::string& address);
 
   private:
     std::vector<std::shared_ptr<line>> entries;
