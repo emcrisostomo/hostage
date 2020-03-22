@@ -17,15 +17,14 @@
 #include "hosts.h"
 #include "parser/hosts_file_parser.h"
 #include <fstream>
+#include <sstream>
 
 namespace hostage
 {
-  hosts hosts::from_file(const std::string& path)
+  hosts hosts::from_stream(std::istream& stream)
   {
-    std::ifstream hosts_file(path, std::ifstream::in);
-
     hosts_file_parser parser;
-    parser.parse(hosts_file);
+    parser.parse(stream);
 
     hosts h;
     h.entries = parser.get_entries();
@@ -33,9 +32,22 @@ namespace hostage
     return h;
   }
 
+  hosts hosts::from_file(const std::string& path)
+  {
+    std::ifstream hosts_file(path, std::ifstream::in);
+
+    return hosts::from_stream(hosts_file);
+  }
+
+  hosts hosts::from_string(const std::string& contents)
+  {
+    std::istringstream content_stream(contents);
+
+    return hosts::from_stream(content_stream);
+  }
+
   std::vector<std::shared_ptr<line>> hosts::get_entries() const
   {
     return entries;
   }
-
 }

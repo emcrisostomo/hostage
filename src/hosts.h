@@ -26,6 +26,8 @@ namespace hostage
   {
   public:
     static hosts from_file(const std::string& path);
+    static hosts from_stream(std::istream& stream);
+    static hosts from_string(const std::string& contents);
 
     std::vector<std::shared_ptr<line>> get_entries() const;
 
