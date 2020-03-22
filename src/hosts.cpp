@@ -88,7 +88,7 @@ hosts::purge_address(const std::string& address)
     if (entry != nullptr && entry->address == address)
       it = entries.erase(it);
     else
-      it++;
+      ++it;
   }
 }
 }
