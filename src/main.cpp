@@ -18,6 +18,7 @@
 #include <fstream>
 #include <getopt.h>
 #include <algorithm>
+#include "hosts_line.h"
 #include "parser/hosts_file_parser.h"
 #include "parser/command_parser.h"
 #include <unistd.h>
@@ -53,15 +54,18 @@ void backup_hosts_file();
 std::string get_username();
 std::string get_pwd();
 std::string get_backup_filename();
-std::vector<std::shared_ptr<line>> parse_hosts_and_get_entries();
-void write_hosts(const std::vector<std::shared_ptr<line>>& entries);
+std::vector<std::shared_ptr<hostage::line>> parse_hosts_and_get_entries();
+void write_hosts(const std::vector<std::shared_ptr<hostage::line>>& entries);
 void write_host_names(const std::unordered_set<std::string>& host_names);
 std::string join_with_space(const std::vector<std::string>& vector);
-std::vector<std::shared_ptr<line>> rm_host_command(const std::vector<std::shared_ptr<line>>& entries,
-                                                   const std::unordered_set<std::string>& host_names_to_remove);
-std::vector<std::shared_ptr<line>> rm_address_command(const std::vector<std::shared_ptr<line>>& entries,
-                                                      const std::unordered_set<std::string>& address_to_remove);
-void write_hosts_to_stream(const std::vector<std::shared_ptr<line>>& entries, std::ostream& ostream);
+std::vector<std::shared_ptr<hostage::line>>
+rm_host_command(const std::vector<std::shared_ptr<hostage::line>>& entries,
+                const std::unordered_set<std::string>& host_names_to_remove);
+std::vector<std::shared_ptr<hostage::line>>
+rm_address_command(const std::vector<std::shared_ptr<hostage::line>>& entries,
+                   const std::unordered_set<std::string>& address_to_remove);
+void write_hosts_to_stream(const std::vector<std::shared_ptr<hostage::line>>& entries,
+                           std::ostream& ostream);
 std::string get_input_file_path();
 std::string get_output_file_path();
 void list_command(const command& command);
@@ -69,8 +73,8 @@ void set_command(const command& command);
 void get_command(const command& command);
 void purge_command(const command& command);
 void rm_command(const command& command);
-bool is_comment(const std::shared_ptr<line>& entry);
-bool is_empty_line(const std::shared_ptr<line>& entry);
+bool is_comment(const std::shared_ptr<hostage::line>& entry);
+bool is_empty_line(const std::shared_ptr<hostage::line>& entry);
 
 int
 main(int argc, char **argv)
@@ -140,14 +144,14 @@ main(int argc, char **argv)
 void
 list_command(const command& command)
 {
-  const std::vector<std::shared_ptr<line>>& entries = parse_hosts_and_get_entries();
+  const std::vector<std::shared_ptr<hostage::line>>& entries = parse_hosts_and_get_entries();
   write_hosts(entries);
 }
 
 void
 purge_command(const command& command)
 {
-  const std::vector<std::shared_ptr<line>>& entries = parse_hosts_and_get_entries();
+  const std::vector<std::shared_ptr<hostage::line>>& entries = parse_hosts_and_get_entries();
 
   const auto& address_filtered_entries = rm_address_command(entries, command.addresses);
   const auto& all_filtered_entries = rm_host_command(address_filtered_entries, command.host_names);
@@ -159,13 +163,13 @@ void
 rm_command(const command& command)
 {
   const std::string& address_to_match = *command.addresses.begin();
-  const std::vector<std::shared_ptr<line>>& entries = parse_hosts_and_get_entries();
-  std::vector<std::shared_ptr<line>> filtered_entries;
+  const std::vector<std::shared_ptr<hostage::line>>& entries = parse_hosts_and_get_entries();
+  std::vector<std::shared_ptr<hostage::line>> filtered_entries;
   filtered_entries.reserve(entries.size());
 
   for (const auto& item : entries)
   {
-    const table_entry *entry = dynamic_cast<table_entry *>(item.get());
+    const hostage::table_entry *entry = dynamic_cast<hostage::table_entry *>(item.get());
 
     if (entry == nullptr
         || entry->address != address_to_match)
@@ -184,28 +188,28 @@ rm_command(const command& command)
     {
       std::vector<std::string> host_names_list(host_names_to_add.begin(),
                                                host_names_to_add.end());
-      auto *new_entry = new table_entry();
+      auto *new_entry = new hostage::table_entry();
       new_entry->address = address_to_match;
       new_entry->host_names = std::move(host_names_list);
       new_entry->text = address_to_match + join_with_space(new_entry->host_names);
 
-      filtered_entries.push_back(std::shared_ptr<line>(new_entry));
+      filtered_entries.push_back(std::shared_ptr<hostage::line>(new_entry));
     }
   }
 
   write_hosts(filtered_entries);
 }
 
-std::vector<std::shared_ptr<line>>
-rm_address_command(const std::vector<std::shared_ptr<line>>& entries,
+std::vector<std::shared_ptr<hostage::line>>
+rm_address_command(const std::vector<std::shared_ptr<hostage::line>>& entries,
                    const std::unordered_set<std::string>& address_to_remove)
 {
-  std::vector<std::shared_ptr<line>> new_entries;
+  std::vector<std::shared_ptr<hostage::line>> new_entries;
   new_entries.reserve(entries.size() + 1);
 
   for (const auto& item : entries)
   {
-    const table_entry *entry = dynamic_cast<table_entry *>(item.get());
+    const auto *entry = dynamic_cast<hostage::table_entry *>(item.get());
 
     if (entry != nullptr
         && address_to_remove.find(entry->address) != address_to_remove.end())
@@ -217,16 +221,16 @@ rm_address_command(const std::vector<std::shared_ptr<line>>& entries,
   return new_entries;
 }
 
-std::vector<std::shared_ptr<line>>
-rm_host_command(const std::vector<std::shared_ptr<line>>& entries,
+std::vector<std::shared_ptr<hostage::line>>
+rm_host_command(const std::vector<std::shared_ptr<hostage::line>>& entries,
                 const std::unordered_set<std::string>& host_names_to_remove)
 {
-  std::vector<std::shared_ptr<line>> new_entries;
+  std::vector<std::shared_ptr<hostage::line>> new_entries;
   new_entries.reserve(entries.size() + 1);
 
   for (const auto& item : entries)
   {
-    const table_entry *entry = dynamic_cast<table_entry *>(item.get());
+    const auto *entry = dynamic_cast<hostage::table_entry *>(item.get());
 
     if (entry == nullptr)
     {
@@ -252,12 +256,12 @@ rm_host_command(const std::vector<std::shared_ptr<line>>& entries,
       continue;
     }
 
-    auto *new_entry = new table_entry();
+    auto *new_entry = new hostage::table_entry();
     new_entry->address = entry->address;
     new_entry->text = entry->address + join_with_space(filtered_host_names);
     new_entry->host_names = std::move(filtered_host_names);
 
-    new_entries.push_back(std::shared_ptr<line>(new_entry));
+    new_entries.push_back(std::shared_ptr<hostage::line>(new_entry));
   }
 
   return new_entries;
@@ -283,14 +287,14 @@ set_command(const command& command)
   const auto& entries = parse_hosts_and_get_entries();
   const auto& address = *command.addresses.begin();
   std::unordered_set<std::string> host_names_to_set = command.host_names;
-  std::vector<std::shared_ptr<line>> new_entries;
+  std::vector<std::shared_ptr<hostage::line>> new_entries;
   new_entries.reserve(entries.size() + 1);
 
   for (const auto& item : entries)
   {
     new_entries.push_back(item);
 
-    const table_entry *entry = dynamic_cast<table_entry *>(item.get());
+    const auto *entry = dynamic_cast<hostage::table_entry *>(item.get());
 
     if (entry == nullptr)
       continue;
@@ -304,14 +308,14 @@ set_command(const command& command)
 
   if (!host_names_to_set.empty())
   {
-    auto *entry = new table_entry();
+    auto *entry = new hostage::table_entry();
     entry->address = address;
     std::copy(host_names_to_set.begin(),
               host_names_to_set.end(),
               std::back_inserter(entry->host_names));
     entry->text = address + join_with_space(entry->host_names);
 
-    new_entries.push_back(std::shared_ptr<line>(entry));
+    new_entries.push_back(std::shared_ptr<hostage::line>(entry));
   }
 
   write_hosts(new_entries);
@@ -326,7 +330,7 @@ get_command(const command& command)
 
   for (const auto& item : entries)
   {
-    const table_entry *entry = dynamic_cast<table_entry *>(item.get());
+    const auto *entry = dynamic_cast<hostage::table_entry *>(item.get());
 
     if (entry == nullptr)
       continue;
@@ -372,7 +376,7 @@ write_host_names(const std::unordered_set<std::string>& host_names)
 }
 
 void
-write_hosts(const std::vector<std::shared_ptr<line>>& entries)
+write_hosts(const std::vector<std::shared_ptr<hostage::line>>& entries)
 {
   if (!iflag && !oflag)
   {
@@ -391,7 +395,7 @@ write_hosts(const std::vector<std::shared_ptr<line>>& entries)
 }
 
 void
-write_hosts_to_stream(const std::vector<std::shared_ptr<line>>& entries,
+write_hosts_to_stream(const std::vector<std::shared_ptr<hostage::line>>& entries,
                       std::ostream& os)
 {
   for (const auto& entry : entries)
@@ -407,18 +411,18 @@ write_hosts_to_stream(const std::vector<std::shared_ptr<line>>& entries,
 }
 
 bool
-is_comment(const std::shared_ptr<line>& entry)
+is_comment(const std::shared_ptr<hostage::line>& entry)
 {
-  return (dynamic_cast<comment_line *>(entry.get()) != nullptr);
+  return (dynamic_cast<hostage::comment_line *>(entry.get()) != nullptr);
 }
 
 bool
-is_empty_line(const std::shared_ptr<line>& entry)
+is_empty_line(const std::shared_ptr<hostage::line>& entry)
 {
-  return (dynamic_cast<empty_line *>(entry.get()) != nullptr);
+  return (dynamic_cast<hostage::empty_line *>(entry.get()) != nullptr);
 }
 
-std::vector<std::shared_ptr<line>>
+std::vector<std::shared_ptr<hostage::line>>
 parse_hosts_and_get_entries()
 {
   const std::string& input_file_path = get_input_file_path();

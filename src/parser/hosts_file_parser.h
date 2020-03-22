@@ -18,29 +18,9 @@
 #define HOSTAGE_HOSTS_FILE_PARSER_H
 
 #include "../../gen/hostsBaseListener.h"
-#include <vector>
-#include <string>
+#include "../hosts_line.h"
 #include <memory>
 #include <istream>
-
-class line
-{
-public:
-  std::string text;
-  virtual ~line() = default;
-};
-
-class comment_line : public line {};
-
-class empty_line : public line {};
-
-class table_entry : public line
-{
-public:
-  std::string address;
-  std::vector<std::string> host_names;
-  ~table_entry() override = default;
-};
 
 class hosts_file_parser : public hostsBaseListener
 {
@@ -57,11 +37,11 @@ public:
   void exitAddress(hosts::AddressContext *ctx) override;
   void exitHost_name(hosts::Host_nameContext *context) override;
   void visitErrorNode(antlr4::tree::ErrorNode *node) override;
-  std::vector<std::shared_ptr<line>> get_entries() const;
+  std::vector<std::shared_ptr<hostage::line>> get_entries() const;
 
 private:
-  std::vector<std::shared_ptr<line>> lines;
-  std::shared_ptr<line> current_line;
+  std::vector<std::shared_ptr<hostage::line>> lines;
+  std::shared_ptr<hostage::line> current_line;
 };
 
 

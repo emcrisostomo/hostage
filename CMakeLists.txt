@@ -22,7 +22,8 @@ add_executable(hostage
     gen/hosts_lexer.h gen/hosts_lexer.cpp
     gen/hosts.h gen/hosts.cpp
     src/parser/command_parser.cpp src/parser/command_parser.h
-    src/parser/hosts_file_parser.cpp src/parser/hosts_file_parser.h)
+    src/parser/hosts_file_parser.cpp src/parser/hosts_file_parser.h
+    src/hosts.cpp src/hosts.h src/hosts_line.h)
 
 target_include_directories(hostage PRIVATE "${PROJECT_BINARY_DIR}")
 

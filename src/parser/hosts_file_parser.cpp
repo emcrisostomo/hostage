@@ -17,7 +17,6 @@
 #include "hosts_file_parser.h"
 #include "../../gen/hosts_lexer.h"
 #include "../gettext/gettext_defs.h"
-#include <memory>
 
 void
 hosts_file_parser::parse(std::istream& istream)
@@ -44,14 +43,14 @@ hosts_file_parser::parse(std::istream& istream)
 void
 hosts_file_parser::exitAddress(hosts::AddressContext *context)
 {
-  auto te = dynamic_cast<table_entry *>(current_line.get());
+  auto te = dynamic_cast<hostage::table_entry *>(current_line.get());
   te->address = context->getText();
 }
 
 void
 hosts_file_parser::enterLine(hosts::LineContext *context)
 {
-  current_line = std::make_unique<line>();
+  current_line = std::make_unique<hostage::line>();
 }
 
 void
@@ -63,7 +62,7 @@ hosts_file_parser::exitLine(hosts::LineContext *context)
 void
 hosts_file_parser::enterTable_entry(hosts::Table_entryContext *context)
 {
-  current_line = std::make_unique<table_entry>();
+  current_line = std::make_unique<hostage::table_entry>();
 }
 
 void
@@ -75,7 +74,7 @@ hosts_file_parser::exitTable_entry(hosts::Table_entryContext *context)
 void
 hosts_file_parser::enterComment(hosts::CommentContext *context)
 {
-  current_line = std::make_unique<comment_line>();
+  current_line = std::make_unique<hostage::comment_line>();
 }
 
 void
@@ -87,10 +86,10 @@ hosts_file_parser::exitComment(hosts::CommentContext *context)
 void
 hosts_file_parser::enterEmpty_line(hosts::Empty_lineContext *context)
 {
-  current_line = std::make_unique<empty_line>();
+  current_line = std::make_unique<hostage::empty_line>();
 }
 
-std::vector<std::shared_ptr<line>>
+std::vector<std::shared_ptr<hostage::line>>
 hosts_file_parser::get_entries() const
 {
   return lines;
@@ -99,7 +98,7 @@ hosts_file_parser::get_entries() const
 void
 hosts_file_parser::exitHost_name(hosts::Host_nameContext *context)
 {
-  auto te = dynamic_cast<table_entry *>(current_line.get());
+  auto te = dynamic_cast<hostage::table_entry *>(current_line.get());
   te->host_names.push_back(context->getText());
 }
 
