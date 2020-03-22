@@ -51,7 +51,7 @@ namespace hostage
     return entries;
   }
 
-  std::unordered_set<std::string> hosts::get_host_names(const std::string& address)
+  std::unordered_set<std::string> hosts::get_host_names(const std::string& address) const
   {
     std::unordered_set<std::string> host_names;
 
