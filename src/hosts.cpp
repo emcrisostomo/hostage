@@ -75,4 +75,20 @@ hosts::get_host_names(const std::string& address) const
 
   return host_names;
 }
+
+void
+hosts::purge_address(const std::string& address)
+{
+  auto it = entries.begin();
+
+  while (it != entries.end())
+  {
+    const auto *entry = dynamic_cast<hostage::table_entry *>(it->get());
+
+    if (entry != nullptr && entry->address == address)
+      it = entries.erase(it);
+    else
+      it++;
+  }
+}
 }

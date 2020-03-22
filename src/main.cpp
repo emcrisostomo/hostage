@@ -60,9 +60,6 @@ std::string join_with_space(const std::vector<std::string>& vector);
 std::vector<std::shared_ptr<hostage::line>>
 rm_host_command(const std::vector<std::shared_ptr<hostage::line>>& entries,
                 const std::unordered_set<std::string>& host_names_to_remove);
-std::vector<std::shared_ptr<hostage::line>>
-rm_address_command(const std::vector<std::shared_ptr<hostage::line>>& entries,
-                   const std::unordered_set<std::string>& address_to_remove);
 void write_hosts_to_stream(const std::vector<std::shared_ptr<hostage::line>>& entries,
                            std::ostream& ostream);
 std::string get_input_file_path();
@@ -168,10 +165,11 @@ list_command(const command& command, hostage::hosts& hosts)
 void
 purge_command(const command& command, hostage::hosts& hosts)
 {
-  const std::vector<std::shared_ptr<hostage::line>>& entries = hosts.get_entries();
+  for (const auto& address : command.addresses)
+    hosts.purge_address(address);
 
-  const auto& address_filtered_entries = rm_address_command(entries, command.addresses);
-  const auto& all_filtered_entries = rm_host_command(address_filtered_entries, command.host_names);
+  const std::vector<std::shared_ptr<hostage::line>>& entries = hosts.get_entries();
+  const auto& all_filtered_entries = rm_host_command(entries, command.host_names);
 
   write_hosts(all_filtered_entries);
 }
@@ -215,27 +213,6 @@ rm_command(const command& command, hostage::hosts& hosts)
   }
 
   write_hosts(filtered_entries);
-}
-
-std::vector<std::shared_ptr<hostage::line>>
-rm_address_command(const std::vector<std::shared_ptr<hostage::line>>& entries,
-                   const std::unordered_set<std::string>& address_to_remove)
-{
-  std::vector<std::shared_ptr<hostage::line>> new_entries;
-  new_entries.reserve(entries.size() + 1);
-
-  for (const auto& item : entries)
-  {
-    const auto *entry = dynamic_cast<hostage::table_entry *>(item.get());
-
-    if (entry != nullptr
-        && address_to_remove.find(entry->address) != address_to_remove.end())
-      continue;
-
-    new_entries.push_back(item);
-  }
-
-  return new_entries;
 }
 
 std::vector<std::shared_ptr<hostage::line>>

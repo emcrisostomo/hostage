@@ -32,6 +32,7 @@ public:
 
   std::vector<std::shared_ptr<line>> get_entries() const;
   std::unordered_set<std::string> get_host_names(const std::string& address) const;
+  void purge_address(const std::string& address);
 
 private:
   std::vector<std::shared_ptr<line>> entries;
