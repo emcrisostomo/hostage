@@ -21,6 +21,7 @@
 #include "hosts.h"
 #include "parser/command_parser.h"
 #include <unistd.h>
+#include <cstdio> // fileno()
 #include <sys/stat.h>
 #include <pwd.h>
 #include <ctime>
@@ -53,7 +54,6 @@ void backup_hosts_file();
 std::string get_username();
 std::string get_pwd();
 std::string get_backup_filename();
-std::vector<std::shared_ptr<hostage::line>> parse_hosts_and_get_entries();
 void write_hosts(const std::vector<std::shared_ptr<hostage::line>>& entries);
 void write_host_names(const std::unordered_set<std::string>& host_names);
 std::string join_with_space(const std::vector<std::string>& vector);
@@ -67,13 +67,14 @@ void write_hosts_to_stream(const std::vector<std::shared_ptr<hostage::line>>& en
                            std::ostream& ostream);
 std::string get_input_file_path();
 std::string get_output_file_path();
-void list_command(const command& command);
-void set_command(const command& command);
-void get_command(const command& command);
-void purge_command(const command& command);
-void rm_command(const command& command);
+void list_command(const command& command, hostage::hosts& hosts);
+void set_command(const command& command, hostage::hosts& hosts);
+void get_command(const command& command, hostage::hosts& hosts);
+void purge_command(const command& command, hostage::hosts& hosts);
+void rm_command(const command& command, hostage::hosts& hosts);
 bool is_comment(const std::shared_ptr<hostage::line>& entry);
 bool is_empty_line(const std::shared_ptr<hostage::line>& entry);
+hostage::hosts get_hosts_db();
 
 int
 main(int argc, char **argv)
@@ -93,32 +94,33 @@ main(int argc, char **argv)
     return 4;
   }
 
-  // TODO: read the host name database from stdin, if piped
   try
   {
+    hostage::hosts hosts_db = get_hosts_db();
+
     // TODO: backup the output file, not the input file
     backup_hosts_file();
 
     switch (cmd.command)
     {
     case hostage_command::LIST:
-      list_command(cmd);
+      list_command(cmd, hosts_db);
       return 0;
 
     case hostage_command::PURGE:
-      purge_command(cmd);
+      purge_command(cmd, hosts_db);
       return 0;
 
     case hostage_command::SET:
-      set_command(cmd);
+      set_command(cmd, hosts_db);
       return 0;
 
     case hostage_command::GET:
-      get_command(cmd);
+      get_command(cmd, hosts_db);
       return 0;
 
     case hostage_command::RM:
-      rm_command(cmd);
+      rm_command(cmd, hosts_db);
       return 0;
 
     case hostage_command::UNSET:
@@ -140,17 +142,34 @@ main(int argc, char **argv)
   }
 }
 
-void
-list_command(const command& command)
+hostage::hosts
+get_hosts_db()
 {
-  const std::vector<std::shared_ptr<hostage::line>>& entries = parse_hosts_and_get_entries();
+  if (isatty(fileno(stdin)) == 1)
+    return hostage::hosts::from_file(get_input_file_path());
+
+  assert (errno == ENOTTY);
+
+  std::string pipe_input;
+  std::string stdin_input;
+
+  while (std::cin >> pipe_input)
+    stdin_input.append(pipe_input);
+
+  return hostage::hosts::from_string(stdin_input);
+}
+
+void
+list_command(const command& command, hostage::hosts& hosts)
+{
+  const std::vector<std::shared_ptr<hostage::line>>& entries = hosts.get_entries();
   write_hosts(entries);
 }
 
 void
-purge_command(const command& command)
+purge_command(const command& command, hostage::hosts& hosts)
 {
-  const std::vector<std::shared_ptr<hostage::line>>& entries = parse_hosts_and_get_entries();
+  const std::vector<std::shared_ptr<hostage::line>>& entries = hosts.get_entries();
 
   const auto& address_filtered_entries = rm_address_command(entries, command.addresses);
   const auto& all_filtered_entries = rm_host_command(address_filtered_entries, command.host_names);
@@ -159,10 +178,10 @@ purge_command(const command& command)
 }
 
 void
-rm_command(const command& command)
+rm_command(const command& command, hostage::hosts& hosts)
 {
   const std::string& address_to_match = *command.addresses.begin();
-  const std::vector<std::shared_ptr<hostage::line>>& entries = parse_hosts_and_get_entries();
+  const std::vector<std::shared_ptr<hostage::line>>& entries = hosts.get_entries();
   std::vector<std::shared_ptr<hostage::line>> filtered_entries;
   filtered_entries.reserve(entries.size());
 
@@ -281,9 +300,9 @@ join_with_space(const std::vector<std::string>& vector)
 }
 
 void
-set_command(const command& command)
+set_command(const command& command, hostage::hosts& hosts)
 {
-  const auto& entries = parse_hosts_and_get_entries();
+  const auto& entries = hosts.get_entries();
   const auto& address = *command.addresses.begin();
   std::unordered_set<std::string> host_names_to_set = command.host_names;
   std::vector<std::shared_ptr<hostage::line>> new_entries;
@@ -321,9 +340,9 @@ set_command(const command& command)
 }
 
 void
-get_command(const command& command)
+get_command(const command& command, hostage::hosts& hosts)
 {
-  const auto& entries = parse_hosts_and_get_entries();
+  const auto& entries = hosts.get_entries();
   const auto& address = *command.addresses.begin();
   std::unordered_set<std::string> host_names;
 
@@ -419,15 +438,6 @@ bool
 is_empty_line(const std::shared_ptr<hostage::line>& entry)
 {
   return (dynamic_cast<hostage::empty_line *>(entry.get()) != nullptr);
-}
-
-std::vector<std::shared_ptr<hostage::line>>
-parse_hosts_and_get_entries()
-{
-  const std::string& input_file_path = get_input_file_path();
-  hostage::hosts hosts = hostage::hosts::from_file(input_file_path);
-
-  return hosts.get_entries();
 }
 
 void
