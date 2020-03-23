@@ -173,41 +173,9 @@ purge_command(const command& command, hostage::hosts& hosts)
 void
 rm_command(const command& command, hostage::hosts& hosts)
 {
-  const std::string& address_to_match = *command.addresses.begin();
-  const std::vector<std::shared_ptr<hostage::line>>& entries = hosts.get_entries();
-  std::vector<std::shared_ptr<hostage::line>> filtered_entries;
-  filtered_entries.reserve(entries.size());
+  hosts.rm_entry(*command.addresses.begin(), command.host_names);
 
-  for (const auto& item : entries)
-  {
-    const hostage::table_entry *entry = dynamic_cast<hostage::table_entry *>(item.get());
-
-    if (entry == nullptr
-        || entry->address != address_to_match)
-    {
-      filtered_entries.push_back(item);
-      continue;
-    }
-
-    std::unordered_set<std::string> host_names_to_add;
-    host_names_to_add.insert(entry->host_names.begin(), entry->host_names.end());
-
-    for (const auto& c : command.host_names)
-      host_names_to_add.erase(c);
-
-    if (!host_names_to_add.empty())
-    {
-      std::vector<std::string> host_names_list(host_names_to_add.begin(),
-                                               host_names_to_add.end());
-      auto *new_entry = new hostage::table_entry();
-      new_entry->address = address_to_match;
-      new_entry->host_names = std::move(host_names_list);
-
-      filtered_entries.push_back(std::shared_ptr<hostage::line>(new_entry));
-    }
-  }
-
-  write_hosts(filtered_entries);
+  write_hosts(hosts.get_entries());
 }
 
 void

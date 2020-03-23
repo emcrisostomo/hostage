@@ -150,4 +150,31 @@ hosts::set_host_names(const std::string& address, const std::vector<std::string>
     entries.push_back(entry);
   }
 }
+
+void
+hosts::rm_entry(const std::string& address, const std::vector<std::string>& host_names)
+{
+  auto it = entries.begin();
+
+  while (it != entries.end())
+  {
+    auto *entry = dynamic_cast<hostage::table_entry *>(it->get());
+
+    if (entry == nullptr
+        || entry->address != address)
+    {
+      ++it;
+      continue;
+    }
+
+    for (const auto& n : host_names)
+      entry->host_names.erase(std::remove(entry->host_names.begin(), entry->host_names.end(), n),
+                              entry->host_names.end());
+
+    if (entry->host_names.empty())
+      it = entries.erase(it);
+    else
+      ++it;
+  }
+}
 }
