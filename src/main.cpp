@@ -56,9 +56,6 @@ std::string get_pwd();
 std::string get_backup_filename();
 void write_hosts(const std::vector<std::shared_ptr<hostage::line>>& entries);
 void write_host_names(const std::unordered_set<std::string>& host_names);
-std::vector<std::shared_ptr<hostage::line>>
-rm_host_command(const std::vector<std::shared_ptr<hostage::line>>& entries,
-                const std::unordered_set<std::string>& host_names_to_remove);
 void write_hosts_to_stream(const std::vector<std::shared_ptr<hostage::line>>& entries,
                            std::ostream& ostream);
 std::string get_input_file_path();
@@ -167,10 +164,10 @@ purge_command(const command& command, hostage::hosts& hosts)
   for (const auto& address : command.addresses)
     hosts.purge_address(address);
 
-  const std::vector<std::shared_ptr<hostage::line>>& entries = hosts.get_entries();
-  const auto& all_filtered_entries = rm_host_command(entries, command.host_names);
+  for (const auto& host_name : command.host_names)
+    hosts.purge_host_name(host_name);
 
-  write_hosts(all_filtered_entries);
+  write_hosts(hosts.get_entries());
 }
 
 void
@@ -211,51 +208,6 @@ rm_command(const command& command, hostage::hosts& hosts)
   }
 
   write_hosts(filtered_entries);
-}
-
-std::vector<std::shared_ptr<hostage::line>>
-rm_host_command(const std::vector<std::shared_ptr<hostage::line>>& entries,
-                const std::unordered_set<std::string>& host_names_to_remove)
-{
-  std::vector<std::shared_ptr<hostage::line>> new_entries;
-  new_entries.reserve(entries.size() + 1);
-
-  for (const auto& item : entries)
-  {
-    const auto *entry = dynamic_cast<hostage::table_entry *>(item.get());
-
-    if (entry == nullptr)
-    {
-      new_entries.push_back(item);
-      continue;
-    }
-
-    std::vector<std::string> filtered_host_names;
-    // the host name search and removal process could be optimized using sets
-    // but we want to generate minimal changes to the hosts file
-    for (const auto& name : entry->host_names)
-    {
-      if (host_names_to_remove.find(name) == host_names_to_remove.end())
-        filtered_host_names.push_back(name);
-    }
-
-    if (filtered_host_names.empty())
-      continue;
-
-    if (filtered_host_names.size() == entry->host_names.size())
-    {
-      new_entries.push_back(item);
-      continue;
-    }
-
-    auto *new_entry = new hostage::table_entry();
-    new_entry->address = entry->address;
-    new_entry->host_names = std::move(filtered_host_names);
-
-    new_entries.push_back(std::shared_ptr<hostage::line>(new_entry));
-  }
-
-  return new_entries;
 }
 
 void

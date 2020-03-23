@@ -91,4 +91,31 @@ hosts::purge_address(const std::string& address)
       ++it;
   }
 }
+
+void
+hosts::purge_host_name(const std::string& host_name)
+{
+  auto it = entries.begin();
+
+  while (it != entries.end())
+  {
+    auto *entry = dynamic_cast<hostage::table_entry *>(it->get());
+
+    if (entry == nullptr)
+    {
+      ++it;
+      continue;
+    }
+
+    auto& host_names = entry->host_names;
+    host_names.erase(std::remove(host_names.begin(), host_names.end(), host_name),
+                     host_names.end());
+
+    if (host_names.empty())
+      it = entries.erase(it);
+    else
+      ++it;
+  }
+}
+
 }
