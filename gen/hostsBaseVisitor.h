@@ -23,6 +23,10 @@ public:
     return visitChildren(ctx);
   }
 
+  virtual antlrcpp::Any visitComment_line(hosts::Comment_lineContext *ctx) override {
+    return visitChildren(ctx);
+  }
+
   virtual antlrcpp::Any visitEmpty_line(hosts::Empty_lineContext *ctx) override {
     return visitChildren(ctx);
   }

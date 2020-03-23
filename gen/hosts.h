@@ -21,13 +21,14 @@ public:
   };
 
   enum {
-    RuleHosts_file = 0, RuleLine = 1, RuleEmpty_line = 2, RuleTable_entry = 3, 
-    RuleAddress = 4, RuleIp_v4_address = 5, RuleIp_v6_address = 6, RuleH16 = 7, 
-    RuleLs32 = 8, RuleHexdig = 9, RuleDec_octet = 10, RuleDigit = 11, RuleNon_zero_digit = 12, 
-    RuleHost_name = 13, RuleIreg_name = 14, RuleIunreserved = 15, RuleAlpha = 16, 
-    RuleComment = 17, RuleCommand_line = 18, RuleList_command = 19, RuleSet_command = 20, 
-    RuleGet_command = 21, RulePurge_command = 22, RuleRm_command = 23, RuleCmd_list = 24, 
-    RuleCmd_purge = 25, RuleCmd_rm = 26, RuleCmd_set = 27, RuleCmd_get = 28
+    RuleHosts_file = 0, RuleLine = 1, RuleComment_line = 2, RuleEmpty_line = 3, 
+    RuleTable_entry = 4, RuleAddress = 5, RuleIp_v4_address = 6, RuleIp_v6_address = 7, 
+    RuleH16 = 8, RuleLs32 = 9, RuleHexdig = 10, RuleDec_octet = 11, RuleDigit = 12, 
+    RuleNon_zero_digit = 13, RuleHost_name = 14, RuleIreg_name = 15, RuleIunreserved = 16, 
+    RuleAlpha = 17, RuleComment = 18, RuleCommand_line = 19, RuleList_command = 20, 
+    RuleSet_command = 21, RuleGet_command = 22, RulePurge_command = 23, 
+    RuleRm_command = 24, RuleCmd_list = 25, RuleCmd_purge = 26, RuleCmd_rm = 27, 
+    RuleCmd_set = 28, RuleCmd_get = 29
   };
 
   hosts(antlr4::TokenStream *input);
@@ -42,6 +43,7 @@ public:
 
   class Hosts_fileContext;
   class LineContext;
+  class Comment_lineContext;
   class Empty_lineContext;
   class Table_entryContext;
   class AddressContext;
@@ -92,7 +94,7 @@ public:
     LineContext(antlr4::ParserRuleContext *parent, size_t invokingState);
     virtual size_t getRuleIndex() const override;
     antlr4::tree::TerminalNode *NewLine();
-    CommentContext *comment();
+    Comment_lineContext *comment_line();
     Table_entryContext *table_entry();
     Empty_lineContext *empty_line();
 
@@ -104,6 +106,21 @@ public:
   };
 
   LineContext* line();
+
+  class  Comment_lineContext : public antlr4::ParserRuleContext {
+  public:
+    Comment_lineContext(antlr4::ParserRuleContext *parent, size_t invokingState);
+    virtual size_t getRuleIndex() const override;
+    CommentContext *comment();
+
+    virtual void enterRule(antlr4::tree::ParseTreeListener *listener) override;
+    virtual void exitRule(antlr4::tree::ParseTreeListener *listener) override;
+
+    virtual antlrcpp::Any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
+   
+  };
+
+  Comment_lineContext* comment_line();
 
   class  Empty_lineContext : public antlr4::ParserRuleContext {
   public:

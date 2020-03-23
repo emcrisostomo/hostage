@@ -9,7 +9,11 @@ hosts_file
   ;
 
 line
-  :  (comment | table_entry | empty_line) NewLine
+  :  (comment_line | table_entry | empty_line) NewLine
+  ;
+
+comment_line
+  : comment
   ;
 
 empty_line

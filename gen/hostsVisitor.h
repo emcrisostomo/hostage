@@ -23,6 +23,8 @@ public:
 
     virtual antlrcpp::Any visitLine(hosts::LineContext *context) = 0;
 
+    virtual antlrcpp::Any visitComment_line(hosts::Comment_lineContext *context) = 0;
+
     virtual antlrcpp::Any visitEmpty_line(hosts::Empty_lineContext *context) = 0;
 
     virtual antlrcpp::Any visitTable_entry(hosts::Table_entryContext *context) = 0;

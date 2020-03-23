@@ -20,6 +20,9 @@ public:
   virtual void enterLine(hosts::LineContext *ctx) = 0;
   virtual void exitLine(hosts::LineContext *ctx) = 0;
 
+  virtual void enterComment_line(hosts::Comment_lineContext *ctx) = 0;
+  virtual void exitComment_line(hosts::Comment_lineContext *ctx) = 0;
+
   virtual void enterEmpty_line(hosts::Empty_lineContext *ctx) = 0;
   virtual void exitEmpty_line(hosts::Empty_lineContext *ctx) = 0;
 

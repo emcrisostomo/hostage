@@ -22,6 +22,9 @@ public:
   virtual void enterLine(hosts::LineContext * /*ctx*/) override { }
   virtual void exitLine(hosts::LineContext * /*ctx*/) override { }
 
+  virtual void enterComment_line(hosts::Comment_lineContext * /*ctx*/) override { }
+  virtual void exitComment_line(hosts::Comment_lineContext * /*ctx*/) override { }
+
   virtual void enterEmpty_line(hosts::Empty_lineContext * /*ctx*/) override { }
   virtual void exitEmpty_line(hosts::Empty_lineContext * /*ctx*/) override { }
 
