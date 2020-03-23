@@ -19,12 +19,12 @@ find_package(antlr4-runtime REQUIRED)
 
 add_executable(hostage
     src/main.cpp
-    gen/hosts_lexer.h gen/hosts_lexer.cpp
-    gen/hosts.h gen/hosts.cpp
+    gen/hosts_lexer.cpp gen/hosts_lexer.h
+    gen/hosts.cpp gen/hosts.h
     src/parser/command_parser.cpp src/parser/command_parser.h
     src/parser/hosts_file_parser.cpp src/parser/hosts_file_parser.h
     src/hosts.cpp src/hosts.h
-    src/hosts_line.h)
+    src/hosts_line.cpp src/hosts_line.h)
 
 target_include_directories(hostage PRIVATE "${PROJECT_BINARY_DIR}")
 
