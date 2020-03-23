@@ -28,11 +28,9 @@ public:
   void parse(std::istream& istream);
 
   void enterLine(hosts::LineContext *context) override;
-  void exitLine(hosts::LineContext *context) override;
-  void enterEmpty_line(hosts::Empty_lineContext *context) override;
-  void enterComment(hosts::CommentContext *context) override;
+  void exitEmpty_line(hosts::Empty_lineContext *context) override;
   void exitComment(hosts::CommentContext *context) override;
-  void enterTable_entry(hosts::Table_entryContext *context) override;
+  void exitComment_line(hosts::Comment_lineContext *context) override;
   void exitTable_entry(hosts::Table_entryContext *context) override;
   void exitAddress(hosts::AddressContext *ctx) override;
   void exitHost_name(hosts::Host_nameContext *context) override;
@@ -40,8 +38,12 @@ public:
   std::vector<std::shared_ptr<hostage::line>> get_entries() const;
 
 private:
+  void clean_state();
+
+  std::string address;
+  std::vector<std::string> host_names;
+  std::string comment;
   std::vector<std::shared_ptr<hostage::line>> lines;
-  std::shared_ptr<hostage::line> current_line;
 };
 
 

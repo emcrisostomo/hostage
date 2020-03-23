@@ -19,11 +19,16 @@
 #include "../gettext/gettext_defs.h"
 
 void
+hosts_file_parser::clean_state()
+{
+  address = {};
+  host_names = {};
+  comment = {};
+}
+
+void
 hosts_file_parser::parse(std::istream& istream)
 {
-  lines = {};
-  current_line = {};
-
   antlr4::ANTLRInputStream input(istream);
   hosts_lexer lexer(&input);
   antlr4::CommonTokenStream tokens(&lexer);
@@ -41,65 +46,61 @@ hosts_file_parser::parse(std::istream& istream)
 }
 
 void
-hosts_file_parser::exitAddress(hosts::AddressContext *context)
-{
-  auto te = dynamic_cast<hostage::table_entry *>(current_line.get());
-  te->address = context->getText();
-}
-
-void
 hosts_file_parser::enterLine(hosts::LineContext *context)
 {
-  current_line = std::make_unique<hostage::line>();
-}
-
-void
-hosts_file_parser::exitLine(hosts::LineContext *context)
-{
-  lines.push_back(current_line);
-}
-
-void
-hosts_file_parser::enterTable_entry(hosts::Table_entryContext *context)
-{
-  current_line = std::make_unique<hostage::table_entry>();
-}
-
-void
-hosts_file_parser::exitTable_entry(hosts::Table_entryContext *context)
-{
-  current_line->text = context->getText();
-}
-
-void
-hosts_file_parser::enterComment(hosts::CommentContext *context)
-{
-  current_line = std::make_unique<hostage::comment_line>();
+  clean_state();
 }
 
 void
 hosts_file_parser::exitComment(hosts::CommentContext *context)
 {
-  current_line->text = context->getText();
+  comment = context->getText();
 }
 
 void
-hosts_file_parser::enterEmpty_line(hosts::Empty_lineContext *context)
+hosts_file_parser::exitAddress(hosts::AddressContext *context)
 {
-  current_line = std::make_unique<hostage::empty_line>();
+  address = context->getText();
+}
+
+void
+hosts_file_parser::exitHost_name(hosts::Host_nameContext *context)
+{
+  host_names.push_back(context->getText());
+}
+
+void
+hosts_file_parser::exitComment_line(hosts::Comment_lineContext *context)
+{
+  auto cl = std::make_shared<hostage::comment_line>();
+  cl->comment = std::move(comment);
+
+  lines.push_back(cl);
+}
+
+void
+hosts_file_parser::exitTable_entry(hosts::Table_entryContext *context)
+{
+  auto te = std::make_shared<hostage::table_entry>();
+  te->address = std::move(address);
+  te->host_names = std::move(host_names);
+  te->comment = std::move(comment);
+
+  lines.push_back(te);
+}
+
+void
+hosts_file_parser::exitEmpty_line(hosts::Empty_lineContext *context)
+{
+  auto el = std::make_shared<hostage::empty_line>();
+
+  lines.push_back(el);
 }
 
 std::vector<std::shared_ptr<hostage::line>>
 hosts_file_parser::get_entries() const
 {
   return lines;
-}
-
-void
-hosts_file_parser::exitHost_name(hosts::Host_nameContext *context)
-{
-  auto te = dynamic_cast<hostage::table_entry *>(current_line.get());
-  te->host_names.push_back(context->getText());
 }
 
 void hosts_file_parser::visitErrorNode(antlr4::tree::ErrorNode *node)
