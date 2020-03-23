@@ -56,7 +56,6 @@ std::string get_pwd();
 std::string get_backup_filename();
 void write_hosts(const std::vector<std::shared_ptr<hostage::line>>& entries);
 void write_host_names(const std::unordered_set<std::string>& host_names);
-std::string join_with_space(const std::vector<std::string>& vector);
 std::vector<std::shared_ptr<hostage::line>>
 rm_host_command(const std::vector<std::shared_ptr<hostage::line>>& entries,
                 const std::unordered_set<std::string>& host_names_to_remove);
@@ -206,7 +205,6 @@ rm_command(const command& command, hostage::hosts& hosts)
       auto *new_entry = new hostage::table_entry();
       new_entry->address = address_to_match;
       new_entry->host_names = std::move(host_names_list);
-      new_entry->text = address_to_match + join_with_space(new_entry->host_names);
 
       filtered_entries.push_back(std::shared_ptr<hostage::line>(new_entry));
     }
@@ -252,27 +250,12 @@ rm_host_command(const std::vector<std::shared_ptr<hostage::line>>& entries,
 
     auto *new_entry = new hostage::table_entry();
     new_entry->address = entry->address;
-    new_entry->text = entry->address + join_with_space(filtered_host_names);
     new_entry->host_names = std::move(filtered_host_names);
 
     new_entries.push_back(std::shared_ptr<hostage::line>(new_entry));
   }
 
   return new_entries;
-}
-
-std::string
-join_with_space(const std::vector<std::string>& vector)
-{
-  std::string cat;
-
-  for (const auto& i : vector)
-  {
-    cat += " ";
-    cat += i;
-  }
-
-  return cat;
 }
 
 void
@@ -307,7 +290,6 @@ set_command(const command& command, hostage::hosts& hosts)
     std::copy(host_names_to_set.begin(),
               host_names_to_set.end(),
               std::back_inserter(entry->host_names));
-    entry->text = address + join_with_space(entry->host_names);
 
     new_entries.push_back(std::shared_ptr<hostage::line>(entry));
   }
@@ -383,7 +365,7 @@ write_hosts_to_stream(const std::vector<std::shared_ptr<hostage::line>>& entries
     if (nelflag && is_empty_line(entry))
       continue;
 
-    os << entry->text << '\n';
+    os << entry->to_string() << '\n';
   }
 }
 
