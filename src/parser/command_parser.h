@@ -18,7 +18,7 @@
 #define HOSTAGE_COMMAND_PARSER_H
 
 #include "../../gen/hostsBaseListener.h"
-#include <unordered_set>
+#include <vector>
 #include <string>
 #include <memory>
 #include "../gettext/gettext_defs.h"
@@ -81,8 +81,8 @@ struct command
 {
   hostage_command command{hostage_command::UNSET};
   bool error;
-  std::unordered_set<std::string> addresses;
-  std::unordered_set<std::string> host_names;
+  std::vector<std::string> addresses;
+  std::vector<std::string> host_names;
 };
 
 class command_parser : public hostsBaseListener

@@ -18,6 +18,7 @@
 #include "parser/hosts_file_parser.h"
 #include <fstream>
 #include <sstream>
+#include <algorithm>
 
 namespace hostage
 {
@@ -118,4 +119,35 @@ hosts::purge_host_name(const std::string& host_name)
   }
 }
 
+void
+hosts::set_host_names(const std::string& address, const std::vector<std::string>& host_names)
+{
+  auto host_names_to_add = host_names;
+  auto it = std::unique(host_names_to_add.begin(), host_names_to_add.end());
+  host_names_to_add.resize(std::distance(host_names_to_add.begin(), it));
+
+  for (const auto& item : entries)
+  {
+    const auto *entry = dynamic_cast<hostage::table_entry *>(item.get());
+
+    if (entry == nullptr)
+      continue;
+
+    if (entry->address != address)
+      continue;
+
+    for (const auto& n : entry->host_names)
+      host_names_to_add.erase(std::remove(host_names_to_add.begin(), host_names_to_add.end(), n),
+                              host_names_to_add.end());
+  }
+
+  if (!host_names_to_add.empty())
+  {
+    auto entry = std::make_shared<hostage::table_entry>();
+    entry->address = address;
+    entry->host_names = host_names_to_add;
+
+    entries.push_back(entry);
+  }
+}
 }

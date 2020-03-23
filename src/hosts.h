@@ -34,6 +34,7 @@ public:
   std::unordered_set<std::string> get_host_names(const std::string& address) const;
   void purge_address(const std::string& address);
   void purge_host_name(const std::string& host_name);
+  void set_host_names(const std::string& address, const std::vector<std::string>& host_names);
 
 private:
   std::vector<std::shared_ptr<line>> entries;

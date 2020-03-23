@@ -215,38 +215,10 @@ set_command(const command& command, hostage::hosts& hosts)
 {
   const auto& entries = hosts.get_entries();
   const auto& address = *command.addresses.begin();
-  std::unordered_set<std::string> host_names_to_set = command.host_names;
-  std::vector<std::shared_ptr<hostage::line>> new_entries;
-  new_entries.reserve(entries.size() + 1);
 
-  for (const auto& item : entries)
-  {
-    new_entries.push_back(item);
+  hosts.set_host_names(address, command.host_names);
 
-    const auto *entry = dynamic_cast<hostage::table_entry *>(item.get());
-
-    if (entry == nullptr)
-      continue;
-
-    if (entry->address != address)
-      continue;
-
-    for (const auto& n : entry->host_names)
-      host_names_to_set.erase(n);
-  }
-
-  if (!host_names_to_set.empty())
-  {
-    auto *entry = new hostage::table_entry();
-    entry->address = address;
-    std::copy(host_names_to_set.begin(),
-              host_names_to_set.end(),
-              std::back_inserter(entry->host_names));
-
-    new_entries.push_back(std::shared_ptr<hostage::line>(entry));
-  }
-
-  write_hosts(new_entries);
+  write_hosts(hosts.get_entries());
 }
 
 void
