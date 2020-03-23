@@ -41,7 +41,6 @@ namespace hostage
   public:
     std::string address;
     std::vector<std::string> host_names;
-    ~table_entry() override = default;
   };
 }
 
