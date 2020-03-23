@@ -14,43 +14,40 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef HOSTAGE_HOSTS_LINE_H
-#define HOSTAGE_HOSTS_LINE_H
-
-#include <string>
-#include <vector>
+#include "hosts_line.h"
 
 namespace hostage
 {
-  class line
+std::string
+join_with_space(const std::vector<std::string>& vector)
+{
+  std::string cat;
+
+  for (const auto& i : vector)
   {
-  public:
-    virtual std::string to_string() const = 0;
-    virtual ~line() = default;
-  };
+    cat += " ";
+    cat += i;
+  }
 
-  class comment_line : public line
-  {
-  public:
-    std::string to_string() const override;
-
-    std::string comment;
-  };
-
-  class empty_line : public line
-  {
-    std::string to_string() const override;
-  };
-
-  class table_entry : public line
-  {
-  public:
-    std::string to_string() const override;
-
-    std::string address;
-    std::vector<std::string> host_names;
-    std::string comment;
-  };
+  return cat;
 }
 
-#endif //HOSTAGE_HOSTS_LINE_H
+std::string
+comment_line::to_string() const
+{
+  return comment + "";
+}
+
+std::string
+empty_line::to_string() const
+{
+  return "";
+}
+
+std::string
+table_entry::to_string() const
+{
+  return address + join_with_space(host_names) + " " + comment;
+}
+
+}
