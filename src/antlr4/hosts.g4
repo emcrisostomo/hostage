@@ -21,7 +21,7 @@ empty_line
   ;
 
 table_entry
-  : address (Space)+ host_name ((Space)+ host_name)* comment?
+  : address (Space)+ host_name ((Space)+ host_name)* (Space)* comment?
   ;
 
 address
