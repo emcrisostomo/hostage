@@ -146,8 +146,8 @@ get_hosts_db()
   std::string pipe_input;
   std::string stdin_input;
 
-  while (std::cin >> pipe_input)
-    stdin_input.append(pipe_input);
+  while (std::getline(std::cin, pipe_input))
+    stdin_input.append(pipe_input + "\n");
 
   return hostage::hosts::from_string(stdin_input);
 }
