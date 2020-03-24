@@ -35,7 +35,7 @@ join_with_space(const std::vector<std::string>& vector)
 std::string
 comment_line::to_string() const
 {
-  return comment + "";
+  return comment;
 }
 
 std::string
@@ -47,7 +47,10 @@ empty_line::to_string() const
 std::string
 table_entry::to_string() const
 {
-  return address + join_with_space(host_names) + " " + comment;
+  std::string ret = address + join_with_space(host_names);
+  if (!comment.empty()) ret += " " + comment;
+
+  return ret;
 }
 
 }
