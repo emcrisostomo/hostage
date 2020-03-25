@@ -201,7 +201,7 @@ Syntax
 ------
 
 ```
-hostage 0.0.1
+hostage 1.0.1
 
 Usage:
 hostage (option)* (command) (command_options)*

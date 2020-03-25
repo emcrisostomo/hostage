@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.15)
-project(hostage VERSION 1.0.0)
+project(hostage VERSION 1.0.1)
 
 #@formatter:off
 set(PACKAGE           "hostage")
