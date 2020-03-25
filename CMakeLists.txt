@@ -13,7 +13,7 @@ set(PACKAGE_URL       "https://github.com/emcrisostomo/${PACKAGE}")
 set(LOCALEDIR         "${CMAKE_INSTALL_PREFIX}/share/locale" CACHE FILEPATH "locale dir")
 #@formatter:on
 
-set(CMAKE_CXX_STANDARD 14)
+set(CMAKE_CXX_STANDARD 11)
 
 find_package(antlr4-runtime REQUIRED)
 
