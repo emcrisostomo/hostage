@@ -20,6 +20,7 @@
 #include "hosts_line.h"
 #include <string>
 #include <unordered_set>
+#include <memory>
 
 namespace hostage
 {
