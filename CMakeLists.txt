@@ -29,6 +29,7 @@ find_package(antlr4-runtime QUIET)
 
 if (${antlr4-runtime_FOUND})
   add_dependencies(hostage antlr4_shared)
+  target_link_libraries(hostage PRIVATE antlr4_shared)
 else()
   find_library(antlr4_shared NAMES antlr4-runtime REQUIRED)
   # TODO: hard-coded include directory
