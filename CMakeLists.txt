@@ -14,8 +14,7 @@ set(LOCALEDIR         "${CMAKE_INSTALL_PREFIX}/share/locale" CACHE FILEPATH "loc
 #@formatter:on
 
 set(CMAKE_CXX_STANDARD 11)
-
-find_package(antlr4-runtime REQUIRED)
+include(CheckIncludeFileCXX)
 
 add_executable(hostage
     src/main.cpp
@@ -26,12 +25,24 @@ add_executable(hostage
     src/hosts.cpp src/hosts.h
     src/hosts_line.cpp src/hosts_line.h)
 
+find_package(antlr4-runtime QUIET)
+
+if (${antlr4-runtime_FOUND})
+  add_dependencies(hostage antlr4_shared)
+  target_link_libraries(hostage PRIVATE antlr4_shared)
+else()
+  find_library(antlr4_shared NAMES antlr4-runtime REQUIRED)
+  if (antlr4_shared)
+    # TODO: hard-coded include directory
+    target_include_directories(hostage PRIVATE "/usr/include/antlr4-runtime")
+    target_link_libraries(hostage PRIVATE ${antlr4_shared})
+  endif(antlr4_shared)
+endif()
+
 target_include_directories(hostage PRIVATE "${PROJECT_BINARY_DIR}")
 
 # add runtime include directories on this project.
 target_include_directories(hostage PRIVATE ${ANTLR4_INCLUDE_DIR})
-add_dependencies(hostage antlr4_shared)
-target_link_libraries(hostage PRIVATE antlr4_shared)
 
 # Add a configuration file processed by cmake
 configure_file(${PROJECT_SOURCE_DIR}/cmake_config.h.in ${PROJECT_BINARY_DIR}/cmake_config.h)
