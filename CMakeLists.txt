@@ -32,10 +32,11 @@ if (${antlr4-runtime_FOUND})
   target_link_libraries(hostage PRIVATE antlr4_shared)
 else()
   find_library(antlr4_shared NAMES antlr4-runtime REQUIRED)
-  # TODO: hard-coded include directory
-  target_include_directories(hostage PRIVATE "/usr/include/antlr4-runtime")
-
-  target_link_libraries(hostage PRIVATE ${antlr4_shared})
+  if (antlr4_shared)
+    # TODO: hard-coded include directory
+    target_include_directories(hostage PRIVATE "/usr/include/antlr4-runtime")
+    target_link_libraries(hostage PRIVATE ${antlr4_shared})
+  endif(antlr4_shared)
 endif()
 
 target_include_directories(hostage PRIVATE "${PROJECT_BINARY_DIR}")
