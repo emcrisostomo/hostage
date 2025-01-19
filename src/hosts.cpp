@@ -35,7 +35,7 @@ hosts::from_stream(std::istream& stream)
 }
 
 hosts
-hosts::from_file(const std::string& path)
+hosts::from_file(const std::string_view path)
 {
   std::ifstream hosts_file(path, std::ifstream::in);
 
@@ -57,7 +57,7 @@ hosts::get_entries() const
 }
 
 std::unordered_set<std::string>
-hosts::get_host_names(const std::string& address) const
+hosts::get_host_names(const std::string_view address) const
 {
   std::unordered_set<std::string> host_names;
 
@@ -78,7 +78,7 @@ hosts::get_host_names(const std::string& address) const
 }
 
 void
-hosts::purge_address(const std::string& address)
+hosts::purge_address(std::string_view address)
 {
   auto it = entries.begin();
 
@@ -94,7 +94,7 @@ hosts::purge_address(const std::string& address)
 }
 
 void
-hosts::purge_host_name(const std::string& host_name)
+hosts::purge_host_name(const std::string_view host_name)
 {
   auto it = entries.begin();
 
@@ -120,7 +120,7 @@ hosts::purge_host_name(const std::string& host_name)
 }
 
 void
-hosts::set_host_names(const std::string& address, const std::vector<std::string>& host_names)
+hosts::set_host_names(const std::string_view address, const std::vector<std::string>& host_names)
 {
   auto host_names_to_add = host_names;
   auto it = std::unique(host_names_to_add.begin(), host_names_to_add.end());
@@ -152,7 +152,7 @@ hosts::set_host_names(const std::string& address, const std::vector<std::string>
 }
 
 void
-hosts::rm_entry(const std::string& address, const std::vector<std::string>& host_names)
+hosts::rm_entry(const std::string_view address, const std::vector<std::string>& host_names)
 {
   auto it = entries.begin();
 
