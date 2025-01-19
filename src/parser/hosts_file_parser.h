@@ -17,7 +17,7 @@
 #ifndef HOSTAGE_HOSTS_FILE_PARSER_H
 #define HOSTAGE_HOSTS_FILE_PARSER_H
 
-#include "../../gen/hostsBaseListener.h"
+#include "gen/hostsBaseListener.h"
 #include "../hosts_line.h"
 #include <memory>
 #include <istream>

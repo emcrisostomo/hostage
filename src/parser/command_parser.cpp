@@ -15,7 +15,7 @@
  */
 
 #include "command_parser.h"
-#include "../../gen/hosts_lexer.h"
+#include "gen/hosts_lexer.h"
 
 void
 command_parser::parse(const std::string& command_args)

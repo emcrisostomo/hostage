@@ -15,7 +15,7 @@
  */
 
 #include "hosts_file_parser.h"
-#include "../../gen/hosts_lexer.h"
+#include "gen/hosts_lexer.h"
 #include "../gettext/gettext_defs.h"
 
 void

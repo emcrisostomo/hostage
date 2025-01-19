@@ -17,7 +17,7 @@
 #ifndef HOSTAGE_COMMAND_PARSER_H
 #define HOSTAGE_COMMAND_PARSER_H
 
-#include "../../gen/hostsBaseListener.h"
+#include "gen/hostsBaseListener.h"
 #include <vector>
 #include <string>
 #include <memory>
