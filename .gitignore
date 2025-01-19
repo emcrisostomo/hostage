@@ -51,3 +51,8 @@ cmake-build-debug/
 .idea/
 build/
 .vscode/
+venv/
+
+# ANTLR4 generated files
+src/antlr4/.antlr/
+gen/

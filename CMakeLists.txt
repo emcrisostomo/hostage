@@ -19,10 +19,31 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 
 include(CheckIncludeFileCXX)
 
+# Define paths to ANTLR4 and grammar files
+set(ANTLR4_JAR_URL "https://www.antlr.org/download/antlr-4.13.2-complete.jar")
+set(ANTLR4_JAR_PATH "${CMAKE_BINARY_DIR}/antlr-4.13.2-complete.jar")
+set(GRAMMAR_DIR "${CMAKE_SOURCE_DIR}/src/antlr4")
+set(GEN_DIR "${CMAKE_BINARY_DIR}/gen")
+
+# Download ANTLR4 JAR file if not already present
+if (NOT EXISTS ${ANTLR4_JAR_PATH})
+    file(DOWNLOAD ${ANTLR4_JAR_URL} ${ANTLR4_JAR_PATH})
+endif()
+
+# Add custom command to generate ANTLR4 files
+add_custom_command(
+    OUTPUT ${GEN_DIR}/hosts_lexer.cpp ${GEN_DIR}/hosts_lexer.h ${GEN_DIR}/hosts.cpp ${GEN_DIR}/hosts.h
+    COMMAND java -jar ${ANTLR4_JAR_PATH} -Dlanguage=Cpp -o ${GEN_DIR} ${GRAMMAR_DIR}/hosts_lexer.g4
+    COMMAND java -jar ${ANTLR4_JAR_PATH} -Dlanguage=Cpp -o ${GEN_DIR} -visitor ${GRAMMAR_DIR}/hosts.g4
+    DEPENDS ${GRAMMAR_DIR}/hosts_lexer.g4 ${GRAMMAR_DIR}/hosts.g4
+    COMMENT "Generating ANTLR4 lexer and parser files"
+)
+
+# Add executable and include generated files
 add_executable(hostage
     src/main.cpp
-    gen/hosts_lexer.cpp gen/hosts_lexer.h
-    gen/hosts.cpp gen/hosts.h
+    ${GEN_DIR}/hosts_lexer.cpp ${GEN_DIR}/hosts_lexer.h
+    ${GEN_DIR}/hosts.cpp ${GEN_DIR}/hosts.h
     src/parser/command_parser.cpp src/parser/command_parser.h
     src/parser/hosts_file_parser.cpp src/parser/hosts_file_parser.h
     src/hosts.cpp src/hosts.h

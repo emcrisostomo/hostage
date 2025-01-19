@@ -245,6 +245,28 @@ Installation
 `hostage` can be built from sources using CMake, or installed from a package
 management system for your OS, if available.
 
+Generating ANTLR4 files from lexer and parser grammar
+-----------------------------------------------------
+
+ANTLR4 is now run during the build, and the generated files have been removed
+from the repository.  For reference purposes, the easiest way to use ANTLR4 is
+using its python wrapper, `antlr4-tools`, in a virtual environment:
+
+```
+$ python3 -m venv venv
+$ source venv/bin/activate
+$ pip install antlr4-tools
+```
+
+To regenerate the required C++ files from the lexer and parser grammar, you can
+use the following commands:
+
+```
+$ cd src/antlr4
+$ antlr4 -Dlanguage=Cpp -o ../../gen          hosts_lexer.g4
+$ antlr4 -Dlanguage=Cpp -o ../../gen -visitor hosts.g4
+```
+
 Bug Reports
 -----------
 
@@ -259,7 +281,7 @@ Bug reports can be reported as issues on the [project home page][hostage].
 
 -----
 
-Copyright (c) 2020 Enrico M. Crisostomo
+Copyright (c) 2025 Enrico M. Crisostomo
 
 This program is free software; you can redistribute it and/or modify it under
 the terms of the GNU General Public License as published by the Free Software
