@@ -49,33 +49,26 @@ add_executable(hostage
     src/hosts.cpp src/hosts.h
     src/hosts_line.cpp src/hosts_line.h)
 
-find_package(antlr4-runtime QUIET)
+# Find ANTLR4 runtime
+find_package(antlr4-runtime REQUIRED)
 
-if (${antlr4-runtime_FOUND})
-  add_dependencies(hostage antlr4_shared)
+if (antlr4-runtime_FOUND)
+  target_include_directories(hostage PRIVATE ${antlr4-runtime_INCLUDE_DIRS})
   target_link_libraries(hostage PRIVATE antlr4_shared)
 else()
-  find_library(antlr4_shared NAMES antlr4-runtime REQUIRED)
-  if (antlr4_shared)
-    # TODO: hard-coded include directory
-    target_include_directories(hostage PRIVATE "/usr/include/antlr4-runtime")
-    target_link_libraries(hostage PRIVATE ${antlr4_shared})
-  endif(antlr4_shared)
+  message(FATAL_ERROR "antlr4-runtime not found")
 endif()
 
 target_include_directories(hostage PRIVATE "${PROJECT_BINARY_DIR}")
-
-# add runtime include directories on this project.
-target_include_directories(hostage PRIVATE ${ANTLR4_INCLUDE_DIR})
 
 # Add a configuration file processed by cmake
 configure_file(${PROJECT_SOURCE_DIR}/cmake_config.h.in ${PROJECT_BINARY_DIR}/cmake_config.h)
 add_definitions(-DHAVE_CMAKE_CONFIG_H)
 
-# install targets
+# Install targets
 install(TARGETS hostage DESTINATION bin)
 
-# tests
+# Tests
 include(CTest)
 
 add_test(hostageRuns hostage)
@@ -84,7 +77,7 @@ set_tests_properties(hostageRuns PROPERTIES WILL_FAIL true)
 add_test(hostageHelp hostage --help)
 set_tests_properties(hostageHelp PROPERTIES PASS_REGULAR_EXPRESSION "${PACKAGE} ${PACKAGE_VERSION}")
 
-# installer
+# Installer
 include(InstallRequiredSystemLibraries)
 #@formatter:off
 # Remove and default to project description when migrated to CMake 3.9
