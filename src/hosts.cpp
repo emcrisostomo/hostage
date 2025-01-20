@@ -19,6 +19,7 @@
 #include <fstream>
 #include <sstream>
 #include <algorithm>
+#include <variant>
 
 namespace hostage
 {
@@ -50,7 +51,7 @@ hosts::from_string(const std::string& contents)
   return hosts::from_stream(content_stream);
 }
 
-std::vector<std::shared_ptr<line>>
+std::vector<hostage::line_variant>
 hosts::get_entries() const
 {
   return entries;
@@ -63,15 +64,15 @@ hosts::get_host_names(const std::string_view address) const
 
   for (const auto& item : entries)
   {
-    const auto *entry = dynamic_cast<hostage::table_entry *>(item.get());
-
-    if (entry == nullptr)
+    if (!std::holds_alternative<hostage::table_entry>(item))
       continue;
 
-    if (entry->address != address)
+    const auto& entry = std::get<hostage::table_entry>(item);
+
+    if (entry.address != address)
       continue;
 
-    host_names.insert(entry->host_names.begin(), entry->host_names.end());
+    host_names.insert(entry.host_names.begin(), entry.host_names.end());
   }
 
   return host_names;
@@ -84,9 +85,15 @@ hosts::purge_address(std::string_view address)
 
   while (it != entries.end())
   {
-    const auto *entry = dynamic_cast<hostage::table_entry *>(it->get());
+    if (!std::holds_alternative<hostage::table_entry>(*it))
+    {
+      ++it;
+      continue;
+    }
 
-    if (entry != nullptr && entry->address == address)
+    const auto& entry = std::get<hostage::table_entry>(*it);
+
+    if (entry.address == address)
       it = entries.erase(it);
     else
       ++it;
@@ -100,15 +107,15 @@ hosts::purge_host_name(const std::string_view host_name)
 
   while (it != entries.end())
   {
-    auto *entry = dynamic_cast<hostage::table_entry *>(it->get());
-
-    if (entry == nullptr)
+    if (!std::holds_alternative<hostage::table_entry>(*it))
     {
       ++it;
       continue;
     }
 
-    auto& host_names = entry->host_names;
+    auto& entry = std::get<hostage::table_entry>(*it);
+
+    auto& host_names = entry.host_names;
     host_names.erase(std::remove(host_names.begin(), host_names.end(), host_name),
                      host_names.end());
 
@@ -128,26 +135,26 @@ hosts::set_host_names(const std::string_view address, const std::vector<std::str
 
   for (const auto& item : entries)
   {
-    const auto *entry = dynamic_cast<hostage::table_entry *>(item.get());
-
-    if (entry == nullptr)
+    if (!std::holds_alternative<hostage::table_entry>(item))
       continue;
 
-    if (entry->address != address)
+    const auto& entry = std::get<hostage::table_entry>(item);
+
+    if (entry.address != address)
       continue;
 
-    for (const auto& n : entry->host_names)
+    for (const auto& n : entry.host_names)
       host_names_to_add.erase(std::remove(host_names_to_add.begin(), host_names_to_add.end(), n),
                               host_names_to_add.end());
   }
 
   if (!host_names_to_add.empty())
   {
-    auto entry = std::make_shared<hostage::table_entry>();
-    entry->address = address;
-    entry->host_names = host_names_to_add;
+    hostage::table_entry entry;
+    entry.address = address;
+    entry.host_names = host_names_to_add;
 
-    entries.push_back(entry);
+    entries.emplace_back(entry);
   }
 }
 
@@ -158,20 +165,25 @@ hosts::rm_entry(const std::string_view address, const std::vector<std::string>& 
 
   while (it != entries.end())
   {
-    auto *entry = dynamic_cast<hostage::table_entry *>(it->get());
+    if (!std::holds_alternative<hostage::table_entry>(*it))
+    {
+      ++it;
+      continue;
+    }
 
-    if (entry == nullptr
-        || entry->address != address)
+    auto& entry = std::get<hostage::table_entry>(*it);
+
+    if (entry.address != address)
     {
       ++it;
       continue;
     }
 
     for (const auto& n : host_names)
-      entry->host_names.erase(std::remove(entry->host_names.begin(), entry->host_names.end(), n),
-                              entry->host_names.end());
+      entry.host_names.erase(std::remove(entry.host_names.begin(), entry.host_names.end(), n),
+                              entry.host_names.end());
 
-    if (entry->host_names.empty())
+    if (entry.host_names.empty())
       it = entries.erase(it);
     else
       ++it;

@@ -31,14 +31,14 @@ public:
   static hosts from_stream(std::istream& stream);
   static hosts from_string(const std::string& contents);
 
-  std::vector<std::shared_ptr<line>> get_entries() const;
+  std::vector<hostage::line_variant> get_entries() const;
   std::unordered_set<std::string> get_host_names(const std::string_view address) const;
   void set_host_names(const std::string_view address, const std::vector<std::string>& host_names);
   void rm_entry(const std::string_view address, const std::vector<std::string>& host_names);
   void purge_address(const std::string_view address);
   void purge_host_name(const std::string_view host_name);
 private:
-  std::vector<std::shared_ptr<line>> entries;
+  std::vector<hostage::line_variant> entries;
 };
 }
 

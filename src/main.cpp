@@ -54,19 +54,19 @@ void backup_hosts_file();
 std::string get_username();
 std::string get_pwd();
 std::string get_backup_filename();
-void write_hosts(const std::vector<std::shared_ptr<hostage::line>>& entries);
+void write_hosts(const std::vector<hostage::line_variant>& entries);
 void write_host_names(const std::unordered_set<std::string>& host_names);
-void write_hosts_to_stream(const std::vector<std::shared_ptr<hostage::line>>& entries,
+void write_hosts_to_stream(const std::vector<hostage::line_variant>& entries,
                            std::ostream& ostream);
 std::string get_input_file_path();
 std::string get_output_file_path();
 void list_command(const command& command, hostage::hosts& hosts);
 void set_command(const command& command, hostage::hosts& hosts);
-void get_command(const command& command, hostage::hosts& hosts);
+void get_command(const command& command, const hostage::hosts& hosts);
 void purge_command(const command& command, hostage::hosts& hosts);
 void rm_command(const command& command, hostage::hosts& hosts);
-bool is_comment(const std::shared_ptr<hostage::line>& entry);
-bool is_empty_line(const std::shared_ptr<hostage::line>& entry);
+bool is_comment(const hostage::line_variant& entry);
+bool is_empty_line(const hostage::line_variant& entry);
 hostage::hosts get_hosts_db();
 
 int
@@ -190,7 +190,7 @@ set_command(const command& command, hostage::hosts& hosts)
 }
 
 void
-get_command(const command& command, hostage::hosts& hosts)
+get_command(const command& command, const hostage::hosts& hosts)
 {
   write_host_names(hosts.get_host_names(*command.addresses.begin()));
 }
@@ -227,7 +227,7 @@ write_host_names(const std::unordered_set<std::string>& host_names)
 }
 
 void
-write_hosts(const std::vector<std::shared_ptr<hostage::line>>& entries)
+write_hosts(const std::vector<hostage::line_variant>& entries)
 {
   if (!iflag && !oflag)
   {
@@ -246,7 +246,7 @@ write_hosts(const std::vector<std::shared_ptr<hostage::line>>& entries)
 }
 
 void
-write_hosts_to_stream(const std::vector<std::shared_ptr<hostage::line>>& entries,
+write_hosts_to_stream(const std::vector<hostage::line_variant>& entries,
                       std::ostream& os)
 {
   for (const auto& entry : entries)
@@ -257,20 +257,20 @@ write_hosts_to_stream(const std::vector<std::shared_ptr<hostage::line>>& entries
     if (nelflag && is_empty_line(entry))
       continue;
 
-    os << entry->to_string() << '\n';
+    os << to_string(entry) << '\n';
   }
 }
 
 bool
-is_comment(const std::shared_ptr<hostage::line>& entry)
+is_comment(const hostage::line_variant& entry)
 {
-  return (dynamic_cast<hostage::comment_line *>(entry.get()) != nullptr);
+  return (std::holds_alternative<hostage::comment_line>(entry));
 }
 
 bool
-is_empty_line(const std::shared_ptr<hostage::line>& entry)
+is_empty_line(const hostage::line_variant& entry)
 {
-  return (dynamic_cast<hostage::empty_line *>(entry.get()) != nullptr);
+  return (std::holds_alternative<hostage::empty_line>(entry));
 }
 
 void

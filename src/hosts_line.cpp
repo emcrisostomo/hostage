@@ -15,42 +15,47 @@
  */
 
 #include "hosts_line.h"
+#include <sstream>
 
 namespace hostage
 {
 std::string
 join_with_space(const std::vector<std::string>& vector)
 {
-  std::string cat;
+  std::ostringstream cat;
 
   for (const auto& i : vector)
   {
-    cat += " ";
-    cat += i;
+    cat << " " << i;
   }
 
-  return cat;
+  return cat.str();
 }
 
-std::string
-comment_line::to_string() const
+std::string 
+to_string(const comment_line& line) 
 {
-  return comment;
+  return line.comment;
 }
 
-std::string
-empty_line::to_string() const
-{
-  return "";
+std::string 
+to_string(const table_entry& line) 
+{  
+  std::ostringstream oss;
+  oss << line.address;
+  oss << join_with_space(line.host_names);
+  if (!line.comment.empty()) oss << " " << line.comment;
+
+  return oss.str();
 }
 
-std::string
-table_entry::to_string() const
-{
-  std::string ret = address + join_with_space(host_names);
-  if (!comment.empty()) ret += " " + comment;
-
-  return ret;
+std::string 
+to_string(const empty_line&) {
+    return "";
 }
 
+std::string 
+to_string(const line_variant& line) {
+    return std::visit([](const auto& l) { return to_string(l); }, line);
+}
 }

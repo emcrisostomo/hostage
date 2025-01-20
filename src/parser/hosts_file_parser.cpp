@@ -72,32 +72,32 @@ hosts_file_parser::exitHost_name(hosts::Host_nameContext *context)
 void
 hosts_file_parser::exitComment_line(hosts::Comment_lineContext *context)
 {
-  auto cl = std::make_shared<hostage::comment_line>();
-  cl->comment = std::move(comment);
+  hostage::comment_line cl;
+  cl.comment = std::move(comment);
 
-  lines.push_back(cl);
+  lines.emplace_back(cl);
 }
 
 void
 hosts_file_parser::exitTable_entry(hosts::Table_entryContext *context)
 {
-  auto te = std::make_shared<hostage::table_entry>();
-  te->address = std::move(address);
-  te->host_names = std::move(host_names);
-  te->comment = std::move(comment);
+  hostage::table_entry te;
+  te.address = std::move(address);
+  te.host_names = std::move(host_names);
+  te.comment = std::move(comment);
 
-  lines.push_back(te);
+  lines.emplace_back(te);
 }
 
 void
 hosts_file_parser::exitEmpty_line(hosts::Empty_lineContext *context)
 {
-  auto el = std::make_shared<hostage::empty_line>();
+  hostage::empty_line el;
 
-  lines.push_back(el);
+  lines.emplace_back(el);
 }
 
-std::vector<std::shared_ptr<hostage::line>>
+std::vector<hostage::line_variant>
 hosts_file_parser::get_entries() const
 {
   return lines;

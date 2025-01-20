@@ -35,7 +35,7 @@ public:
   void exitAddress(hosts::AddressContext *ctx) override;
   void exitHost_name(hosts::Host_nameContext *context) override;
   void visitErrorNode(antlr4::tree::ErrorNode *node) override;
-  std::vector<std::shared_ptr<hostage::line>> get_entries() const;
+  std::vector<hostage::line_variant> get_entries() const;
 
 private:
   void clean_state();
@@ -43,7 +43,7 @@ private:
   std::string address;
   std::vector<std::string> host_names;
   std::string comment;
-  std::vector<std::shared_ptr<hostage::line>> lines;
+  std::vector<hostage::line_variant> lines;
 };
 
 
